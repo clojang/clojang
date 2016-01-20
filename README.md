@@ -1,8 +1,9 @@
 # clojang
 
-[![][clj-logo]][clj-logo]
+[![][clojang-logo]][clojang-logo-large]
 
-[clj-logo]: resources/images/clj-logo.png
+[clojang-logo]: resources/images/clojang-logo-250x.png
+[clojang-logo-large]: resources/images/clojang-logo-1000x.png
 
 *Erlang's JInterface in Idiomatic Clojure*
 
