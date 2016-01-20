@@ -15,10 +15,10 @@
 * [Documentation](#documentation-)
 * [Usage](#usage-)
 * [Erlang and JInterface](#erlang-and-jinterface-)
-  * [A Note on Versions](#a-note-on-versions-)
-  * [Setting Up Your Erlang's JInterface for Clojure](#setting-up-your-erlangs-jinterface-for-clojure-)
+  * [Matching Versions](#matching-versions-)
+  * [Building JInterface for Clojure](#building-jinterface-for-clojure-)
     * [Finding Your Root Dir](#finding-your-root-dir-)
-    * [Finding Your JInterface Version](#finding-your-jinterface-version-)
+    * [Getting Versions](#getting-versions-)
 * [License](#license-)
 
 
@@ -68,15 +68,16 @@ was released. The following version numbers are paired:
 | R15B02         | 5.9.2                 | 1.5.6      |
 | R15B01         | 5.9.1                 | 1.5.6      |
 | R15B           | 5.9                   | 1.5.5      |
+|-----------------------------------------------------|
 
 
-### Setting Up Your Erlang's JInterface for Clojure [&#x219F;](#table-of-contents)
+### Building JInterface for Clojure [&#x219F;](#table-of-contents)
 
 To ensure that your version of JInterface is ready for use by Clojure with your
 version of Erlang, simply do this:
 
 ```bash
-$ make jinterface
+$ make jinterface-local
 ```
 
 This will discover the Erlang root directory for the first ``erl`` found in your
@@ -86,7 +87,7 @@ of Erlang.
 If you wish to override these, you may do the following:
 
 ```
-make jinterface ERL_LIBS=/opt/erlang/15.3.1
+make jinterface-local ERL_LIBS=/opt/erlang/15.3.1
 ```
 
 This ``make`` target (which depends upon Maven being installed) will
@@ -105,7 +106,7 @@ $ erl
 ```
 ```erlang
 1> code:root_dir().
-"/opt/erlang/18.0"
+"/opt/erlang/18.2"
 ```
 
 The ``Makefile`` uses this to get the default Erlang root directory:
@@ -114,23 +115,24 @@ The ``Makefile`` uses this to get the default Erlang root directory:
 ERL_LIBS=$(erl -eval "io:format(code:root_dir()),halt()" -noshell)
 ```
 
-#### Finding Your JInterface Version [&#x219F;](#table-of-contents)
+#### Getting Versions [&#x219F;](#table-of-contents)
 
-With your ``ERL_LIBS`` dir in hand, you can easily discover the JInterface
-version:
+The ``Makefile`` provides a convenience target for getting some important version numbers:
 
 ```bash
-$ ls -1 $ERL_LIBS/lib/|grep jinterface|awk -F- '{print $2}'
-1.6
+$ make show-versions
+Project: clojang, 0.1.0
+Erlang: Erlang/OTP 18 [erts-7.2] [source] [64-bit] [smp:4:4] [async-threads:10] [hipe] [kernel-poll:false]
+JInterface: 1.6.1
+Clojure: 1.7.0
+lein/JVM: Leiningen 2.5.3 on Java 1.7.0_91 OpenJDK 64-Bit Server VM
 ```
-
-The ``Makefile`` uses something similar to obtain the JInterface version number.
 
 
 ## License [&#x219F;](#table-of-contents)
 
 ```
-Copyright © 2016 Duncan McGreggor
+Copyright © 2015-2016 Duncan McGreggor
 
 Distributed under the Apache License Version 2.0.
 ```
