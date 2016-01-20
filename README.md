@@ -30,7 +30,9 @@ TBD
 
 ## Documentation [&#x219F;](#table-of-contents)
 
-TBD
+Project documentation, including both API reference docs as well as tutorials and user guides, is availble here:
+
+* [http://oubiwann.github.io/clojang/current/](http://oubiwann.github.io/clojang/current/)
 
 
 ## Usage [&#x219F;](#table-of-contents)
