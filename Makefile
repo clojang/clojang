@@ -54,3 +54,8 @@ jinterface: build-jinterface
 
 jinterface-local: build-jinterface
 	cd $(JINTERFACE_BUILD) && lein install
+
+docs:
+	@lein codox
+
+.PHONY: docs
