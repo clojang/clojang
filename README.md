@@ -68,7 +68,7 @@ was released. The following version numbers are paired:
 | R15B02         | 5.9.2                 | 1.5.6      |
 | R15B01         | 5.9.1                 | 1.5.6      |
 | R15B           | 5.9                   | 1.5.5      |
-|-----------------------------------------------------|
+|----------------|-----------------------|------------|
 
 
 ### Building JInterface for Clojure [&#x219F;](#table-of-contents)
