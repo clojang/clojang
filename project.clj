@@ -7,7 +7,8 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.erlang.otp/jinterface "1.6.1"]]
-  :plugins [[lein-codox "0.9.1"]]
+  :plugins [[lein-codox "0.9.1"]
+            [lein-simpleton "1.3.0"]]
   :test-selectors {:default :unit
                    :unit :unit
                    :system :system
