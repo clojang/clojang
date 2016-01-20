@@ -72,9 +72,9 @@ $ lein test :all
 
 ## Erlang and JInterface [&#x219F;](#table-of-contents)
 
-You almost certainly do not want to use the JInterface dependencies that
-are provided in Clojars. An explanation is given below with simple instructions
-for making the JInterface for your Erlang version available to Clojure.
+Getting Erlang, JInterface, and Clojure working together can be tricky just for the simple fact that the JInterface ``.jar`` files tend to be a mismatched mess. I've *tried* to help out with this by publishing what *seem* to be working JInterface ``.jar`` files on Clojars. I don't have the infrastructure available for testing all of these, so feedback is welcome.
+
+To make this easier for devs to do themselves, this project includes some ``make`` targets for building JInterface ``.jar`` files. Also, a table is proivded below to help match Erlang VM with the right JInterface relase.
 
 
 ### A Note on Versions [&#x219F;](#table-of-contents)
