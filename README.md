@@ -14,6 +14,7 @@
 * [Introduction](#introduction-)
 * [Documentation](#documentation-)
 * [Usage](#usage-)
+  * [Running Tests](#running-tests-)
 * [Erlang and JInterface](#erlang-and-jinterface-)
   * [Matching Versions](#matching-versions-)
   * [Building JInterface for Clojure](#building-jinterface-for-clojure-)
@@ -37,7 +38,7 @@ TBD
 TBD
 
 
-### Running Tests
+### Running Tests [&#x219F;](#table-of-contents)
 
 The Clojang tests use metadata annotations to indicate whether they are unit, system, or integration tests. to run just the unit tests, you can do any one of the following, depending upon what you're used to:
 
