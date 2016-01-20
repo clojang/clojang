@@ -1,4 +1,4 @@
-(ns clojang.types
+(ns clojang.jinterface.types
   (:import [com.ericsson.otp.erlang
             OtpErlangAtom
             OtpErlangBinary
