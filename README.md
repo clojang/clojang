@@ -9,7 +9,7 @@
 ![Clojars Project](http://clojars.org/clojang/latest-version.svg)
 
 
-##### Table of Contents
+#### Table of Contents
 
 * [Introduction](#introduction-)
 * [Documentation](#documentation-)
@@ -35,6 +35,35 @@ TBD
 ## Usage [&#x219F;](#table-of-contents)
 
 TBD
+
+
+### Running Tests
+
+The Clojang tests use metadata annotations to indicate whether they are unit, system, or integration tests. to run just the unit tests, you can do any one of the following, depending upon what you're used to:
+
+```bash
+$ lein test
+$ lein test :unit
+$ lein test :default
+```
+
+To run just the system tests:
+
+```bash
+$ lein test :system
+```
+
+And, similarly, just the integration tests:
+
+```bash
+$ lein test :integtration
+```
+
+To run everything:
+
+```bash
+$ lein test :all
+```
 
 
 ## Erlang and JInterface [&#x219F;](#table-of-contents)
