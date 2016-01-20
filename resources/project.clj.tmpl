@@ -1,0 +1,9 @@
+(defproject org.erlang.otp/jinterface "{{VERSION}}"
+  :description "Java classes for Erlang/OTP interop."
+  :url "https://erlang.org/"
+  :scm {:name "git" :url "https://github.com/erlang/otp"}
+  :license {:name "Apache License, Version 2.0"
+            :url "http://www.apache.org/licenses/LICENSE-2.0"}
+  :java-source-paths ["src/java"]
+  :signing {:gpg-key "C4BEFF6B"}
+  :repositories {"local" ~(str (.toURI (java.io.File. "~/.m2/repository")))})
