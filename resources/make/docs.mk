@@ -12,13 +12,17 @@ LOCAL_DOCS_PORT = 5099
 $(DOCS_GIT_HACK):
 	-@ln -s $(ROOT_DIR)/.git $(DOCS_DIR)
 
-devdocs:
+devdocs: local-docs
 	@echo "\nRunning docs server on http://$(LOCAL_DOCS_HOST):$(LOCAL_DOCS_PORT)..."
 	@lein simpleton $(LOCAL_DOCS_PORT) file :from $(DOCS_PROD_DIR)/current
 
-docs: clean-docs $(DOCS_GIT_HACK)
+docs: local-docs
+
+local-docs: clean-docs
 	@echo "\nBuilding docs ...\n"
 	@lein codox
+
+prod-docs: clean-docs $(DOCS_GIT_HACK) local-docs
 
 clean-docs:
 	@rm -rf $(DOCS_PROD_DIR)/current
@@ -35,7 +39,7 @@ teardown-temp-repo:
 	@rm $(DOCS_DIR)/.git
 	@rm -rf $(DOCS_PROD_DIR)/.git $(DOCS_PROD_DIR)/*/.git
 
-publish: docs setup-temp-repo
+publish: prod-docs setup-temp-repo
 	@echo "\nPublishing docs ...\n"
 	@cd $(DOCS_PROD_DIR) && git push -f $(REPO) master:gh-pages
 	@make teardown-temp-repo
