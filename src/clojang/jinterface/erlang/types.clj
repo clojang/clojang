@@ -28,7 +28,7 @@
             OtpErlangUShort])
   (:refer-clojure :exclude [atom list float hash long map ref short]))
 
-(defn convert-type-name [name-symbol]
+(defn- convert-type-name [name-symbol]
   (case name-symbol
     "external-fun" "ExternalFun"
     "list-sublist" "List$SubList"
@@ -37,7 +37,7 @@
     "ushort" "UShort"
     (string/capitalize name-symbol)))
 
-(defn make-type-name [name-symbol]
+(defn- make-type-name [name-symbol]
   (->> name-symbol
        (str)
        (convert-type-name)
