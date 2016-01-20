@@ -21,17 +21,21 @@
     * [Finding Your JInterface Version](#finding-your-jinterface-version-)
 * [License](#license-)
 
+
 ## Introduction [&#x219F;](#table-of-contents)
 
 TBD
+
 
 ## Documentation [&#x219F;](#table-of-contents)
 
 TBD
 
+
 ## Usage [&#x219F;](#table-of-contents)
 
 TBD
+
 
 ## Erlang and JInterface [&#x219F;](#table-of-contents)
 
@@ -47,6 +51,7 @@ was released. The following version numbers are paired:
 
 | Erlang Release | Erlang Version (erts) | JInterface |
 |----------------|-----------------------|------------|
+| 18.2           | 7.2                   | 1.6.1      |
 | 18.1           | 7.1                   | 1.6        |
 | 18.0           | 7.0                   | 1.6        |
 | 17.5           | 6.4                   | 1.5.12     |
