@@ -1,4 +1,4 @@
-# Using the Low-level API
+# Clojang User's Guide: The Low-level API
 
 ## The JInterface Package in Clojang
 
@@ -89,17 +89,50 @@ user=> (def mbox (otp/create-mbox node "server"))
 #'user/mbox
 ```
 
-or later on, if need be. You may either use the ``register-name`` function for the Node (takes three arguments) or the ``register-name`` function for the Mbox (takes two arguments):
+or later on, if need be. You may either use the ``register-name`` function for the Node (takes three arguments):
 
 ```clojure
 => (otp/register-name node "server2" mbox)
 true
-=> (otp/register-name mbox "server3")
+```
+
+or the ``register-name`` function for the Mbox (takes two arguments):
+
+```clojure
+=> (require '[clojang.jinterface.otp.messaging :as messaging])
+=> (messaging/register-name mbox "server3")
 ```
 
 Registered names are usually necessary in order to start communication, since it is impossible to know in advance the pid of a remote process. If a well-known name for one of the processes is chosen in advance and known by all communicating parties within an application, each mailbox can send an initial message to the named mailbox, which then can identify the sender pid.
 
 
 ##  Connections
+
+It is not necessary to explicitly set up communication with a remote node. Simply sending a message to a mailbox on that node will cause the OtpNode to create a connection if one does not already exist. Once the connection is established, subsequent messages to the same node will reuse the same connection.
+
+It is possible to check for the existence of a remote node before attempting to communicate with it. Here we send a ping message to the remote node to see if it is alive and accepting connections:
+
+```clojure
+user=> (defn print-liveliness [node other]
+  #_=>   (if (otp/ping node other 1000)
+  #_=>     (println "It's aliiiive!")
+  #_=>     (println "This node wouldn't go 'voom' if ...")))
+#'user/print-liveliness
+user=> (print-liveliness node "gurka")
+It's aliiiive!
+nil
+user=> (print-liveliness "nohost")
+This node wouldn't go 'voom' if ...
+nil
+```
+
+If the call to ``(otp/ping ...)`` succeeds, a connection to the remote node has been established. Note that it is not necessary to ping remote nodes before communicating with them, but by using ping you can determine if the remote exists before attempting to communicate with it.
+
+Connections are only permitted by nodes using the same security cookie. The cookie is a short string provided either as an argument when creating OtpNode objects, or found in the user's home directory in the file ``.erlang.cookie``. When a connection attempt is made, the string is used as part of the authentication process. If you are having trouble getting communication to work, use the trace facility (described later in this document) to show the connection establishment. A likely problem is that the cookies are different.
+
+Connections are never broken explicitly. If a node fails or is closed, a connection may be broken however.
+
+
+##  Transport Factory
 
 TBD
