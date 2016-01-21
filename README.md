@@ -31,9 +31,15 @@ TBD
 
 ## Documentation [&#x219F;](#table-of-contents)
 
-Project documentation, including both API reference docs as well as tutorials and user guides, is availble here:
+Project documentation, including Clojang API reference docs, Javadocs for JInterface, and the Erlang JInterface User's Guide, is availble here:
 
 * [http://oubiwann.github.io/clojang/current/](http://oubiwann.github.io/clojang/current/)
+
+Quick links for the other docs:
+
+* [Clojang User's Guide](http://oubiwann.github.io/clojang/current/00-low-level.html) - A translation of the JInterface User's Guide (Erlang) from Java into Clojure
+* [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html)
+* [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java)
 
 
 ## Usage [&#x219F;](#table-of-contents)
