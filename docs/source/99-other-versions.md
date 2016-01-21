@@ -11,8 +11,8 @@
 
 ### Javadocs
 
-* [Current](../current/java)
-* [1.6.1](../curent/java)
+* [Current](../current/erlang/java)
+* [1.6.1](../curent/erlang/java)
 
 ## Erlang
 
