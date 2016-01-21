@@ -112,18 +112,22 @@ Registered names are usually necessary in order to start communication, since it
 
 It is not necessary to explicitly set up communication with a remote node. Simply sending a message to a mailbox on that node will cause the OtpNode to create a connection if one does not already exist. Once the connection is established, subsequent messages to the same node will reuse the same connection.
 
-It is possible to check for the existence of a remote node before attempting to communicate with it. Here we send a ping message to the remote node to see if it is alive and accepting connections:
+It is possible to check for the existence of a remote node before attempting to communicate with it. Here we send a ping message to the remote node to see if it is alive and accepting connections. Paste the following function in your REPL:
 
 ```clojure
-user=> (defn print-liveliness [node other]
-  #_=>   (if (nodes/ping node other 1000)
-  #_=>     (println "It's aliiiive!")
-  #_=>     (println "This node wouldn't go 'voom' if ...")))
-#'user/print-liveliness
+(defn print-liveliness [node other]
+  (if (nodes/ping node other 1000)
+    (println "It's aliiiive!")
+    (println "This node wouldn't go 'voom' if ...")))
+```
+
+Now let's use it:
+
+```clojure
 user=> (print-liveliness node "gurka")
 It's aliiiive!
 nil
-user=> (print-liveliness "nohost")
+user=> (print-liveliness node "nohost")
 This node wouldn't go 'voom' if ...
 nil
 ```
