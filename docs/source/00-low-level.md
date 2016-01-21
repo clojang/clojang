@@ -60,9 +60,9 @@ Lists in Erlang are also used to describe sequences of printable characters (str
 A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. Several such nodes can run on the same host as long as their names are unique. The class [OtpNode](erlang/java/com/ericsson/otp/erlang/OtpNode.html) represents an Erlang node. It is created with a name and optionally a port number on which it listens for incoming connections. Before creating an instance of [OtpNode](erlang/java/com/ericsson/otp/erlang/OtpNode.html), ensure that EPMD is running on the host machine. See the Erlang documentation for more information about EPMD. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
 
 ```clojure
-=> (require '[clojang.jinterface.otp :as otp])
+=> (require '[clojang.jinterface.otp.nodes :as nodes])
 nil
-=> (def node (otp/node "gurka"))
+=> (def node (nodes/node "gurka"))
 #'user/node
 ```
 
@@ -71,12 +71,12 @@ nil
 
 Erlang processes running on an Erlang node are identified by process identifiers (pids) and, optionally, by registered names unique within the node. Each Erlang process has an implicit mailbox that is used to receive messages; the mailbox is identified with the pid of the process.
 
-Jinterface provides a similar mechanism with the class [OtpMbox](http://oubiwann.github.io/clojang/current/erlang/java/com/ericsson/otp/erlang/OtpMbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](http://oubiwann.github.io/clojang/current/erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
+Jinterface provides a similar mechanism with the class [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
 
 Applications are free to create mailboxes as necessary. This is done as follows:
 
 ```clojure
-user=> (def mbox (otp/create-mbox node))
+user=> (def mbox (nodes/create-mbox node))
 #'user/mbox
 ```
 
@@ -85,14 +85,14 @@ The mailbox created in the above example has no registered name, although it doe
 An application can register a name for a mailbox, either when the mailbox is initially created:
 
 ```clojure
-user=> (def mbox (otp/create-mbox node "server"))
+user=> (def mbox (nodes/create-mbox node "server"))
 #'user/mbox
 ```
 
 or later on, if need be. You may either use the ``register-name`` function for the Node (takes three arguments):
 
 ```clojure
-=> (otp/register-name node "server2" mbox)
+=> (nodes/register-name node "server2" mbox)
 true
 ```
 
@@ -100,7 +100,9 @@ or the ``register-name`` function for the Mbox (takes two arguments):
 
 ```clojure
 => (require '[clojang.jinterface.otp.messaging :as messaging])
+nill
 => (messaging/register-name mbox "server3")
+true
 ```
 
 Registered names are usually necessary in order to start communication, since it is impossible to know in advance the pid of a remote process. If a well-known name for one of the processes is chosen in advance and known by all communicating parties within an application, each mailbox can send an initial message to the named mailbox, which then can identify the sender pid.
@@ -114,7 +116,7 @@ It is possible to check for the existence of a remote node before attempting to 
 
 ```clojure
 user=> (defn print-liveliness [node other]
-  #_=>   (if (otp/ping node other 1000)
+  #_=>   (if (nodes/ping node other 1000)
   #_=>     (println "It's aliiiive!")
   #_=>     (println "This node wouldn't go 'voom' if ...")))
 #'user/print-liveliness
@@ -126,7 +128,7 @@ This node wouldn't go 'voom' if ...
 nil
 ```
 
-If the call to ``(otp/ping ...)`` succeeds, a connection to the remote node has been established. Note that it is not necessary to ping remote nodes before communicating with them, but by using ping you can determine if the remote exists before attempting to communicate with it.
+If the call to ``(nodes/ping ...)`` succeeds, a connection to the remote node has been established. Note that it is not necessary to ping remote nodes before communicating with them, but by using ping you can determine if the remote exists before attempting to communicate with it.
 
 Connections are only permitted by nodes using the same security cookie. The cookie is a short string provided either as an argument when creating OtpNode objects, or found in the user's home directory in the file ``.erlang.cookie``. When a connection attempt is made, the string is used as part of the authentication process. If you are having trouble getting communication to work, use the trace facility (described later in this document) to show the connection establishment. A likely problem is that the cookies are different.
 
@@ -135,4 +137,15 @@ Connections are never broken explicitly. If a node fails or is closed, a connect
 
 ##  Transport Factory
 
-TBD
+All necessary connections are made using methods of [OtpTransportFactory](erlang/java/com/ericsson/otp/erlang/OtpTransportFactory.html) interface. Default OtpTransportFactory implementation is based on standard Socket class. User may provide custom transport factory as needed. See java doc for details.
+
+
+## Sending and Receiving Messages
+
+Messages sent with this package must be instances of [OtpErlangObject](erlang/java/com/ericsson/otp/erlang/OtpErlangObject.html) or one of its subclasses. Message can be sent to processes or pids, either by specifying the pid of the remote, or its registered name and node.
+
+In this example, we create a message containing our own pid so the echo process can reply:
+
+```clojure
+
+```

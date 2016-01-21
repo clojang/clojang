@@ -1,4 +1,4 @@
-(ns clojang.jinterface.otp
+(ns clojang.jinterface.otp.nodes
   (:require [clojang.util :as util])
   (:import [com.ericsson.otp.erlang
             AbstractNode
