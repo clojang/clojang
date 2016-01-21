@@ -39,7 +39,7 @@ teardown-temp-repo:
 	@rm $(DOCS_DIR)/.git
 	@rm -rf $(DOCS_PROD_DIR)/.git $(DOCS_PROD_DIR)/*/.git
 
-publish: prod-docs setup-temp-repo
+publish-docs: prod-docs setup-temp-repo
 	@echo "\nPublishing docs ...\n"
 	@cd $(DOCS_PROD_DIR) && git push -f $(REPO) master:gh-pages
 	@make teardown-temp-repo
