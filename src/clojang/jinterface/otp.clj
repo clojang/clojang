@@ -60,6 +60,12 @@
   other means. See the Erlang documentation for more information about this."
   [arg])
 
+(defotp peer
+  "Represents a remote OTP node. It acts only as a container for the nodename
+  and other node-specific information that is needed by the OtpConnection
+  class"
+  [arg])
+
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP protocols
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
