@@ -29,11 +29,11 @@ In the following sections, these topics are described:
 *    tracing message flow
 
 
-## Mapping of Basic Erlang Types to Java
+## Mapping of Basic Erlang Types to the JVM
 
-This section describes the mapping of Erlang basic types to Java.
+This section describes the mapping of Erlang basic types to JVM types.
 
-| Erlang type         | Java type
+| Erlang type         | JVM type
 |---------------------|------------------------------------------------------
 |atom                 | [OtpErlangAtom](erlang/java/com/ericsson/otp/erlang/OtpErlangAtom.html)
 |binary               | [OtpErlangBinary](erlang/java/com/ericsson/otp/erlang/OtpErlangBinary.html)
@@ -57,7 +57,7 @@ Lists in Erlang are also used to describe sequences of printable characters (str
 
 ## Nodes
 
-A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g "gurka@sallad.com". Several such nodes can run on the same host as long as their names are unique. The class [OtpNode](http://oubiwann.github.io/clojang/current/erlang/java/com/ericsson/otp/erlang/OtpNode.html) represents an Erlang node. It is created with a name and optionally a port number on which it listens for incoming connections. Before creating an instance of [OtpNode](http://oubiwann.github.io/clojang/current/erlang/java/com/ericsson/otp/erlang/OtpNode.html), ensure that EPMD is running on the host machine. See the Erlang documentation for more information about EPMD. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
+A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. Several such nodes can run on the same host as long as their names are unique. The class [OtpNode](erlang/java/com/ericsson/otp/erlang/OtpNode.html) represents an Erlang node. It is created with a name and optionally a port number on which it listens for incoming connections. Before creating an instance of [OtpNode](erlang/java/com/ericsson/otp/erlang/OtpNode.html), ensure that EPMD is running on the host machine. See the Erlang documentation for more information about EPMD. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
 
 ```clojure
 => (require '[clojang.jinterface.otp :as otp])
@@ -68,5 +68,38 @@ nil
 
 
 ## Mailboxes
+
+Erlang processes running on an Erlang node are identified by process identifiers (pids) and, optionally, by registered names unique within the node. Each Erlang process has an implicit mailbox that is used to receive messages; the mailbox is identified with the pid of the process.
+
+Jinterface provides a similar mechanism with the class [OtpMbox](http://oubiwann.github.io/clojang/current/erlang/java/com/ericsson/otp/erlang/OtpMbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](http://oubiwann.github.io/clojang/current/erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
+
+Applications are free to create mailboxes as necessary. This is done as follows:
+
+```clojure
+user=> (def mbox (otp/create-mbox node))
+#'user/mbox
+```
+
+The mailbox created in the above example has no registered name, although it does have a pid. The pid can be obtained from the mailbox and included in messages sent from the mailbox, so that remote processes are able to respond.
+
+An application can register a name for a mailbox, either when the mailbox is initially created:
+
+```clojure
+user=> (def mbox (otp/create-mbox node "server"))
+#'user/mbox
+```
+
+or later on, if need be. You may either use the ``register-name`` function for the Node (takes three arguments) or the ``register-name`` function for the Mbox (takes two arguments):
+
+```clojure
+=> (otp/register-name node "server2" mbox)
+true
+=> (otp/register-name mbox "server3")
+```
+
+Registered names are usually necessary in order to start communication, since it is impossible to know in advance the pid of a remote process. If a well-known name for one of the processes is chosen in advance and known by all communicating parties within an application, each mailbox can send an initial message to the named mailbox, which then can identify the sender pid.
+
+
+##  Connections
 
 TBD
