@@ -2,7 +2,7 @@
 
 ## The JInterface Package in Clojang
 
-**NOTICE**: This document is a copy of the JInterface Users Guide, a [copy](erlang/jinterface_users_guide.html) of which is provided in the published documentation for the Clojang project.
+**NOTICE**: This document is a copy of the JInterface Users Guide, [a version of which](erlang/jinterface_users_guide.html) is provided in the published documentation for the Clojang project.
 
 The [Jinterface](erlang/java/com/ericsson/otp/erlang/package-summary.html) package provides a set of tools for communication with Erlang processes. It can also be used for communication with other Java processes using the same package, as well as C processes using the Erl_Interface library.
 
