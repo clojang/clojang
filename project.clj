@@ -14,5 +14,6 @@
                    :system :system
                    :integration :integration}
   :codox {:output-path "docs/master/current"
-          :doc-paths ["docs/source"]})
+          :doc-paths ["docs/source"]
+          :metadata {:doc/format :markdown}})
 
