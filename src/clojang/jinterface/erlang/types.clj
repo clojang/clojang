@@ -1,5 +1,5 @@
 (ns clojang.jinterface.erlang.types
-  (:require [clojure.string :as string])
+  (:require [clojang.util :as util])
   (:import [com.ericsson.otp.erlang
             OtpErlangAtom
             OtpErlangBinary
@@ -26,35 +26,36 @@
             OtpErlangTuple
             OtpErlangUInt
             OtpErlangUShort])
-  (:refer-clojure :exclude [atom list float hash long map ref short]))
+  (:refer-clojure :exclude [atom boolean char list float hash long map ref short]))
 
-(defn- convert-type-name [name-symbol]
-  (case name-symbol
-    "external-fun" "ExternalFun"
-    "list-sublist" "List$SubList"
-    "object-hash" "Object$Hash"
-    "uint" "UInt"
-    "ushort" "UShort"
-    (string/capitalize name-symbol)))
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Macros and helper functions
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defn- make-type-name [name-symbol]
-  (->> name-symbol
-       (str)
-       (convert-type-name)
-       (str "OtpErlang")
-       (symbol)))
+(defn- make-erl-name [name-symbol]
+  (util/make-jinterface-name name-symbol "OtpErlang"))
 
-(defmacro deferltype [erl-type args]
+(defmacro deferltype [erl-type docstring args]
   "Create an Erlang data type."
-  `(defn ~erl-type [~@args]
-     (new ~(make-type-name erl-type) ~@args)))
+  `(defn ~erl-type ~docstring [~@args]
+     (new ~(make-erl-name erl-type) ~@args)))
 
-(deferltype atom [arg])
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Data types constructors
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(deferltype atom "Constroctor for an Erlang atom data type." [arg])
+(deferltype boolean "Constroctor for an Erlang boolean (atom) data type." [bool])
+(deferltype char "Constroctor for an Erlang boolean (atom) data type." [ch])
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Data types protocols
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defprotocol ErlangObject
   (bind [this binds] "Make new Erlang term replacing variables with the respective
                       values from bindings argument(s).")
-  (clone [this] "Clone the Erlang object")
+  (clone [this] "Clone the Erlang object.")
   (decode [this buff] "Read binary data in the Erlang external format, and produce
                        a corresponding Erlang data type object.")
   (encode [this buff] "Convert the object according to the rules of the Erlang
@@ -64,8 +65,7 @@
   (match [this term binds] "Perform match operation against given term.")
   (->str [this] "Convert to a string."))
 
-(extend-type OtpErlangObject
-  ErlangObject
+(extend-type OtpErlangObject ErlangObject
   (bind [this binds]
     (.bind this binds))
   (clone [this]
@@ -82,3 +82,20 @@
     (.match this term binds))
   (->str [this]
     (.toString this)))
+
+(defprotocol ErlangAtom
+  (get-atom-value [this] "Get the actual string contained in this object.")
+  (get-value [this] "The boolean value of this atom.")
+  ;; XXX not working right now
+  ;;(get-max-length [this] "The maximun allowed length of an atom, in characters.")
+  )
+
+(extend-type OtpErlangAtom ErlangAtom
+  (get-atom-value [this]
+    (.atomValue this))
+  (get-value [this]
+    (.booleanValue this))
+  ;; The maxAtomLength static field isn't getting found ... not sure what's up widdat
+  ;;(get-max-length [this]
+  ;;  (.-maxAtomLength this))
+  )
