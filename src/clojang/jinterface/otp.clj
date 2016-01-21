@@ -20,11 +20,11 @@
   `(defn ~otp-symbol ~docstring [~@args]
      (new ~(make-otp-name otp-symbol) ~@args)))
 
-(defmacro defotp-protected [otp-symbol docstring]
+(defmacro defotp-protected [otp-symbol docstring args]
   "Return an ``Exception`` that warns that a constructor is not provided for
   this object."
-  `(defn ~otp-symbol ~docstring []
-     (Exception (str "The ~(make-otp-name otp-symbol) class is not"
+  `(defn ~otp-symbol ~docstring [~@args]
+     (Exception. (str "The ~(make-otp-name otp-symbol) class is not "
                       "instantiable by the developer."))))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -33,7 +33,8 @@
 
 (defotp-protected local-node
   "This class represents local node types. It is used to group the node types
-  ``OtpNode`` and ``OtpSelf``.")
+  ``OtpNode`` and ``OtpSelf``."
+  [arg])
 
 (defotp node
   "Represents a local OTP node. This class is used when you do not wish to
@@ -118,3 +119,48 @@
   ;   (.setEpmd this socket))
   )
 
+(defprotocol NodeObject
+  (close [this]
+    "Close the node.")
+  (close-mbox [this mbox] [this mbox reason]
+    "Close the specified mailbox. If not reason is provided, the default
+    reason of 'normal' is used.")
+  (create-mbox [this] [this name]
+    "Create a mailbox that can be used to send and receive messages with other,
+    similar mailboxes and with Erlang processes. If a name name is not
+    provided, the Mbox is simply unnamed.")
+  (get-names [this] "Get a list of all known registered names on this node.")
+  (ping [this node-name timeout] "Determine if another node is alive.")
+  (register-name [this mbox-name mbox]
+    "Register or remove a name for the given mailbox.")
+  (register-status-handler [this handler]
+    "Register interest in certain system events.")
+  (set-flags [this flags])
+  (whereis [this mbox-name]
+    "Determine the pid corresponding to a registered name on this node."))
+
+(extend-type OtpNode NodeObject
+  (close [this]
+    (.close this))
+  (close-mbox
+    ([this mbox]
+      (.closeMbox this mbox))
+    ([this mbox reason]
+      (.closeMbox this mbox reason)))
+  (create-mbox
+    ([this]
+      (.createMbox this))
+    ([this name]
+      (.createMbox this name)))
+  (get-names [this]
+    (.getNames this))
+  (ping [this node-name timeout]
+    (.ping this node-name timeout))
+  (register-mbox [this mbox-name mbox]
+    (.registerName this mbox-name mbox))
+  (register-status-handler [this handler]
+    (.registerStatusHandler this handler))
+  (set-flags [this flags]
+    (.setFlags this flags))
+  (whereis [this mbox-name]
+    (.whereis this mbox-name)))
