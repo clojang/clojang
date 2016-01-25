@@ -1,13 +1,33 @@
 (ns clojang.core
   (:require [clojure.string :as clj-string]
             [dire.core :refer [with-handler!]]
+            [potemkin :refer [import-vars]]
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.boolean :as boolean]
             [clojang.jinterface.erlang.string :as string]
             [clojang.jinterface.erlang.types :as types]
+            [clojang.jinterface.otp.nodes]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean]))
+
+(import-vars
+  [clojang.jinterface.otp.nodes
+
+   node
+   peer
+   ; get-*
+   ; create-*
+   ; register-*
+   ; set-*
+   ping
+   whereis]
+
+  ;;[clojang.jinterface.otp.messaging
+  ;;
+  ;; register-name]
+
+   )
 
 (defprotocol EDNConverter
   "Convert EDN."
