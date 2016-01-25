@@ -29,6 +29,7 @@ prod-docs: clean-docs $(DOCS_GIT_HACK) local-docs
 
 pre-docs:
 	@echo "\nBuilding docs ...\n"
+	@lein clean
 
 java-docs:
 	@javadoc -public \
