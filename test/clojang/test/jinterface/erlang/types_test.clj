@@ -1,5 +1,6 @@
 (ns clojang.test.jinterface.erlang.types-test
   (:require [clojure.test :refer :all]
+            [clojang.jinterface.erlang :as erlang]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.erlang.atom :as atom-type]
             [clojang.jinterface.erlang.boolean :as boolean-type]
@@ -11,11 +12,11 @@
 
 (deftest ^:unit make-erl-name-test
   (is (= 'com.ericsson.otp.erlang.OtpErlangAtom
-         (types/make-erl-name 'atom))))
+         (erlang/make-erl-name 'atom))))
 
 (deftest ^:unit init-test
   (is (= com.ericsson.otp.erlang.OtpErlangAtom
-         (type (types/init 'atom "a")))))
+         (type (erlang/init 'atom "a")))))
 
 (deftest ^:unit atom-constructor-test
   (is (= com.ericsson.otp.erlang.OtpErlangAtom
