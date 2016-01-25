@@ -43,4 +43,4 @@
     ))
 
 (deftest ^:unit peer-constructor-test
-  (is (= OtpNode (type (nodes/node "a")))))
+  (is (= OtpPeer (type (nodes/peer "a")))))

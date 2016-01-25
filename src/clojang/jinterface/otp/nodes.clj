@@ -60,7 +60,7 @@
   and other node-specific information that is needed by the OtpConnection
   class"
   [node-name & args]
-  (apply #'init (into ['node node-name] args)))
+  (apply #'init (into ['peer node-name] args)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP protocols
