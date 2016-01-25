@@ -1,5 +1,6 @@
 (ns clojang.jinterface.otp.nodes
-  (:require [clojang.util :as util])
+  (:require [clojang.jinterface.otp :as otp]
+            [clojang.util :as util])
   (:import [com.ericsson.otp.erlang
             AbstractNode
             OtpLocalNode
@@ -7,24 +8,6 @@
             OtpMbox
             OtpPeer
             OtpSelf]))
-
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Helper functions
-;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-(defn make-otp-name [name-symbol]
-  "Given a symbol representing an OTP object name, this function generates
-  a JInterface classname as a symbol, resolvable to an imported class."
-  (util/make-jinterface-name "Otp" name-symbol))
-
-(defn init [& args]
-  "Common function for node instantiation.
-
-  Having a single function which is ultimately responsible for creating
-  objects allows us to handle instantiation errors easily, adding one handler
-  for ``#'init`` instead of a bunch of handlers, one for each type of node."
-  (apply #'util/dynamic-init
-         (cons #'make-otp-name args)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP constructors
@@ -53,14 +36,14 @@
   automatically as Erlang does, you must start it manually or through some
   other means. See the Erlang documentation for more information about this."
   [node-name & args]
-  (apply #'init (into ['node node-name] args)))
+  (apply #'otp/init (into ['node node-name] args)))
 
 (defn peer
   "Represents a remote OTP node. It acts only as a container for the nodename
   and other node-specific information that is needed by the OtpConnection
   class"
   [node-name & args]
-  (apply #'init (into ['peer node-name] args)))
+  (apply #'otp/init (into ['peer node-name] args)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP protocols
@@ -171,7 +154,7 @@
 ;;; Error handling
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(util/add-err-handler #'init
+(util/add-err-handler #'otp/init
   [java.lang.IllegalArgumentException,
    java.lang.InstantiationException]
   "[ERROR] could not instantiate object!")
