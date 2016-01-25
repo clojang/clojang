@@ -72,7 +72,7 @@ nil
 
 Erlang processes running on an Erlang node are identified by process identifiers (pids) and, optionally, by registered names unique within the node. Each Erlang process has an implicit mailbox that is used to receive messages; the mailbox is identified with the pid of the process.
 
-Jinterface provides a similar mechanism with the class [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
+JInterface provides a similar mechanism with the class [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
 
 Applications are free to create mailboxes as necessary. This is done as follows:
 
@@ -90,14 +90,14 @@ user=> (def mbox (nodes/create-mbox node "server"))
 #'user/mbox
 ```
 
-or later on, if need be. You may either use the ``register-name`` function for the Node (takes three arguments):
+or later on, if need be. You may either use the ``register-mbox`` function for the Node):
 
 ```clojure
 => (nodes/register-mbox node "server2" mbox)
 true
 ```
 
-or the ``register-name`` function for the Mbox (takes two arguments):
+or the ``register-name`` function for the Mbox:
 
 ```clojure
 => (require '[clojang.jinterface.otp.messaging :as messaging])
@@ -135,7 +135,7 @@ nil
 
 If the call to ``(nodes/ping ...)`` succeeds, a connection to the remote node has been established. Note that it is not necessary to ping remote nodes before communicating with them, but by using ping you can determine if the remote exists before attempting to communicate with it.
 
-Connections are only permitted by nodes using the same security cookie. The cookie is a short string provided either as an argument when creating OtpNode objects, or found in the user's home directory in the file ``.erlang.cookie``. When a connection attempt is made, the string is used as part of the authentication process. If you are having trouble getting communication to work, use the trace facility (described later in this document) to show the connection establishment. A likely problem is that the cookies are different.
+Connections are only permitted by nodes using the same security cookie. The cookie is a short string provided either as an argument when creating [node](clojang/current/clojang.jinterface.otp.nodes.html#var-NodeObject) objects, or found in the user's home directory in the file ``.erlang.cookie``. When a connection attempt is made, the string is used as part of the authentication process. If you are having trouble getting communication to work, use the trace facility (described later in this document) to show the connection establishment. A likely problem is that the cookies are different.
 
 Connections are never broken explicitly. If a node fails or is closed, a connection may be broken however.
 
