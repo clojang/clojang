@@ -7,74 +7,23 @@
             [clojang.jinterface.erlang.tuple :as tuple-type]
             [clojang.jinterface.erlang.list :as list-type]
             [clojang.jinterface.erlang.string :as string-type])
-  (:import [com.ericsson.otp.erlang
-            OtpErlangAtom
-            OtpErlangBinary
-            OtpErlangBitstr
-            OtpErlangBoolean
-            OtpErlangByte
-            OtpErlangChar
-            OtpErlangDouble
-            OtpErlangExternalFun
-            OtpErlangFloat
-            OtpErlangFun
-            OtpErlangInt
-            OtpErlangList
-            OtpErlangList$SubList
-            OtpErlangLong
-            OtpErlangMap
-            OtpErlangObject
-            OtpErlangObject$Hash
-            OtpErlangPid
-            OtpErlangPort
-            OtpErlangRef
-            OtpErlangShort
-            OtpErlangString
-            OtpErlangTuple
-            OtpErlangUInt
-            OtpErlangUShort]))
-
-(defn setup-java-imports [f]
-  (import '[com.ericsson.otp.erlang
-            OtpErlangAtom
-            OtpErlangBinary
-            OtpErlangBitstr
-            OtpErlangBoolean
-            OtpErlangByte
-            OtpErlangChar
-            OtpErlangDouble
-            OtpErlangExternalFun
-            OtpErlangFloat
-            OtpErlangFun
-            OtpErlangInt
-            OtpErlangList
-            OtpErlangList$SubList
-            OtpErlangLong
-            OtpErlangMap
-            OtpErlangObject
-            OtpErlangObject$Hash
-            OtpErlangPid
-            OtpErlangPort
-            OtpErlangRef
-            OtpErlangShort
-            OtpErlangString
-            OtpErlangTuple
-            OtpErlangUInt
-            OtpErlangUShort])
-  (f))
-
-(use-fixtures :once setup-java-imports)
+  (:import [com.ericsson.otp.erlang]))
 
 (deftest ^:unit make-erl-name-test
-  (is (= 'OtpErlangAtom (types/make-erl-name 'atom))))
+  (is (= 'com.ericsson.otp.erlang.OtpErlangAtom
+         (types/make-erl-name 'atom))))
 
 (deftest ^:unit init-test
-  (is (= OtpErlangAtom (type (types/init 'atom "a")))))
+  (is (= com.ericsson.otp.erlang.OtpErlangAtom
+         (type (types/init 'atom "a")))))
 
 (deftest ^:unit atom-constructor-test
-  (is (= OtpErlangAtom (type (types/atom "a"))))
-  (is (= OtpErlangAtom (type (types/atom true))))
-  (is (= OtpErlangAtom (type (types/atom false)))))
+  (is (= com.ericsson.otp.erlang.OtpErlangAtom
+         (type (types/atom "a"))))
+  (is (= com.ericsson.otp.erlang.OtpErlangAtom
+         (type (types/atom true))))
+  (is (= com.ericsson.otp.erlang.OtpErlangAtom
+         (type (types/atom false)))))
 
 (deftest ^:unit atom-protocol-test
   (let [an-atom (types/atom "test-atom")
@@ -102,8 +51,10 @@
     (is (= false (atom-type/get-boolean-value false-2)))))
 
 (deftest ^:unit boolean-constructor-test
-  (is (= OtpErlangBoolean (type (types/boolean true))))
-  (is (= OtpErlangBoolean (type (types/boolean false)))))
+  (is (= com.ericsson.otp.erlang.OtpErlangBoolean
+         (type (types/boolean true))))
+  (is (= com.ericsson.otp.erlang.OtpErlangBoolean
+         (type (types/boolean false)))))
 
 (deftest ^:unit boolean-protocol-test
   (let [true-bool (types/boolean true)
@@ -114,7 +65,8 @@
     (is (= false (boolean-type/get-value false-bool)))))
 
 (deftest ^:unit char-constructor-test
-  (is (= OtpErlangChar (type (types/char \A)))))
+  (is (= com.ericsson.otp.erlang.OtpErlangChar
+         (type (types/char \A)))))
 
 (deftest ^:unit char-protocol-test
   (let [a-char (types/char \A)

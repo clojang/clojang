@@ -133,7 +133,7 @@
     provided, the Mbox is simply unnamed.")
   (get-names [this] "Get a list of all known registered names on this node.")
   (ping [this node-name timeout] "Determine if another node is alive.")
-  (register-name [this mbox-name mbox]
+  (register-mbox [this mbox-name mbox]
     "Register or remove a name for the given mailbox.")
   (register-status-handler [this handler]
     "Register interest in certain system events.")

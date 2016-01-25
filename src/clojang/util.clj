@@ -2,32 +2,7 @@
   (:require [clojure.string :as string]
             [dire.core :refer [with-handler!]])
   (:import [clojure.lang Reflector]
-           [com.ericsson.otp.erlang
-            OtpErlangAtom
-            OtpErlangBinary
-            OtpErlangBitstr
-            OtpErlangBoolean
-            OtpErlangByte
-            OtpErlangChar
-            OtpErlangDouble
-            OtpErlangExternalFun
-            OtpErlangFloat
-            OtpErlangFun
-            OtpErlangInt
-            OtpErlangList
-            OtpErlangList$SubList
-            OtpErlangLong
-            OtpErlangMap
-            OtpErlangObject
-            OtpErlangObject$Hash
-            OtpErlangPid
-            OtpErlangPort
-            OtpErlangRef
-            OtpErlangShort
-            OtpErlangString
-            OtpErlangTuple
-            OtpErlangUInt
-            OtpErlangUShort]))
+           [com.ericsson.otp.erlang]))
 
 ;; XXX support the following keys:
 ;; [-d|-debug] [DbgExtra...] [-port No] [-daemon] [-relaxed_command_check]
@@ -58,7 +33,7 @@
   (->> name-symbol
        (str)
        (convert-class-name)
-       (str prefix)
+       (str "com.ericsson.otp.erlang." prefix)
        (symbol)))
 
 (defn dynamic-init
