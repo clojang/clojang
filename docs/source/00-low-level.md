@@ -93,7 +93,7 @@ user=> (def mbox (nodes/create-mbox node "server"))
 or later on, if need be. You may either use the ``register-name`` function for the Node (takes three arguments):
 
 ```clojure
-=> (nodes/register-name node "server2" mbox)
+=> (nodes/register-mbox node "server2" mbox)
 true
 ```
 
@@ -119,7 +119,7 @@ It is possible to check for the existence of a remote node before attempting to 
 (defn print-liveliness [node other]
   (if (nodes/ping node other 1000)
     (println "It's aliiiive!")
-    (println "This node wouldn't go 'voom' if ...")))
+    (println "Mate, this node wouldn't go 'voom' if ...")))
 ```
 
 Now let's use it:
@@ -129,7 +129,7 @@ user=> (print-liveliness node "gurka")
 It's aliiiive!
 nil
 user=> (print-liveliness node "nohost")
-This node wouldn't go 'voom' if ...
+Mate, this node wouldn't go 'voom' if ...
 nil
 ```
 
