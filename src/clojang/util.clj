@@ -1,5 +1,33 @@
 (ns clojang.util
-  (:require [clojure.string :as string]))
+  (:require [clojure.string :as string]
+            [dire.core :refer [with-handler!]])
+  (:import [clojure.lang Reflector]
+           [com.ericsson.otp.erlang
+            OtpErlangAtom
+            OtpErlangBinary
+            OtpErlangBitstr
+            OtpErlangBoolean
+            OtpErlangByte
+            OtpErlangChar
+            OtpErlangDouble
+            OtpErlangExternalFun
+            OtpErlangFloat
+            OtpErlangFun
+            OtpErlangInt
+            OtpErlangList
+            OtpErlangList$SubList
+            OtpErlangLong
+            OtpErlangMap
+            OtpErlangObject
+            OtpErlangObject$Hash
+            OtpErlangPid
+            OtpErlangPort
+            OtpErlangRef
+            OtpErlangShort
+            OtpErlangString
+            OtpErlangTuple
+            OtpErlangUInt
+            OtpErlangUShort]))
 
 ;; XXX support the following keys:
 ;; [-d|-debug] [DbgExtra...] [-port No] [-daemon] [-relaxed_command_check]
@@ -12,7 +40,7 @@
 (defn convert-class-name
   "A helper function for use when creating Erlang class wrappers."
   [name-symbol]
-  (case name-symbol
+  (case (str name-symbol)
     ;; Types
     "external-fun" "ExternalFun"
     "list-sublist" "List$SubList"
@@ -26,13 +54,41 @@
 
 (defn make-jinterface-name
   "A helper function for use when defining constructor macros."
-  [name-symbol prefix]
+  [prefix name-symbol]
   (->> name-symbol
        (str)
        (convert-class-name)
        (str prefix)
        (symbol)))
 
-(defn get-hostname []
+(defn dynamic-init
+  "Dynamically instantiates classes based upon a transformation function and
+  a symbol used by the transformation function to create a class name that is
+  ultimately resolvable."
+  [name-gen-fn name-part & args]
+    (Reflector/invokeConstructor
+      (resolve (name-gen-fn name-part))
+      (into-array Object args)))
+
+(defn get-hostname
+  "Get the hostname for the machine that this JVM is running on.
+
+  Uses the ``java.net.InetAddress`` methods ``getLocalHost`` and
+  ``getHostName``."
+  []
   (-> (java.net.InetAddress/getLocalHost)
       (.getHostName)))
+
+(defn add-err-handler
+  "A wrapper for generating a specific dire error handler."
+  ([handled-fn excep]
+    (add-err-handler
+      handled-fn
+      excep
+      "[ERROR] There was a problem!"))
+  ([handled-fn excep msg]
+    (with-handler! handled-fn
+      excep
+      (fn [e & args]
+        (println msg)
+        (println (str {:args args :errors e}))))))

@@ -1,101 +1,85 @@
 (ns clojang.jinterface.erlang.types
   (:require [clojang.util :as util])
-  (:import [com.ericsson.otp.erlang
-            OtpErlangAtom
-            OtpErlangBinary
-            OtpErlangBitstr
-            OtpErlangBoolean
-            OtpErlangByte
-            OtpErlangChar
-            OtpErlangDouble
-            OtpErlangExternalFun
-            OtpErlangFloat
-            OtpErlangFun
-            OtpErlangInt
-            OtpErlangList
-            OtpErlangList$SubList
-            OtpErlangLong
-            OtpErlangMap
-            OtpErlangObject
-            OtpErlangObject$Hash
-            OtpErlangPid
-            OtpErlangPort
-            OtpErlangRef
-            OtpErlangShort
-            OtpErlangString
-            OtpErlangTuple
-            OtpErlangUInt
-            OtpErlangUShort])
-  (:refer-clojure :exclude [atom boolean char list float hash long map ref short]))
+  (:refer-clojure :exclude [atom boolean char list float long map ref short]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Macros and helper functions
+;;; Helper functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defn- make-erl-name [name-symbol]
-  (util/make-jinterface-name name-symbol "OtpErlang"))
+(defn make-erl-name [name-symbol]
+  "Given a symbol representing an Erlang type name, this function generates
+  a JInterface classname as a symbol, resolvable to an imported class."
+  (util/make-jinterface-name "OtpErlang" name-symbol))
 
-(defmacro deferltype [erl-type docstring args]
-  "Create an Erlang data type."
-  `(defn ~erl-type ~docstring [~@args]
-     (new ~(make-erl-name erl-type) ~@args)))
+(defn init [& args]
+  "Common function for type instantiation.
+
+  Having a single function which is ultimately responsible for creating
+  objects allows us to handle instantiation errors easily, adding one handler
+  for ``#'init`` instead of a bunch of handlers, one for each data type."
+  (apply #'util/dynamic-init
+         (cons #'make-erl-name args)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Data types constructors
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(deferltype atom "Constroctor for an Erlang atom data type." [arg])
-(deferltype boolean "Constroctor for an Erlang boolean (atom) data type." [bool])
-(deferltype char "Constroctor for an Erlang boolean (atom) data type." [ch])
+(defn atom
+  "Constructor for an Erlang atom data type."
+  [arg]
+  (init 'atom arg))
+
+(defn boolean
+  "Constructor for an Erlang boolean (atom) data type."
+  [bool]
+  (init 'boolean bool))
+
+(defn char
+  "Constructor for an Erlang char."
+  [ch]
+  (init 'char ch))
+
+(defn tuple
+  "Provides a Java representation of Erlang tuples. Tuples are created from
+  one or more arbitrary Erlang terms.
+
+  The arity of the tuple is the number of elements it contains. Elements are
+  indexed from 0 to (arity-1) and can be retrieved individually by using the
+  appropriate index."
+  [args]
+  (init 'tuple args))
+
+(defn list
+  "Provides a Java representation of Erlang lists. Lists are created from
+  zero or more arbitrary Erlang terms.
+
+  The arity of the list is the number of elements it contains."
+  ([]
+    (init 'list))
+  ([args]
+    (init 'list args)))
+
+(defn string
+  "Provides a Java representation of Erlang strings."
+  [str]
+  (init 'string str))
+
+(defn map
+  "Provides a Java representation of Erlang maps. Maps are created from one
+  or more arbitrary Erlang terms.
+
+  The arity of the map is the number of elements it contains. The keys and
+  values can be retrieved as arrays and the value for a key can be
+  queried."
+  [ks vs]
+  (init 'map ks vs))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Data types protocols
+;;; Error handling
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defprotocol ErlangObject
-  (bind [this binds] "Make new Erlang term replacing variables with the respective
-                      values from bindings argument(s).")
-  (clone [this] "Clone the Erlang object.")
-  (decode [this buff] "Read binary data in the Erlang external format, and produce
-                       a corresponding Erlang data type object.")
-  (encode [this buff] "Convert the object according to the rules of the Erlang
-                       external format.")
-  (equal? [this other-erl-obj] "Determine if two Erlang objects are equal.")
-  (hash [this] "Get the object hash code.")
-  (match [this term binds] "Perform match operation against given term.")
-  (->str [this] "Convert to a string."))
+(util/add-err-handler #'init
+  [java.lang.IllegalArgumentException,
+   java.lang.InstantiationException]
+  "[ERROR] could not instantiate object!")
 
-(extend-type OtpErlangObject ErlangObject
-  (bind [this binds]
-    (.bind this binds))
-  (clone [this]
-    (.clone this))
-  (decode [this buff]
-    (.decode this buff))
-  (encode [this buff]
-    (.encode this buff))
-  (equal? [this other-erl-obj]
-    (.equals this other-erl-obj))
-  (hash [this]
-    (.hashCode this))
-  (match [this term binds]
-    (.match this term binds))
-  (->str [this]
-    (.toString this)))
-
-(defprotocol ErlangAtom
-  (get-atom-value [this] "Get the actual string contained in this object.")
-  (get-value [this] "The boolean value of this atom.")
-  ;; XXX not working right now
-  ;;(get-max-length [this] "The maximun allowed length of an atom, in characters.")
-  )
-
-(extend-type OtpErlangAtom ErlangAtom
-  (get-atom-value [this]
-    (.atomValue this))
-  (get-value [this]
-    (.booleanValue this))
-  ;; The maxAtomLength static field isn't getting found ... not sure what's up widdat
-  ;;(get-max-length [this]
-  ;;  (.-maxAtomLength this))
-  )

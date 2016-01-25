@@ -1,4 +1,4 @@
-(ns clojang.jinterface.otp.nodes-test
+(ns clojang.test.jinterface.otp.nodes-test
   (:require [clojure.test :refer :all]
             [clojang.jinterface.otp.nodes :as nodes]
             [clojang.util :as util])
@@ -10,12 +10,28 @@
             OtpPeer
             OtpSelf]))
 
+(defn setup-java-imports [f]
+  (import '[com.ericsson.otp.erlang
+            AbstractNode
+            OtpLocalNode
+            OtpNode
+            OtpMbox
+            OtpPeer
+            OtpSelf])
+  (f))
+
+(use-fixtures :once setup-java-imports)
+
+(deftest ^:unit node-constructor-test
+  (is (= OtpNode (type (nodes/node "a"))))
+  (is (= OtpNode (type (nodes/node "a" "cookie"))))
+  (is (= OtpNode (type (nodes/node "a" "cookie" 1234)))))
+
 (deftest ^:unit node-test
   (let [my-name "mynode"
         hostname (util/get-hostname)
         my-fullhost (str my-name "@" hostname)
         my-node (nodes/node my-name)]
-    (is (= OtpNode (type my-node)))
     (is (= my-fullhost (nodes/->str my-node)))
     (is (= my-fullhost (nodes/get-name my-node)))
     (is (= hostname (nodes/get-hostname my-node)))
@@ -26,3 +42,5 @@
     ; (is (= "" (nodes/get-epmd my-node)))
     ))
 
+(deftest ^:unit peer-constructor-test
+  (is (= OtpNode (type (nodes/node "a")))))

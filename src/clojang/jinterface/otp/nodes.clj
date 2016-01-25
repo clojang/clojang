@@ -9,34 +9,28 @@
             OtpSelf]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-;;; Macros and helper functions
+;;; Helper functions
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defn- make-otp-name [name-symbol]
-  (util/make-jinterface-name name-symbol "Otp"))
+(defn make-otp-name [name-symbol]
+  "Given a symbol representing an OTP object name, this function generates
+  a JInterface classname as a symbol, resolvable to an imported class."
+  (util/make-jinterface-name "Otp" name-symbol))
 
-(defmacro defotp [otp-symbol docstring args]
-  "Create an Erlang OTP object constructor."
-  `(defn ~otp-symbol ~docstring [~@args]
-     (new ~(make-otp-name otp-symbol) ~@args)))
+(defn init [& args]
+  "Common function for node instantiation.
 
-(defmacro defotp-protected [otp-symbol docstring args]
-  "Return an ``Exception`` that warns that a constructor is not provided for
-  this object."
-  `(defn ~otp-symbol ~docstring [~@args]
-     (Exception. (str "The ~(make-otp-name otp-symbol) class is not "
-                      "instantiable by the developer."))))
+  Having a single function which is ultimately responsible for creating
+  objects allows us to handle instantiation errors easily, adding one handler
+  for ``#'init`` instead of a bunch of handlers, one for each type of node."
+  (apply #'util/dynamic-init
+         (cons #'make-otp-name args)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP constructors
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-(defotp-protected local-node
-  "This class represents local node types. It is used to group the node types
-  ``OtpNode`` and ``OtpSelf``."
-  [arg])
-
-(defotp node
+(defn node
   "Represents a local OTP node. This class is used when you do not wish to
   manage connections yourself - outgoing connections are established as
   needed, and incoming connections accepted automatically. This class
@@ -58,13 +52,15 @@
   Daemon) is running on each cooperating host. This class does not start EPMD
   automatically as Erlang does, you must start it manually or through some
   other means. See the Erlang documentation for more information about this."
-  [arg])
+  [node-name & args]
+  (apply #'init (into ['node node-name] args)))
 
-(defotp peer
+(defn peer
   "Represents a remote OTP node. It acts only as a container for the nodename
   and other node-specific information that is needed by the OtpConnection
   class"
-  [arg])
+  [node-name & args]
+  (apply #'init (into ['node node-name] args)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP protocols
@@ -170,3 +166,12 @@
     (.setFlags this flags))
   (whereis [this mbox-name]
     (.whereis this mbox-name)))
+
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+;;; Error handling
+;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(util/add-err-handler #'init
+  [java.lang.IllegalArgumentException,
+   java.lang.InstantiationException]
+  "[ERROR] could not instantiate object!")
