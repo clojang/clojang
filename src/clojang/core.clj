@@ -81,5 +81,5 @@
 
 ;;; Aliases
 
-(def ->erlang #'edn->term)
-(def ->clojure #'term->edn)
+(def ->erlang "An alias for ``edn->term``" #'edn->term)
+(def ->clojure "An alias for ``term->edn``" #'term->edn)
