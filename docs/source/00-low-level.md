@@ -28,6 +28,7 @@ In the following sections, these topics are described:
 *    compiling your code for use with Jinterface
 *    tracing message flow
 
+http://oubiwann.github.io/clojang/current/clojang.jinterface.erlang.types.html#var-atom
 
 ## Mapping of Basic Erlang Types to the JVM
 
@@ -35,10 +36,10 @@ This section describes the mapping of Erlang basic types to JVM types.
 
 | Erlang type         | JVM type
 |---------------------|------------------------------------------------------
-|atom                 | [OtpErlangAtom](erlang/java/com/ericsson/otp/erlang/OtpErlangAtom.html)
+|atom                 | [atom](clojang.jinterface.erlang.types.html#var-atom)
 |binary               | [OtpErlangBinary](erlang/java/com/ericsson/otp/erlang/OtpErlangBinary.html)
 |floating point types | [OtpErlangFloat](erlang/java/com/ericsson/otp/erlang/OtpErlangFloat.html) or [OtpErlangDouble](erlang/java/com/ericsson/otp/erlang/OtpErlangDouble.html), depending on the floating point value size
-|integral types       | One of [OtpErlangByte](erlang/java/com/ericsson/otp/erlang/OtpErlangByte.html), [OtpErlangChar](erlang/java/com/ericsson/otp/erlang/OtpErlangChar.html),[OtpErlangShort](erlang/java/com/ericsson/otp/erlang/OtpErlangShort.html), [OtpErlangUShort](erlang/java/com/ericsson/otp/erlang/OtpErlangUShort.html),[OtpErlangInt](erlang/java/com/ericsson/otp/erlang/OtpErlangInt.html),[OtpErlangUInt](erlang/java/com/ericsson/otp/erlang/OtpErlangUInt.html) or [OtpErlangLong](erlang/java/com/ericsson/otp/erlang/OtpErlangLong.html), depending on the integral value size and sign
+|integral types       | One of [OtpErlangByte](erlang/java/com/ericsson/otp/erlang/OtpErlangByte.html), [char](clojang.jinterface.erlang.types.html#var-charhtml),[OtpErlangShort](erlang/java/com/ericsson/otp/erlang/OtpErlangShort.html), [OtpErlangUShort](erlang/java/com/ericsson/otp/erlang/OtpErlangUShort.html),[OtpErlangInt](erlang/java/com/ericsson/otp/erlang/OtpErlangInt.html),[OtpErlangUInt](erlang/java/com/ericsson/otp/erlang/OtpErlangUInt.html) or [OtpErlangLong](erlang/java/com/ericsson/otp/erlang/OtpErlangLong.html), depending on the integral value size and sign
 |list                 | [OtpErlangList](erlang/java/com/ericsson/otp/erlang/OtpErlangList.html)
 |pid                  | [OtpErlangPid](erlang/java/com/ericsson/otp/erlang/OtpErlangPid.html)
 |port                 | [OtpErlangPort](erlang/java/com/ericsson/otp/erlang/OtpErlangPort.html)
@@ -50,7 +51,7 @@ This section describes the mapping of Erlang basic types to JVM types.
 
 ## Special Mapping Issues
 
-The atoms ``true`` and ``false`` are special atoms, used as boolean values. The class [OtpErlangBoolean](erlang/java/com/ericsson/otp/erlang/OtpErlangBoolean.html) can be used to represent these.
+The atoms ``true`` and ``false`` are special atoms, used as boolean values. The class [boolean](clojang.jinterface.erlang.types.html#var-boolean) can be used to represent these.
 
 Lists in Erlang are also used to describe sequences of printable characters (strings). A convenience class [OtpErlangString](erlang/java/com/ericsson/otp/erlang/OtpErlangString.html) is provided to represent Erlang strings.
 
