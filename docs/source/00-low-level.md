@@ -36,29 +36,29 @@ This section describes the mapping of Erlang basic types to JVM types.
 
 | Erlang type         | JVM type
 |---------------------|------------------------------------------------------
-|atom                 | [atom](clojang.jinterface.erlang.types.html#var-atom)
+|atom                 | [atom](clojang/current/clojang.jinterface.erlang.atom.html)
 |binary               | [OtpErlangBinary](erlang/java/com/ericsson/otp/erlang/OtpErlangBinary.html)
 |floating point types | [OtpErlangFloat](erlang/java/com/ericsson/otp/erlang/OtpErlangFloat.html) or [OtpErlangDouble](erlang/java/com/ericsson/otp/erlang/OtpErlangDouble.html), depending on the floating point value size
 |integral types       | One of [OtpErlangByte](erlang/java/com/ericsson/otp/erlang/OtpErlangByte.html), [char](clojang.jinterface.erlang.types.html#var-charhtml),[OtpErlangShort](erlang/java/com/ericsson/otp/erlang/OtpErlangShort.html), [OtpErlangUShort](erlang/java/com/ericsson/otp/erlang/OtpErlangUShort.html),[OtpErlangInt](erlang/java/com/ericsson/otp/erlang/OtpErlangInt.html),[OtpErlangUInt](erlang/java/com/ericsson/otp/erlang/OtpErlangUInt.html) or [OtpErlangLong](erlang/java/com/ericsson/otp/erlang/OtpErlangLong.html), depending on the integral value size and sign
-|list                 | [OtpErlangList](erlang/java/com/ericsson/otp/erlang/OtpErlangList.html)
+|list                 | [list](clojang/current/clojang.jinterface.erlang.list.html)
 |pid                  | [OtpErlangPid](erlang/java/com/ericsson/otp/erlang/OtpErlangPid.html)
 |port                 | [OtpErlangPort](erlang/java/com/ericsson/otp/erlang/OtpErlangPort.html)
 |ref                  | [OtpErlangRef](erlang/java/com/ericsson/otp/erlang/OtpErlangRef.html)
-|tuple                | [OtpErlangTuple](erlang/java/com/ericsson/otp/erlang/OtpErlangTuple.html)
+|tuple                | [tuple](clojang.jinterface.erlang.types.html#var-tuple.html)
 |map                  | [OtpErlangMap](erlang/java/com/ericsson/otp/erlang/OtpErlangMap.html)
-|term                 | [OtpErlangObject](erlang/java/com/ericsson/otp/erlang/OtpErlangObject.html)
+|term                 | [OtpErlangObject](clojang/current/clojang.jinterface.erlang.object.html)
 
 
 ## Special Mapping Issues
 
-The atoms ``true`` and ``false`` are special atoms, used as boolean values. The class [boolean](clojang.jinterface.erlang.types.html#var-boolean) can be used to represent these.
+The atoms ``true`` and ``false`` are special atoms, used as boolean values. The class [boolean](clojang/current/clojang.jinterface.erlang.boolean.html) can be used to represent these.
 
-Lists in Erlang are also used to describe sequences of printable characters (strings). A convenience class [OtpErlangString](erlang/java/com/ericsson/otp/erlang/OtpErlangString.html) is provided to represent Erlang strings.
+Lists in Erlang are also used to describe sequences of printable characters (strings). A convenience class [string](clojang/current/clojang.jinterface.erlang.string.html) is provided to represent Erlang strings.
 
 
 ## Nodes
 
-A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. Several such nodes can run on the same host as long as their names are unique. The class [OtpNode](erlang/java/com/ericsson/otp/erlang/OtpNode.html) represents an Erlang node. It is created with a name and optionally a port number on which it listens for incoming connections. Before creating an instance of [OtpNode](erlang/java/com/ericsson/otp/erlang/OtpNode.html), ensure that EPMD is running on the host machine. See the Erlang documentation for more information about EPMD. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
+A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. Several such nodes can run on the same host as long as their names are unique. The class [node](clojang/current/clojang.jinterface.otp.nodes.html#var-NodeObject) represents an Erlang node. It is created with a name and optionally a port number on which it listens for incoming connections. Before creating an instance of [node](clojang/current/clojang.jinterface.otp.nodes.html#var-NodeObject), ensure that EPMD is running on the host machine. See the Erlang documentation for more information about EPMD. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
 
 ```clojure
 => (require '[clojang.jinterface.otp.nodes :as nodes])
@@ -147,7 +147,7 @@ All necessary connections are made using methods of [OtpTransportFactory](erlang
 
 ## Sending and Receiving Messages
 
-Messages sent with this package must be instances of [OtpErlangObject](erlang/java/com/ericsson/otp/erlang/OtpErlangObject.html) or one of its subclasses. Message can be sent to processes or pids, either by specifying the pid of the remote, or its registered name and node.
+Messages sent with this package must be instances of [object](clojang/current/clojang.jinterface.erlang.object.html) or one of its subclasses. Message can be sent to processes or pids, either by specifying the pid of the remote, or its registered name and node.
 
 In this example, we create a message containing our own pid so the echo process can reply:
 
