@@ -1,8 +1,5 @@
 (ns clojang.jinterface.erlang
-  (:require [clojure.core.match]
-            [clojang.util :as util]
-            [dire.core :refer [with-handler!]])
-  (:import [com.ericsson.otp.erlang]))
+  (:require [clojang.util :as util]))
 
 (defn make-erl-name [name-symbol]
   "Given a symbol representing an Erlang type name, this function generates
