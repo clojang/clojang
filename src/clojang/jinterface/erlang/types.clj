@@ -1,11 +1,19 @@
 (ns clojang.jinterface.erlang.types
   (:require [clojang.jinterface.erlang :as erlang]
             [clojang.util :as util])
+  (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean char list float long map ref short]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Data types constructors
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+(defn object
+  "This is a psuedo-constructor: ``OtpErlangObject`` doesn't provide a
+  constructor method, but the object itself is needed for creating tuples,
+  so this function simply returns ``OtpErlangObject``."
+  []
+  com.ericsson.otp.erlang.OtpErlangObject)
 
 (defn atom
   "Constructor for an Erlang atom data type."
