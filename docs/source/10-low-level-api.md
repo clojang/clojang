@@ -81,6 +81,15 @@ user=> (def mbox (nodes/create-mbox node))
 #'user/mbox
 ```
 
+or like this:
+
+```clojure
+=> (require '[clojang.jinterface.otp.messaging :as messaging])
+nill
+user=> (def mbox (messaging/mbox node))
+#'user/mbox
+```
+
 The mailbox created in the above example has no registered name, although it does have a pid. The pid can be obtained from the mailbox and included in messages sent from the mailbox, so that remote processes are able to respond.
 
 An application can register a name for a mailbox, either when the mailbox is initially created:
@@ -100,8 +109,6 @@ true
 or the ``register-name`` function for the Mbox:
 
 ```clojure
-=> (require '[clojang.jinterface.otp.messaging :as messaging])
-nill
 => (messaging/register-name mbox "server3")
 true
 ```
@@ -152,5 +159,64 @@ Messages sent with this package must be instances of [object](clojang/current/cl
 In this example, we create a message containing our own pid so the echo process can reply:
 
 ```clojure
-TBD
+=> (require '[clojang.jinterface.erlang.types :as types])
+nil
+=> (def msg (into-array (types/object) [(messaging/self mbox)
+                                        (types/atom "hello, world")]))
+#'user/msg
+=> (messaging/register-name mbox "echo")
+true
+=> (messaging/! mbox "echo" "gurka" (types/tuple msg))
+nil
+=> (messaging/receive mbox)
+#object[com.ericsson.otp.erlang.OtpErlangTuple
+        0xeed771a
+        "{#Pid<gurka@mndltl01.1.0>,'hello, world'}"]
 ```
+
+You can also send messages from Erlang VMs to your ``node``'s mailbox named ``"echo"``. Before you do that, though, start listening in your Clojure REPL:
+
+```clojure
+=> (messaging/receive mbox)
+```
+
+Next, start up LFE (Lisp Flavoured Erlang) on the same machine with a short name:
+
+```bash
+$ /path/to/bin/lfe -sname lfe
+LFE Shell V7.2 (abort with ^G)
+(lfe@mndltl01)>
+```
+
+Once you're in the REPL, you're ready to send a message:
+
+```cl
+(lfe@mndltl01)> (! #(echo gurka@mndltl01) #(hej!))
+#(hej!)
+```
+
+Looking at the Clojure REPL, you'll see that your ``receive `` call has finished and you now have some data:
+
+```clojure
+#object[com.ericsson.otp.erlang.OtpErlangTuple 0x4a377f4e "{'hej!'}"]
+```
+
+
+##  Sending Arbitrary Data
+
+TBD
+
+
+## Linking to Remote Processes
+
+TBD
+
+
+##  Using EPMD
+
+TBD
+
+
+## Remote Procedure Calls
+
+TBD
