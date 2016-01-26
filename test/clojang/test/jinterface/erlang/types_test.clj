@@ -111,8 +111,6 @@
     (is (= -1517993482 (list-type/hash list-2)))
     (is (= 1 (list-type/get-arity list-1)))
     (is (= 2 (list-type/get-arity list-2)))
-    (is (= 1 (list-type/get-size list-1)))
-    (is (= 2 (list-type/get-size list-2)))
     (is (= 1 (list-type/length list-1)))
     (is (= 2 (list-type/length list-2)))
     (is (= "a" (atom-type/->str (list-type/get-element list-1 0))))

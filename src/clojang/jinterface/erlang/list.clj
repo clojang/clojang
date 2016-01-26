@@ -4,16 +4,6 @@
   (:import [com.ericsson.otp.erlang OtpErlangList])
   (:refer-clojure :exclude [hash]))
 
-(def list-behaviour
-  (merge tuple-behaviour
-         {:length (fn [this] (.arity this))
-          :get-head (fn [this] (.getHead this))
-          :get-last-tail (fn [this] (.getLastTail this))
-          :get-nth-tail (fn [this index] (.getNthTail this index))
-          :get-tail (fn [this] (.getTail this))
-          :proper? (fn [this index] (.isProper this))
-          :get-string-value (fn [this] (.stringValue this))}))
-
 (defprotocol ErlangList
   (bind [this binds]
     "Make new Erlang term replacing variables with the respective values
@@ -36,9 +26,9 @@
     "Convert to a string.")
   (get-arity [this]
     "Get the arity of the tuple.")
-  (get-size [this]
-    "Alias for ``get-arity``")
   (length [this]
+    "Alias for ``get-arity`` borrowed from the Erlang world.")
+  (get-length [this]
     "Alias for ``get-arity``")
   (get-element [this index]
     "Get the specified element from the tuple.")
@@ -57,5 +47,18 @@
   (get-string-value [this]
     "Convert a list of integers into a Unicode string, interpreting each
     integer as a Unicode code point value."))
+
+(def list-behaviour
+  (merge tuple-behaviour
+         {:length (fn [this] (.arity this))
+          :get-length (fn [this] (.arity this))
+          :get-head (fn [this] (.getHead this))
+          :get-last-tail (fn [this] (.getLastTail this))
+          :get-nth-tail (fn [this index] (.getNthTail this index))
+          :get-tail (fn [this] (.getTail this))
+          :proper? (fn [this index] (.isProper this))
+          :get-string-value (fn [this] (.stringValue this))}))
+
+(dissoc list-behaviour :get-size)
 
 (extend OtpErlangList ErlangList list-behaviour)

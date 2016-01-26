@@ -3,11 +3,6 @@
   (:import [com.ericsson.otp.erlang OtpErlangBoolean])
   (:refer-clojure :exclude [hash]))
 
-(def boolean-behaviour
-  (merge atom-behaviour
-         {:get-atom-value (fn [this] (.atomValue this))
-          :get-value (fn [this] (.booleanValue this))}))
-
 (defprotocol ErlangBoolean
   (bind [this binds]
     "Make new Erlang term replacing variables with the respective values
@@ -32,5 +27,10 @@
     "Get the actual string contained in this object.")
   (get-value [this]
     "The boolean value of this atom."))
+
+(def boolean-behaviour
+  (merge atom-behaviour
+         {:get-atom-value (fn [this] (.atomValue this))
+          :get-value (fn [this] (.booleanValue this))}))
 
 (extend OtpErlangBoolean ErlangBoolean boolean-behaviour)

@@ -2,16 +2,6 @@
   (:import [com.ericsson.otp.erlang OtpErlangObject])
   (:refer-clojure :exclude [hash]))
 
-(def object-behaviour
-  {:bind (fn [this binds] (.bind this binds))
-   :clone (fn [this] (.clone this))
-   :decode (fn [this buff] (.decode this buff))
-   :encode (fn [this buff] (.encode this buff))
-   :equal? (fn [this other-erl-obj] (.equals this other-erl-obj))
-   :hash (fn [this] (.hashCode this))
-   :match (fn [this term binds] (.match this term binds))
-   :->str (fn [this] (.toString this))})
-
 (defprotocol ErlangObject
   (bind [this binds]
     "Make new Erlang term replacing variables with the respective values
@@ -32,5 +22,15 @@
     "Perform match operation against given term.")
   (->str [this]
     "Convert to a string."))
+
+(def object-behaviour
+  {:bind (fn [this binds] (.bind this binds))
+   :clone (fn [this] (.clone this))
+   :decode (fn [this buff] (.decode this buff))
+   :encode (fn [this buff] (.encode this buff))
+   :equal? (fn [this other-erl-obj] (.equals this other-erl-obj))
+   :hash (fn [this] (.hashCode this))
+   :match (fn [this term binds] (.match this term binds))
+   :->str (fn [this] (.toString this))})
 
 (extend OtpErlangObject ErlangObject object-behaviour)

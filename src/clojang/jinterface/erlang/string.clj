@@ -25,8 +25,6 @@
     "Convert to a string.")
   (get-arity [this]
     "Get the arity of the tuple.")
-  (get-size [this]
-    "Alias for ``get-arity``")
   (length [this]
     "Alias for ``get-arity``")
   (get-element [this index]
