@@ -41,6 +41,6 @@
          {:get-arity (fn [this] (.arity this))
           :get-size (fn [this] (.arity this))
           :get-element (fn [this index] (.elementAt this index))
-          :get-elements (fn [this] (into-array (.elements this)))}))
+          :get-elements (fn [this] (.elements this))}))
 
 (extend OtpErlangTuple ErlangTuple tuple-behaviour)

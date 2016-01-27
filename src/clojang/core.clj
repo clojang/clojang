@@ -5,11 +5,14 @@
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.boolean :as boolean]
             [clojang.jinterface.erlang.string :as string]
+            [clojang.jinterface.erlang.tuple :as tuple]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.otp.nodes]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean]))
+
+(declare edn->term)
 
 (import-vars
   [clojang.jinterface.otp.nodes
@@ -29,9 +32,20 @@
 
    )
 
+(defn vector->ji-tuple
+  "Convert a Clojure vector into an Erlang JInterface tuple."
+  [v]
+  (types/tuple (into-array (types/object) (map #(edn->term %) v))))
+
+(defn list->ji-list
+  "Convert a Clojure list into an Erlang JInterface list."
+  [v]
+  (types/list (into-array (types/object) (map #(edn->term %) v))))
+
 (defprotocol EDNConverter
   "Convert EDN."
-  (edn->term [this] "Convert Clojure EDN to JInterface Erlang types."))
+  (edn->term [this]
+    "Convert Clojure EDN to JInterface Erlang types."))
 
 (extend-protocol EDNConverter
   ;; nil
@@ -42,12 +56,22 @@
   clojure.lang.Keyword
   (edn->term [edn]
     (types/atom (name edn)))
+  ;; symbol
+  clojure.lang.Symbol
+  (edn->term [edn]
+    (types/atom (str edn)))
   ;; boolean
   java.lang.Boolean
   (edn->term [edn]
     (types/boolean edn))
   ;; tuple /vector
+  clojure.lang.PersistentVector
+  (edn->term [edn]
+    (vector->ji-tuple edn))
   ;; list
+  clojure.lang.PersistentList
+  (edn->term [edn]
+    (list->ji-list edn))
   ;; string
   java.lang.String
   (edn->term [edn]
@@ -55,7 +79,8 @@
 
 (defprotocol TermConverter
   "Convert JInterface Erlang terms."
-  (term->edn [this] "Convert JInterface Erlang types to EDN."))
+  (term->edn [this]
+    "Convert JInterface Erlang types to EDN."))
 
 (extend-protocol TermConverter
   ;; atom / keyword & undefined
@@ -70,7 +95,13 @@
   (term->edn [erl-obj]
     (boolean/get-value erl-obj))
   ;; tuple /vector
+  com.ericsson.otp.erlang.OtpErlangTuple
+  (term->edn [erl-obj]
+    (into [] (map #'term->edn (tuple/get-elements erl-obj))))
   ;; list
+  com.ericsson.otp.erlang.OtpErlangList
+  (term->edn [erl-obj]
+    (map #'term->edn erl-obj))
   ;; string
   com.ericsson.otp.erlang.OtpErlangString
   (term->edn [erl-obj]

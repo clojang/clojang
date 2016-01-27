@@ -94,6 +94,8 @@
     "Register or remove a name for this mailbox.")
   (self [this]
     "Get the identifying ``pid`` associated with the given mailbox.")
+  (get-pid [this]
+    "Alias for ``self``.")
   (send [this recip-pid msg] [this mbox-name node-name msg]
     "Send a message to a remote ``pid``, representing either another mailbox
     or an Erlang process or to a remote node by mailbox name and node name.")
@@ -123,9 +125,10 @@
   (link [this recip-pid]
     (.link this recip-pid))
   (ping [this node-name timeout]
-    (.toString this))
+    (.ping this timeout))
+  ;; XXX put the ping with the default timeout in the mid-level API
   (ping [this node-name]
-    (.toString this 3000))
+    (.ping this 1000))
   (receive
     ([this]
       (.receive this))
@@ -145,6 +148,8 @@
     (.registerName this mbox-name))
   (self [this]
     (.self this))
+  (get-pid [this]
+    (.get-pid this))
   (send
     ([this recip-pid-or-name msg]
       (.send this recip-pid-or-name msg))
