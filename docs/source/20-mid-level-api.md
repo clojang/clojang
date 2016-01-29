@@ -10,10 +10,11 @@ Where usage is identical to the low-level API guide, related content is not dupl
 A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
 
 ```clojure
-=> (require '[clojang.core :as clojang])
+=> (require '[clojang.core :as clojang]
+            '[clojang.node :as node])
 nil
-=> (def node (clojang/node "gurka"))
-#'user/node
+=> (def gurka (node/new :gurka))
+#'user/gurka
 ```
 
 
@@ -21,36 +22,13 @@ nil
 
 Erlang processes running on an Erlang node are identified by process identifiers (pids) and, optionally, by registered names unique within the node. Each Erlang process has an implicit mailbox that is used to receive messages; the mailbox is identified with the pid of the process.
 
-JInterface provides a similar mechanism with the class [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
+Clojang provides a similar mechanism with the namespace [clojang.mbox](clojang/current/clojang.mbox.html), a mailbox that can be used to send and receive messages asynchronously. Each OtpMbox is identified with a unique pid and , optionally, a registered name unique within the [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
 
-Applications are free to create mailboxes as necessary. This is done as follows:
+Applications are free to create mailboxes as necessary. This is done as follows, optionally giving it a registered name:
 
 ```clojure
-user=> (def mbox (clojang/create-mbox node))
+user=> (def inbox (mbox/new gurka :echo))
 #'user/mbox
-```
-
-The mailbox created in the above example has no registered name, although it does have a pid. The pid can be obtained from the mailbox and included in messages sent from the mailbox, so that remote processes are able to respond.
-
-An application can register a name for a mailbox, either when the mailbox is initially created:
-
-```clojure
-user=> (def mbox (clojang/create-mbox node "server"))
-#'user/mbox
-```
-
-or later on, if need be. You may either use the ``register-mbox`` function for the Node (takes three arguments):
-
-```clojure
-=> (clojang/register-mbox node "server2" mbox)
-true
-```
-
-or the ``register-name`` function for the Mbox:
-
-```clojure
-=> (clojang/register-name mbox "server3")
-true
 ```
 
 Registered names are usually necessary in order to start communication, since it is impossible to know in advance the pid of a remote process. If a well-known name for one of the processes is chosen in advance and known by all communicating parties within an application, each mailbox can send an initial message to the named mailbox, which then can identify the sender pid.
@@ -63,8 +41,8 @@ It is not necessary to explicitly set up communication with a remote node. Simpl
 It is possible to check for the existence of a remote node before attempting to communicate with it. Here we send a ping message to the remote node to see if it is alive and accepting connections. Paste the following function in your REPL:
 
 ```clojure
-(defn print-liveliness [node other]
-  (if (clojang/ping node other 1000)
+(defn print-liveliness [this-node other-node]
+  (if (node/ping this-node other-node 1000)
     (println "It's aliiiive!")
     (println "Mate, this node wouldn't go 'voom' if ...")))
 ```
@@ -72,10 +50,10 @@ It is possible to check for the existence of a remote node before attempting to 
 Now let's use it:
 
 ```clojure
-user=> (print-liveliness node "gurka")
+user=> (print-liveliness gurka "gurka")
 It's aliiiive!
 nil
-user=> (print-liveliness node "nohost")
+user=> (print-liveliness gurka "nohost")
 Mate, this node wouldn't go 'voom' if ...
 nil
 ```
@@ -91,5 +69,63 @@ Messages sent with this package must be instances of [object](clojang/current/cl
 In this example, we create a message containing our own pid so the echo process can reply:
 
 ```clojure
-TBD
+=> (def msg [(mbox/get-pid inbox) :hello-world])
+#'user/msg
+=> (mbox/! inbox :echo :gurka msg)
+nil
+=> (mbox/receive inbox)
+[#object[com.ericsson.otp.erlang.OtpErlangPid
+         0x1fe20514
+         "#Pid<gurka@mndltl01.1.0>"]
+ :hello-world]
 ```
+
+You can also send messages from Erlang VMs to your ``node``'s mailbox named ``"echo"``. Before you do that, though, start listening in your Clojure REPL:
+
+```clojure
+=> (mbox/receive inbox)
+```
+
+Next, start up LFE (Lisp Flavoured Erlang) on the same machine with a short name:
+
+```bash
+$ /path/to/bin/lfe -sname lfe
+LFE Shell V7.2 (abort with ^G)
+(lfe@mndltl01)>
+```
+
+Once you're in the REPL, you're ready to send a message:
+
+```cl
+(lfe@mndltl01)> (! #(echo gurka@mndltl01) #(hej!))
+#(hej!)
+```
+
+Looking at the Clojure REPL, you'll see that your ``receive `` call has finished and you now have some data:
+
+```clojure
+[#object[com.ericsson.otp.erlang.OtpErlangPid
+         0x4c01e765
+         "#Pid<lfe@mndltl01.86.0>"]
+ :hej!]
+```
+
+
+##  Sending Arbitrary Data
+
+TBD
+
+
+## Linking to Remote Processes
+
+TBD
+
+
+##  Using EPMD
+
+TBD
+
+
+## Remote Procedure Calls
+
+TBD

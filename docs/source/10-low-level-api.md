@@ -63,7 +63,7 @@ A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a v
 ```clojure
 => (require '[clojang.jinterface.otp.nodes :as nodes])
 nil
-=> (def node (nodes/node "gurka"))
+=> (def gurka (nodes/node "gurka"))
 #'user/node
 ```
 
@@ -77,7 +77,7 @@ JInterface provides a similar mechanism with the class [OtpMbox](erlang/java/com
 Applications are free to create mailboxes as necessary. This is done as follows:
 
 ```clojure
-user=> (def mbox (nodes/create-mbox node))
+user=> (def mbox (nodes/create-mbox gurka))
 #'user/mbox
 ```
 
@@ -86,7 +86,7 @@ or like this:
 ```clojure
 => (require '[clojang.jinterface.otp.messaging :as messaging])
 nill
-user=> (def mbox (messaging/mbox node))
+user=> (def mbox (messaging/mbox gurka))
 #'user/mbox
 ```
 
@@ -95,14 +95,14 @@ The mailbox created in the above example has no registered name, although it doe
 An application can register a name for a mailbox, either when the mailbox is initially created:
 
 ```clojure
-user=> (def mbox (nodes/create-mbox node "server"))
+user=> (def mbox (nodes/create-mbox gurka "server"))
 #'user/mbox
 ```
 
 or later on, if need be. You may either use the ``register-mbox`` function for the Node):
 
 ```clojure
-=> (nodes/register-mbox node "server2" mbox)
+=> (nodes/register-mbox gurka "server2" mbox)
 true
 ```
 
@@ -132,10 +132,10 @@ It is possible to check for the existence of a remote node before attempting to 
 Now let's use it:
 
 ```clojure
-user=> (print-liveliness node "gurka")
+user=> (print-liveliness gurka "gurka")
 It's aliiiive!
 nil
-user=> (print-liveliness node "nohost")
+user=> (print-liveliness gurka "nohost")
 Mate, this node wouldn't go 'voom' if ...
 nil
 ```

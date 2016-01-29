@@ -1,7 +1,6 @@
 (ns clojang.core
   (:require [clojure.string :as clj-string]
             [dire.core :refer [with-handler!]]
-            [potemkin :refer [import-vars]]
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.boolean :as boolean]
             [clojang.jinterface.erlang.string :as string]
@@ -13,24 +12,6 @@
   (:refer-clojure :exclude [atom boolean]))
 
 (declare edn->term)
-
-(import-vars
-  [clojang.jinterface.otp.nodes
-
-   node
-   peer
-   ; get-*
-   ; create-*
-   ; register-*
-   ; set-*
-   ping
-   whereis]
-
-  ;;[clojang.jinterface.otp.messaging
-  ;;
-  ;; register-name]
-
-   )
 
 (defn vector->ji-tuple
   "Convert a Clojure vector into an Erlang JInterface tuple."
@@ -72,10 +53,19 @@
   clojure.lang.PersistentList
   (edn->term [edn]
     (list->ji-list edn))
+  ;; char
+  java.lang.Character
+  (edn->term [edn]
+    (types/char edn))
+  ;; XXX map
   ;; string
   java.lang.String
   (edn->term [edn]
-    (types/string edn)))
+    (types/string edn))
+  ;; XXX JInterface objects
+  com.ericsson.otp.erlang.OtpErlangObject
+  (edn->term [obj]
+    obj))
 
 (defprotocol TermConverter
   "Convert JInterface Erlang terms."
@@ -89,7 +79,7 @@
     (let [trans (atom/->str erl-obj)]
       (if (= trans "undefined")
         nil
-        (keyword trans))))
+        (keyword (clj-string/replace trans "'" "")))))
   ;; boolean
   com.ericsson.otp.erlang.OtpErlangBoolean
   (term->edn [erl-obj]
@@ -102,6 +92,15 @@
   com.ericsson.otp.erlang.OtpErlangList
   (term->edn [erl-obj]
     (map #'term->edn erl-obj))
+  ;; XXX char
+  com.ericsson.otp.erlang.OtpErlangChar
+  (term->edn [erl-obj]
+    ())
+  ;; XXX map
+  com.ericsson.otp.erlang.OtpErlangPid
+  (term->edn [erl-obj]
+    erl-obj)
+  ;; XXX Clojure/Java objects ...
   ;; string
   com.ericsson.otp.erlang.OtpErlangString
   (term->edn [erl-obj]

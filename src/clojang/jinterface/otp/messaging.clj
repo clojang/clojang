@@ -10,7 +10,8 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defn mbox
-  "A wrapper for the mbox-creation method on nodes."
+  "A wrapper for the mbox-creation method on nodes. See
+  ``clojang.jinterface.otp.nodes/node``."
   [node-instance]
   (.createMbox node-instance))
 
@@ -63,7 +64,7 @@
   (close [this]
     "Close the given mailbox.")
   (equal? [this other-obj]
-    "Determine if two Erlang objects are equal.")
+    "Determine if two mailboxes are equal.")
   (exit [this reason] [this recip-pid reason]
     "Close the given mailbox with a given reason or send an exit signal to
     a remote pid.")
@@ -103,7 +104,7 @@
     "An alias for ``send``")
   (unlink [this recip-pid]
     "Remove a link to a remote mailbox or Erlang process.")
-  (whereis [this node-name]
+  (whereis [this mbox-name]
     "Determine the pid corresponding to a registered name on this node."))
 
 (extend-type OtpMbox MboxObject
@@ -149,7 +150,7 @@
   (self [this]
     (.self this))
   (get-pid [this]
-    (.get-pid this))
+    (.self this))
   (send
     ([this recip-pid-or-name msg]
       (.send this recip-pid-or-name msg))
