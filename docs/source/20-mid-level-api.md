@@ -11,6 +11,7 @@ A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a v
 
 ```clojure
 => (require '[clojang.core :as clojang]
+            '[clojang.mbox :as mbox]
             '[clojang.node :as node])
 nil
 => (def gurka (node/new :gurka))

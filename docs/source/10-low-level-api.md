@@ -166,7 +166,7 @@ nil
 #'user/msg
 => (messaging/register-name mbox "echo")
 true
-=> (messaging/! mbox "echo" "gurka" (types/tuple msg))
+=> (messaging/send mbox "echo" "gurka" (types/tuple msg))
 nil
 => (messaging/receive mbox)
 #object[com.ericsson.otp.erlang.OtpErlangTuple
