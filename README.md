@@ -40,7 +40,9 @@ TBD
 
 ## Building [&#x219F;](#table-of-contents)
 
-``rebar3`` is used for the top-level builds of the project, running ``lein`` under the covers in order to build the Clojure code and ``.jar`` file.
+``rebar3`` is used for the top-level builds of the project, running ``lein`` under the covers in order to build the Clojure code and ``.jar`` file. To build everything -- LFE, Erlang, and Clojure -- you need only do the following:
+
+* ``rebar3 compile``
 
 If you wish to build your own JInterface ``.jar`` file and not use the one we've uploaded to Clojars, you'll need to follow the instrucations given in the documentation here:
 
@@ -63,7 +65,7 @@ Erlang:
 $ rebar3 shell
 ```
 
-``
+```
 Clojure:
 $ lein repl
 ```
