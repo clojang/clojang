@@ -206,8 +206,9 @@ $ rebar3 eunit
 
 This will not only run Erlang and LFE unit tests, it also runs the Clojure unit tests for Clojang.
 
+**Clojure Test Selectors**
 
-#### Clojure Test Selectors [&#x219F;](#table-of-contents)
+If you would like to be more selective in the types of Clojang tests which get run, you may be interested in reading this section.
 
 The Clojang tests use metadata annotations to indicate whether they are unit, system, or integration tests. to run just the unit tests, you can do any one of the following, depending upon what you're used to:
 
@@ -234,6 +235,8 @@ To run everything:
 ```bash
 $ lein test :all
 ```
+
+This is what is used by the ``rebar3`` configuration to run the Clojang tests.
 
 
 ## Erlang, Clojure, and JInterface [&#x219F;](#table-of-contents)
