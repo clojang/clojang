@@ -137,11 +137,8 @@ Shell got {<5926.1.0>,'hello, world'}
 ### Mid-level API [&#x219F;](#table-of-contents)
 
 ```clojure
-(require '[clojang.core :as clojang]
-         '[clojang.mbox :as mbox]
-         '[clojang.node :as node]
-         '[clojang.types :as types]
-         '[clojang.util :as util])
+(require '[clojang.mbox :as mbox]
+         '[clojang.node :as node])
 
 (def gurka (node/new :gurka))
 (def inbox (mbox/new gurka :echo))
