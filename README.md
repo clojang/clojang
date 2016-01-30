@@ -65,8 +65,9 @@ Erlang:
 $ rebar3 shell
 ```
 
-```
 Clojure:
+
+```bash
 $ lein repl
 ```
 
@@ -179,6 +180,13 @@ Shell got {<5926.1.0>,'hello-world'}
 
 
 ### Running Tests [&#x219F;](#table-of-contents)
+
+All the tests may be run with just one command:
+
+``$ rebar3 eunit``. Although it *will* run any eunit tests defined, it also runs th C
+ lojure unit tests.
+
+#### Clojure Test Selectors [&#x219F;](#table-of-contents)
 
 The Clojang tests use metadata annotations to indicate whether they are unit, system, or integration tests. to run just the unit tests, you can do any one of the following, depending upon what you're used to:
 
