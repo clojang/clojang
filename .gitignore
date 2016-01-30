@@ -12,3 +12,6 @@ repo
 .nrepl-*
 docs/master/current
 docs/build
+rebar.lock
+erl_crash.dump
+_build/*
