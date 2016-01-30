@@ -13,6 +13,7 @@
 #### Table of Contents
 
 * [Introduction](#introduction-)
+* [Dependencies](#dependencies-)
 * [Documentation](#documentation-)
 * [Usage](#usage-)
   * [Low-level API](#low-level-api-)
@@ -27,6 +28,13 @@
 TBD
 
 
+## Dependencies [&#x219F;](#table-of-contents)
+
+* Java
+* Erlang
+* lein
+* rebar3
+
 ## Documentation [&#x219F;](#table-of-contents)
 
 Project documentation, including Clojang API reference docs, Javadocs for JInterface, and the Erlang JInterface User's Guide, is availble here:
@@ -35,7 +43,9 @@ Project documentation, including Clojang API reference docs, Javadocs for JInter
 
 Quick links for the other docs:
 
-* [Clojang User's Guide](http://oubiwann.github.io/clojang/current/00-low-level.html) - A translation of the JInterface User's Guide (Erlang) from Java into Clojure
+* Clojang User Guides:
+  * [Low-level API](http://oubiwann.github.io/clojang/current/10-low-level.html) - A translation of the *JInterface User's Guide* (Erlang documantaion) from Java into Clojure
+  * [Mid-level API](http://oubiwann.github.io/clojang/current/20-mid-level.html) - An adaptation of the *Low-level API User's Guide* for even more idiomatic Clojure use
 * [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html)
 * [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java)
 
