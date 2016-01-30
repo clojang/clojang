@@ -14,6 +14,8 @@
 
 * [Introduction](#introduction-)
 * [Dependencies](#dependencies-)
+* [Building](#building-)
+* [Shells & REPLs](#shells---repls-)
 * [Documentation](#documentation-)
 * [Usage](#usage-)
   * [Low-level API](#low-level-api-)
@@ -34,6 +36,37 @@ TBD
 * Erlang
 * lein
 * rebar3
+
+
+## Building [&#x219F;](#table-of-contents)
+
+``rebar3`` is used for the top-level builds of the project, running ``lein`` under the covers in order to build the Clojure code and ``.jar`` file.
+
+If you wish to build your own JInterface ``.jar`` file and not use the one we've uploaded to Clojars, you'll need to follow the instrucations given in the documentation here:
+
+* [Building JInterface for Clojure](http://oubiwann.github.io/clojang/current/05-building-jinterface.html)
+
+
+## Shells & REPLs [&#x219F;](#table-of-contents)
+
+There are three interactive programming environments you may start, each of which will have full access to the project's libraries/dependencies.
+
+LFE:
+
+```bash
+$ make repl
+```
+
+Erlang:
+
+```bash
+$ rebar3 shell
+```
+
+``
+Clojure:
+$ lein repl
+```
 
 ## Documentation [&#x219F;](#table-of-contents)
 
