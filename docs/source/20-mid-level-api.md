@@ -51,10 +51,10 @@ It is possible to check for the existence of a remote node before attempting to 
 Now let's use it:
 
 ```clojure
-user=> (print-liveliness gurka "gurka")
+user=> (print-liveliness gurka :gurka)
 It's aliiiive!
 nil
-user=> (print-liveliness gurka "nohost")
+user=> (print-liveliness gurka :nohost)
 Mate, this node wouldn't go 'voom' if ...
 nil
 ```
