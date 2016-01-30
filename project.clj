@@ -12,7 +12,8 @@
                  [potemkin "0.4.3"]]
   :plugins [[lein-codox "0.9.1"]
             [lein-simpleton "1.3.0"]]
-  :source-paths ["src", "test"]
+  :source-paths ["src/clojure", "test"]
+  :repl-options {:init-ns clojang.dev}
   :test-selectors {:default :unit
                    :unit :unit
                    :system :system
