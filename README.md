@@ -40,7 +40,7 @@ TBD
 
 ## Building [&#x219F;](#table-of-contents)
 
-``rebar3`` is used for the top-level builds of the project, running ``lein`` under the covers in order to build the Clojure code and ``.jar`` file. To build everything -- LFE, Erlang, and Clojure -- you need only do the following:
+``rebar3`` is used for the top-level builds of the project. It runs ``lein`` under the covers in order to build the Clojure code and create the Clojang``.jar`` file. As such, to build everything -- LFE, Erlang, and Clojure -- you need only do the following:
 
 * ``rebar3 compile``
 
@@ -82,13 +82,19 @@ Quick links for the other docs:
 * Clojang User Guides:
   * [Low-level API](http://oubiwann.github.io/clojang/current/10-low-level.html) - A translation of the *JInterface User's Guide* (Erlang documantaion) from Java into Clojure
   * [Mid-level API](http://oubiwann.github.io/clojang/current/20-mid-level.html) - An adaptation of the *Low-level API User's Guide* for even more idiomatic Clojure use
-* [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html)
-* [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java)
+* [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html) - The JInterface documentation provided in Erlang distributions
+* [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java) - Javadoc-generated API documentation built from the JInterface source code
 
 
 ## Usage [&#x219F;](#table-of-contents)
 
-The documentation section provides links to developer guides and API references, but below are also provided two quick examples, one each in the low- and mid-level APIs.
+Using Clojang in a project is just like any other Clojure library. Just add the following to the ``:dependencies`` in your ``project.clj`` file:
+
+![Clojars Project](http://clojars.org/clojang/latest-version.svg)
+
+For the Erlang/LFE side of things, you just need to add the Github URL to your ``rebar.config`` file, as with any other rebar-based Erlang VM project.
+
+As for actual code usage, the documentation section provides links to developer guides and API references, but below are also provided two quick examples, one each in the low- and mid-level APIs.
 
 ### Low-level API [&#x219F;](#table-of-contents)
 
@@ -180,8 +186,12 @@ Shell got {<5926.1.0>,'hello-world'}
 
 All the tests may be run with just one command:
 
-``$ rebar3 eunit``. Although it *will* run any eunit tests defined, it also runs th C
- lojure unit tests.
+```bash
+$ rebar3 eunit
+```
+
+This will not only run Erlang and LFE unit tests, it also runs the Clojure unit tests for Clojang.
+
 
 #### Clojure Test Selectors [&#x219F;](#table-of-contents)
 
