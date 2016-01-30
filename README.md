@@ -15,6 +15,8 @@
 * [Introduction](#introduction-)
 * [Documentation](#documentation-)
 * [Usage](#usage-)
+  * [Low-level API](#low-level-api-)
+  * [Mid-level API](#mid-level-api-)
   * [Running Tests](#running-tests-)
 * [Erlang, Clojure, and JInterface](#erlang-clojure-and-jinterface-)
 * [License](#license-)
@@ -40,7 +42,95 @@ Quick links for the other docs:
 
 ## Usage [&#x219F;](#table-of-contents)
 
-TBD
+The documentation section provides links to developer guides and API references, but below are also provided two quick examples, one each in the low- and mid-level APIs.
+
+### Low-level API [&#x219F;](#table-of-contents)
+
+```clojure
+(require '[clojang.jinterface.otp.messaging :as messaging]
+         '[clojang.jinterface.otp.nodes :as nodes]
+         '[clojang.jinterface.erlang.types :as types]
+         '[clojang.jinterface.erlang.tuple :as tuple-type])
+(def node (nodes/node "gurka"))
+(def mbox (messaging/mbox node))
+(messaging/register-name mbox "echo")
+(def msg (into-array
+           (types/object)
+           [(messaging/self mbox)
+            (types/atom "hello, world")]))
+(messaging/! mbox "echo" "gurka" (types/tuple msg))
+(messaging/receive mbox)
+#object[com.ericsson.otp.erlang.OtpErlangTuple
+        0x4c9e3fa6
+        "{#Pid<gurka@mndltl01.1.0>,'hello, world'}"]
+```
+
+From LFE:
+
+```cl
+(lfe@mndltl01)> (! #(echo gurka@mndltl01) `#(,(self) hej!))
+#(<0.35.0> hej!)
+```
+
+Then back in Clojure:
+
+```clojure
+(def data (messaging/receive mbox))
+(def lfe-pid (tuple-type/get-element data 0))
+(messaging/! mbox lfe-pid (types/tuple msg))
+```
+
+Then, back in LFE:
+
+```cl
+(lfe@mndltl01)> (c:flush)
+Shell got {<5926.1.0>,'hello, world'}
+```
+
+
+### Mid-level API [&#x219F;](#table-of-contents)
+
+```clojure
+(require '[clojang.core :as clojang]
+         '[clojang.mbox :as mbox]
+         '[clojang.node :as node]
+         '[clojang.types :as types]
+         '[clojang.util :as util])
+
+(def gurka (node/new :gurka))
+(def inbox (mbox/new gurka :echo))
+
+(def msg [(mbox/get-pid inbox) :hello-world])
+
+(mbox/! inbox :echo :gurka msg)
+(mbox/receive inbox)
+
+[#object[com.ericsson.otp.erlang.OtpErlangPid
+         0x1fe20514
+         "#Pid<gurka@mndltl01.1.0>"]
+ :hello-world]
+```
+
+From LFE:
+
+```cl
+(lfe@mndltl01)> (! #(echo gurka@mndltl01) `#(,(self) hej!))
+#(<0.35.0> hej!)
+```
+
+Then back in Clojure:
+
+```clojure
+(let [[lfe-pid _] (mbox/receive inbox)]
+  (mbox/! inbox lfe-pid msg))
+```
+
+Then, back in LFE:
+
+```cl
+(lfe@mndltl01)> (c:flush)
+Shell got {<5926.1.0>,'hello-world'}
+```
 
 
 ### Running Tests [&#x219F;](#table-of-contents)
