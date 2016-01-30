@@ -27,13 +27,19 @@
 
 ## Introduction [&#x219F;](#table-of-contents)
 
-This project provides a solution to the aesthetic problem of JInterface. While JInterface is an invaluable tool for projects that need to have JVM and Erlang VM languages communicating with each other, it is rather verbose and cumbersom to do so in Clojure. The syntatical burden is often enough to discourage experimentation and play -- essential ingrediates for innovation. The primary goal of Clojang is to make it not only easy to write for the Clojure/Erlang interface, but fun as well.
+This project provides a solution to the [aesthetic problem of JInterface](https://github.com/oubiwann/clojang/wiki/Example:-JInterface-in-Clojure). While JInterface is an invaluable tool for projects that need to have JVM and Erlang VM languages communicating with each other, it is rather verbose and cumbersom to do so in Clojure. The syntatical burden is often enough to discourage experimentation and play -- essential ingrediates for innovation. The primary goal of Clojang is to make it not only easy to write for the Clojure/Erlang interface, but fun as well.
+
+**Low-level API**
 
 The first step towards that was to write a Clojure wrapper for JInterface -- a low-level one that is essentially identical to native JInterface. This will be useful for anyone from a functional programming background who wants low-level access to JInterface via idiomatic Clojure.
+
+**Mid-level API**
 
 The second step was to use that low-level API to create a "mid-level" API, one that automatically performned the necessary type conversions of function parameters and returned results, allowing one to write the sort of Clojure one would normally do, without having to cast to Erlang types as is necessary in the low-level Clojure API.
 
 The mid-level Clojang API is intended for Clojure application developers who which to integrate with languages running on the Erlang VM without having to compromise on the Clojure side.
+
+**Erlang VM <-> JVM Utilities**
 
 Finally, for Erlang applications that wish to interact with the JVM, a bit more work is needed: the Erlang VM needs to start up a JVM process (ideally supervised). Clojang aims to provide a basic framework (or at the very least, a set of examples) for doing this. Although the Erlang dialect used by Clojang is LFE (Lisp Flavoured Erlang), this code is 100% Core Erlang compatible and may be used by Erlang proper, Elixier, LFE, Joxa, and any others which run compiled ``.beam`` files.
 
