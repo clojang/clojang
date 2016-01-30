@@ -1,5 +1,6 @@
 (ns clojang.test.jinterface.erlang.types-test
-  (:require [clojure.test :refer :all]
+  (:require [clojure.math.numeric-tower :as math]
+            [clojure.test :refer :all]
             [clojang.jinterface.erlang :as erlang]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.erlang.atom :as atom-type]
@@ -7,8 +8,11 @@
             [clojang.jinterface.erlang.char :as char-type]
             [clojang.jinterface.erlang.tuple :as tuple-type]
             [clojang.jinterface.erlang.list :as list-type]
+            [clojang.jinterface.erlang.long :as long-type]
             [clojang.jinterface.erlang.string :as string-type])
-  (:import [com.ericsson.otp.erlang]))
+  (:import [com.ericsson.otp.erlang]
+           [java.lang Long]
+           [java.math BigInteger]))
 
 (deftest ^:unit make-erl-name-test
   (is (= 'com.ericsson.otp.erlang.OtpErlangAtom
@@ -118,3 +122,27 @@
     (is (= 1 (count (list-type/get-elements list-1))))
     (is (= 2 (count (list-type/get-elements list-2))))))
 
+(deftest ^:unit long-protocol-test
+  (let [long-1 (types/long (* -1 java.lang.Long/MAX_VALUE))
+        long-2 (types/long java.lang.Long/MAX_VALUE)
+        same-long (types/long java.lang.Long/MAX_VALUE)
+        int-long (types/long (new Long java.lang.Integer/MAX_VALUE))
+        short-long (types/long (new Long java.lang.Short/MAX_VALUE))]
+    (is (= "-9223372036854775807" (long-type/->str long-1)))
+    (is (= "9223372036854775807" (long-type/->str long-2)))
+    (is (= true (long-type/equal? long-2 same-long)))
+    (is (= false (long-type/equal? long-1 same-long)))
+    (is (= -2147483616 (long-type/hash long-1)))
+    (is (= 2147483616 (long-type/hash long-2)))
+    (is (= 9223372036854775807 (long-type/get-bigint-value long-2)))
+    (is (= 63 (long-type/get-bit-length long-2)))
+    (is (= \a (long-type/get-char-value (types/long 97))))
+    (is (= 2147483647 (long-type/get-int-value int-long)))
+    (is (= true (long-type/long? long-2)))
+    (is (= false (long-type/ulong? long-1)))
+    (is (= true (long-type/ulong? long-2)))
+    (is (= 9223372036854775807 (long-type/get-long-value long-2)))
+    (is (= 32767 (long-type/get-short-value short-long)))
+    (is (= 1 (long-type/get-signum long-2)))
+    (is (= 2147483647 (long-type/get-uint-value int-long)))
+    (is (= 32767 (long-type/get-ushort-value short-long)))))

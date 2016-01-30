@@ -31,13 +31,6 @@
     (conj (util/->str-args (butlast args))
           (clojang/->erlang (last args)))))
 
-
-(defn whereis
-  "An alias for ``clojang.jinterface.otp.messaging/whereis`` that also allows for
-  mailbox and node name arguments to be symbols, keywords, or strings."
-  [& args]
-  (apply #'messaging/whereis (util/->str-args args)))
-
 (defn get-names
   "An alias for ``clojang.jinterface.otp.messaging/get-names`` that retuns a
   vector of "

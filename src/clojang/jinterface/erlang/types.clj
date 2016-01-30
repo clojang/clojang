@@ -65,6 +65,16 @@
   [ks vs]
   (erlang/init 'map ks vs))
 
+(defn long
+  "Provides a Java representation of Erlang integral types. Erlang does not
+  distinguish between different integral types, however this class and its
+  subclasses OtpErlangByte, OtpErlangChar, OtpErlangInt , and OtpErlangShort
+  attempt to map the Erlang types onto the various Java integral types. Two
+  additional classes, OtpErlangUInt and OtpErlangUShort are provided for
+  Corba compatibility. See the documentation for IC for more information."
+  [num]
+  (erlang/init 'long num))
+
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Error handling
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

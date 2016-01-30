@@ -25,6 +25,12 @@
   [node]
   (into [] (nodes/get-names node)))
 
+(defn whereis
+  "An alias for ``clojang.jinterface.otp.nodes/whereis`` that also allows for
+  the mailbox name argument to be a symbol, keyword, or string."
+  [& args]
+  (apply #'nodes/whereis (util/->str-args args)))
+
 ;;; Aliases
 
 (import-vars
