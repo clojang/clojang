@@ -6,6 +6,7 @@
             [clojang.jinterface.otp.connection :as connection]
             [clojang.jinterface.otp.messaging :as messaging]
             [clojang.jinterface.otp.nodes :as nodes]
+            [clojang.conn :as conn]
             [clojang.core :as clojang]
             [clojang.mbox :as mbox]
             [clojang.node :as node]
