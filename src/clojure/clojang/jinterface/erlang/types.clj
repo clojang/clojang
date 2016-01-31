@@ -75,6 +75,11 @@
   [num]
   (erlang/init 'long num))
 
+(defn short
+  "See the docstring for ``#'types/long``."
+  [num]
+  (erlang/init 'short num))
+
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Error handling
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

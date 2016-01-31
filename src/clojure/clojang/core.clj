@@ -71,6 +71,10 @@
   clojure.lang.BigInt
   (edn->term [edn]
     (types/long edn))
+  ;; short
+  java.lang.Short
+  (edn->term [edn]
+    (types/short edn))
   ;; string
   java.lang.String
   (edn->term [edn]
@@ -117,6 +121,10 @@
   com.ericsson.otp.erlang.OtpErlangLong
   (term->edn [erl-obj]
     (long/get-bigint-value erl-obj))
+  ;; short
+  com.ericsson.otp.erlang.OtpErlangShort
+  (term->edn [erl-obj]
+    (long/get-short-value erl-obj))
   ;; XXX Clojure/Java objects ...
   ;; string
   com.ericsson.otp.erlang.OtpErlangString

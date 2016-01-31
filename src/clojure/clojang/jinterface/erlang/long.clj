@@ -1,10 +1,12 @@
 (ns clojang.jinterface.erlang.long
   (:require [clojang.util :as util]
             [clojang.jinterface.erlang.object :refer [object-behaviour]])
-  (:import [com.ericsson.otp.erlang OtpErlangLong])
+  (:import [com.ericsson.otp.erlang
+             OtpErlangLong
+             OtpErlangShort])
   (:refer-clojure :exclude [hash]))
 
-(defprotocol ErlangLong
+(defprotocol ErlangInt
   (bind [this binds]
     "Make new Erlang term replacing variables with the respective values
     from bindings argument(s).")
@@ -54,7 +56,7 @@
   (get-ushort-value [this]
     "Get this number as a non-negative short."))
 
-(def long-behaviour
+(def int-behaviour
   (merge object-behaviour
          {:get-bigint-value (fn [this] (.bigIntegerValue this))
           :get-bit-length (fn [this] (.bitLength this))
@@ -69,4 +71,5 @@
           :get-uint-value (fn [this] (.uIntValue this))
           :get-ushort-value (fn [this] (.uShortValue this))}))
 
-(extend OtpErlangLong ErlangLong long-behaviour)
+(extend OtpErlangLong ErlangInt int-behaviour)
+(extend OtpErlangShort ErlangInt int-behaviour)

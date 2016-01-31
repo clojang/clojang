@@ -43,3 +43,8 @@
   ""
   [arg]
   (clojang/->erlang arg))
+
+(defn short
+  ""
+  [arg]
+  (clojang/->erlang arg))
