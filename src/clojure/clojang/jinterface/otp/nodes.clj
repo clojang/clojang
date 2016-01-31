@@ -50,14 +50,22 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defprotocol AbstractNodeObject
-  (get-alivename [this] "Get the alivename part of the hostname.")
-  (get-cookie [this] "Get the authorization cookie used by this node.")
-  (create-transport [this addr port-num] "Create instance of ``OtpTransport``.")
-  (create-server-transport [this port-num] "Create instance of ``OtpServerTransport``.")
-  (get-hostname [this] "Get the hostname part of the nodename.")
-  (get-name [this] "Get the name of this node.")
-  (set-cookie [this value] "Set the authorization cookie used by this node.")
-  (->str [this] "Return a string representation of the node."))
+  (get-alivename [this]
+    "Get the alivename part of the hostname.")
+  (get-cookie [this]
+    "Get the authorization cookie used by this node.")
+  (create-transport [this addr port-num]
+    "Create instance of ``OtpTransport``.")
+  (create-server-transport [this port-num]
+    "Create instance of ``OtpServerTransport``.")
+  (get-hostname [this]
+    "Get the hostname part of the nodename.")
+  (get-name [this]
+    "Get the name of this node.")
+  (set-cookie [this value]
+    "Set the authorization cookie used by this node.")
+  (->str [this]
+    "Return a string representation of the node."))
 
 (extend-type AbstractNode AbstractNodeObject
   (get-alivename [this]
@@ -78,10 +86,14 @@
     (.toString this)))
 
 (defprotocol LocalNodeObject
-  (create-pid [this] "Create an Erlang pid.")
-  (create-port [this] "Create an Erlang port.")
-  (create-ref [this] "Create an Erlang ref.")
-  (get-port [this] "Get the port number used by this node.")
+  (create-pid [this]
+    "Create an Erlang pid.")
+  (create-port [this]
+    "Create an Erlang port.")
+  (create-ref [this]
+    "Create an Erlang ref.")
+  (get-port [this]
+    "Get the port number used by this node.")
   ;; protected
   ; (get-epmd [this] "Get the EPMD socket.")
   ; (set-epmd [this socket] "Set the Epmd socket after publishing this nodes
