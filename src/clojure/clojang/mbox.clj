@@ -32,14 +32,14 @@
           (clojang/->erlang (last args)))))
 
 (defn get-names
-  "An alias for ``clojang.jinterface.otp.messaging/get-names`` that retuns a
-  vector of "
+  "An alias for ``clojang.jinterface.otp.messaging/get-names`` that returns a
+  vector of names on the same node as the given inbox"
   [inbox]
   (into [] (messaging/get-names inbox)))
 
 (defn receive
-  "An alias for ``clojang.jinterface.otp.messaging/receive`` that retuns a
-  vector of "
+  "An alias for ``clojang.jinterface.otp.messaging/receive`` that returns the
+  received data as Clojure data types."
   ([inbox]
     (clojang/->clojure (messaging/receive inbox)))
   ([inbox timeout]
