@@ -11,6 +11,20 @@
   [& args]
   (apply #'nodes/node (util/->str-args args)))
 
+(defn self
+  "An alias for ``clojang.jinterface.otp.nodes/peer`` but one that allows for
+  symbols and keywords to be used as node names, a closer match for BEAM
+  language nodes, which use atoms for their names."
+  [& args]
+  (apply #'nodes/self (util/->str-args args)))
+
+(defn peer
+  "An alias for ``clojang.jinterface.otp.nodes/peer`` but one that allows for
+  symbols and keywords to be used as node names, a closer match for BEAM
+  language nodes, which use atoms for their names."
+  [& args]
+  (apply #'nodes/peer (util/->str-args args)))
+
 (defn ping
   "An alias for ``clojang.jinterface.otp.nodes/ping`` that also allows for a
   2-arity call (with the default timeout set to 1000)."
@@ -40,4 +54,10 @@
    get-hostname
    get-name
    close
-   register-status-handler])
+   register-status-handler
+
+   accept
+   connect
+   get-pid
+   publish-port
+   unpublish-port])
