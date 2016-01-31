@@ -1,4 +1,4 @@
-(ns clojang.jinterface.erlang.long
+(ns clojang.jinterface.erlang.int
   (:require [clojang.util :as util]
             [clojang.jinterface.erlang.object :refer [object-behaviour]])
   (:import [com.ericsson.otp.erlang
