@@ -106,10 +106,7 @@ Once you're in the REPL, you're ready to send a message:
 Looking at the Clojure REPL, you'll see that your ``receive `` call has finished and you now have some data:
 
 ```clojure
-[#object[com.ericsson.otp.erlang.OtpErlangPid
-         0x4c01e765
-         "#Pid<lfe@mndltl01.86.0>"]
- :hej!]
+[:hej!]
 ```
 
 
