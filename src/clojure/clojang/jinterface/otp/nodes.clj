@@ -14,32 +14,14 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defn node
-  "Represents a local OTP node. This class is used when you do not wish to
-  manage connections yourself - outgoing connections are established as
-  needed, and incoming connections accepted automatically. This class
-  supports the use of a mailbox API for communication, while management of
-  the underlying communication mechanism is automatic and hidden from the
-  application programmer.
-
-  Once an instance of this class has been created, obtain one or more
-  mailboxes in order to send or receive messages. The first message sent to
-  a given node will cause a connection to be set up to that node. Any
-  messages received will be delivered to the appropriate mailboxes.
-
-  To shut down the node, call ``(close)``. This will prevent the node from
-  accepting additional connections and it will cause all existing
-  connections to be closed. Any unread messages in existing mailboxes can
-  still be read, however no new messages will be delivered to the mailboxes.
-
-  Note that the use of this class requires that EPMD (Erlang Port Mapper
-  Daemon) is running on each cooperating host. This class does not start EPMD
-  automatically as Erlang does, you must start it manually or through some
-  other means. See the Erlang documentation for more information about this."
+  "Constructor for ``OtpNode``."
   [node-name & args]
   (apply #'otp/init (into ['node node-name] args)))
 
 (defn peer
-  "Represents a remote OTP node. It acts only as a container for the nodename
+  "Constructor for ``OtpPeer``.
+
+  Represents a remote OTP node. It acts only as a container for the nodename
   and other node-specific information that is needed by the OtpConnection
   class"
   [node-name & args]
@@ -50,6 +32,33 @@
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 (defprotocol AbstractNodeObject
+  "Represents an OTP node.
+
+  About nodenames: Erlang nodenames consist of two components, an alivename
+  and a hostname separated by '@'. Additionally, there are two nodename
+  formats: short and long. Short names are of the form ``alive@hostname``,
+  while long names are of the form ``alive@host.fully.qualified.domainname``.
+  Erlang has special requirements regarding the use of the short and long
+  formats, in particular they cannot be mixed freely in a network of
+  communicating nodes, however Jinterface makes no distinction. See the Erlang
+  documentation for more information about nodenames.
+
+  The constructors for the AbstractNode classes will create names exactly as
+  you provide them as long as the name contains '@'. If the string you provide
+  contains no '@', it will be treated as an alivename and the name of the local
+  host will be appended, resulting in a shortname. Nodenames longer than 255
+  characters will be truncated without warning.
+
+  Upon initialization, this class attempts to read the file .erlang.cookie in
+  the user's home directory, and uses the trimmed first line of the file as the
+  default cookie by those constructors lacking a cookie argument. If for any
+  reason the file cannot be found or read, the default cookie will be set to
+  the empty string (""). The location of a user's home directory is determined
+  using the system property ``user.home``, which may not be automatically set
+  on all platforms.
+
+  Instances of this class cannot be created directly, use one of the subclasses
+  instead."
   (get-alivename [this]
     "Get the alivename part of the hostname.")
   (get-cookie [this]
@@ -86,6 +95,8 @@
     (.toString this)))
 
 (defprotocol LocalNodeObject
+  "This class represents local node types. It is used to group the node types
+  ``OtpNode`` and ``OtpSelf``."
   (create-pid [this]
     "Create an Erlang pid.")
   (create-port [this]
@@ -117,6 +128,27 @@
   )
 
 (defprotocol NodeObject
+  "Represents a local OTP node. This class is used when you do not wish to
+  manage connections yourself - outgoing connections are established as
+  needed, and incoming connections accepted automatically. This class
+  supports the use of a mailbox API for communication, while management of
+  the underlying communication mechanism is automatic and hidden from the
+  application programmer.
+
+  Once an instance of this class has been created, obtain one or more
+  mailboxes in order to send or receive messages. The first message sent to
+  a given node will cause a connection to be set up to that node. Any
+  messages received will be delivered to the appropriate mailboxes.
+
+  To shut down the node, call ``(close)``. This will prevent the node from
+  accepting additional connections and it will cause all existing
+  connections to be closed. Any unread messages in existing mailboxes can
+  still be read, however no new messages will be delivered to the mailboxes.
+
+  Note that the use of this class requires that EPMD (Erlang Port Mapper
+  Daemon) is running on each cooperating host. This class does not start EPMD
+  automatically as Erlang does, you must start it manually or through some
+  other means. See the Erlang documentation for more information about this."
   (close [this]
     "Close the node.")
   (close-mbox [this mbox] [this mbox reason]
