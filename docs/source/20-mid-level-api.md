@@ -10,7 +10,8 @@ Where usage is identical to the low-level API guide, related content is not dupl
 A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
 
 ```clojure
-=> (require '[clojang.core :as clojang]
+=> (require '[clojang.conn :as conn]
+            '[clojang.core :as clojang]
             '[clojang.mbox :as mbox]
             '[clojang.node :as node])
 nil
@@ -129,4 +130,14 @@ TBD
 
 ## Remote Procedure Calls
 
-TBD
+An Erlang node acting as a client to another Erlang node typically sends a request and waits for a reply. Such a request is included in a function call at a remote node and is called a remote procedure call. Remote procedure calls are supported through the [clojang.conn]() namespace. The following example shows how the ``connection`` protocol is used for remote procedure calls:
+
+```clojure
+(def self (node/self :client))
+(def other (node/peer "clojang-lfe@mndltl01"))
+(def connx (node/connect self other))
+
+(conn/send-rpc connx :erlang :date)
+(conn/receive-rpc connx)
+[2016 1 30]
+```

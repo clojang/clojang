@@ -185,13 +185,13 @@ Next, start up LFE (Lisp Flavoured Erlang) on the same machine with a short name
 ```bash
 $ /path/to/bin/lfe -sname lfe
 LFE Shell V7.2 (abort with ^G)
-(lfe@mndltl01)>
+(clojang-lfe@mndltl01)>
 ```
 
 Once you're in the REPL, you're ready to send a message:
 
 ```cl
-(lfe@mndltl01)> (! #(echo gurka@mndltl01) #(hej!))
+(clojang-lfe@mndltl01)> (! #(echo gurka@mndltl01) #(hej!))
 #(hej!)
 ```
 
@@ -219,4 +219,15 @@ TBD
 
 ## Remote Procedure Calls
 
-TBD
+An Erlang node acting as a client to another Erlang node typically sends a request and waits for a reply. Such a request is included in a function call at a remote node and is called a remote procedure call. Remote procedure calls are supported through the [connection](http://oubiwann.github.io/clojang/current/clojang.jinterface.otp.connection.html#var-ConnectionObject) Clojure protocol. The following example shows how the ``connection`` protocol is used for remote procedure calls:
+
+```clojure
+(require '[clojang.jinterface.otp.connection :as connection])
+(def self (nodes/self "client"))
+(def other (nodes/peer "clojang-lfe@mndltl01"))
+(def connx (nodes/connect self other))
+
+(connection/send-rpc connx "erlang" "date" (types/list))
+(connection/receive-rpc connx)
+#object[com.ericsson.otp.erlang.OtpErlangTuple 0x385465c1 "{2016,1,30}"]
+```
