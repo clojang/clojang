@@ -2,7 +2,8 @@
   (:require [clojang.jinterface.erlang :as erlang]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean byte char int list float long map ref short]))
+  (:refer-clojure :exclude [atom boolean byte char double int list float long
+                            map ref short]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Data types constructors
@@ -57,8 +58,14 @@
   The arity of the map is the number of elements it contains. The keys and
   values can be retrieved as arrays and the value for a key can be
   queried."
-  [ks vs]
-  (erlang/init 'map ks vs))
+  ([]
+    (erlang/init 'map))
+  ([buf]
+    (erlang/init 'map buf))
+  ([ks vs]
+    (erlang/init 'map ks vs))
+  ([ks kstart kcount vs vstart vcount]
+    (erlang/init 'map ks kstart kcount vs vstart vcount)))
 
 (defn long
   "Provides a Java representation of Erlang integral types. Erlang does not

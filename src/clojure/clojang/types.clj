@@ -3,7 +3,7 @@
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte char double float int list long
-                            short]))
+                            map short]))
 
 (defn undefined
   ""
@@ -83,6 +83,11 @@
   (clojang/->erlang arg))
 
 (defn double
+  ""
+  [arg]
+  (clojang/->erlang arg))
+
+(defn map
   ""
   [arg]
   (clojang/->erlang arg))

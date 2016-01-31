@@ -5,6 +5,7 @@
             [clojang.jinterface.erlang.boolean :as boolean]
             [clojang.jinterface.erlang.float :as float]
             [clojang.jinterface.erlang.int :as int]
+            [clojang.jinterface.erlang.map :as map-type]
             [clojang.jinterface.erlang.string :as string]
             [clojang.jinterface.erlang.tuple :as tuple]
             [clojang.jinterface.erlang.types :as types]
@@ -13,19 +14,48 @@
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))
 
-(declare edn->term)
+(declare edn->term term->edn)
+
+(defn ->erl-array [xs]
+  (into-array (types/object) (map #(edn->term %) xs)))
+
+(defn ->clj-vector [xs]
+  (map #(term->edn %) (into [] xs)))
 
 (defn vector->ji-tuple
   "Convert a Clojure vector into an Erlang JInterface tuple."
   [v]
-  (types/tuple (into-array (types/object) (map #(edn->term %) v))))
+  (types/tuple (->erl-array v)))
 
 (defn list->ji-list
   "Convert a Clojure list into an Erlang JInterface list."
   ([]
     (types/list))
   ([v]
-    (types/list (into-array (types/object) (map #(edn->term %) v)))))
+    (types/list (->erl-array v))))
+
+(defn map->ji-map
+  "Convert a Clojure map into an Erlang JInterface map."
+  ([]
+    (types/map))
+  ([m]
+    (types/map (->erl-array (keys m))
+               (->erl-array (vals m)))))
+
+(defn ji-map->map
+  "Convert an Erlang JInterface map into a Clojure map."
+  [erl-obj]
+  ;; XXX Is it guaranteed that keys/values will be extracted in a correlated
+  ;; order? If not, we'll need to go one-by-one ...
+  ; (apply hash-map (interleave (->clj-vector
+  ;                                (map-type/get-keys erl-obj))
+  ;                             (->clj-vector
+  ;                                (map-type/get-values erl-obj)))))
+  (let [erl-map-keys (map-type/get-keys erl-obj)
+        map-keys (->clj-vector erl-map-keys)
+        map-vals (->clj-vector (map #(map-type/get erl-obj %)
+                                    erl-map-keys))]
+    (apply hash-map (interleave map-keys map-vals))))
 
 (defprotocol EDNConverter
   "Convert EDN."
@@ -64,7 +94,10 @@
   java.lang.Character
   (edn->term [edn]
     (types/char edn))
-  ;; XXX map
+  ;; map
+  clojure.lang.PersistentArrayMap
+  (edn->term [edn]
+    (map->ji-map edn))
   ;; long
   java.lang.Long
   (edn->term [edn]
@@ -133,16 +166,20 @@
   ;; tuple /vector
   com.ericsson.otp.erlang.OtpErlangTuple
   (term->edn [erl-obj]
-    (into [] (map #'term->edn (tuple/get-elements erl-obj))))
+    (into [] (->clj-vector (tuple/get-elements erl-obj))))
   ;; list
   com.ericsson.otp.erlang.OtpErlangList
   (term->edn [erl-obj]
-    (map #'term->edn erl-obj))
-  ;; XXX char
+    (->clj-vector erl-obj))
+  ;; char
   com.ericsson.otp.erlang.OtpErlangChar
   (term->edn [erl-obj]
-    ())
-  ;; XXX map
+    (int/get-char-value erl-obj))
+  ;; map
+  com.ericsson.otp.erlang.OtpErlangMap
+  (term->edn [erl-obj]
+    (ji-map->map erl-obj))
+  ;; pid
   com.ericsson.otp.erlang.OtpErlangPid
   (term->edn [erl-obj]
     erl-obj)

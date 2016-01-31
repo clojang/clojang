@@ -6,9 +6,10 @@
             [clojang.jinterface.erlang.atom :as atom-type]
             [clojang.jinterface.erlang.boolean :as boolean-type]
             [clojang.jinterface.erlang.char :as char-type]
+            [clojang.jinterface.erlang.map :as map-type]
             [clojang.jinterface.erlang.tuple :as tuple-type]
             [clojang.jinterface.erlang.list :as list-type]
-            [clojang.jinterface.erlang.long :as long-type]
+            [clojang.jinterface.erlang.int :as long-type]
             [clojang.jinterface.erlang.string :as string-type])
   (:import [com.ericsson.otp.erlang]
            [java.lang Long]
@@ -146,3 +147,25 @@
     (is (= 1 (long-type/get-signum long-2)))
     (is (= 2147483647 (long-type/get-uint-value int-long)))
     (is (= 32767 (long-type/get-ushort-value short-long)))))
+
+(deftest ^:unit map-protocol-test
+  (let [keys-1 (into-array [(types/atom "a") (types/atom "b")])
+        vals-1 (into-array [(types/int 1) (types/int 2)])
+        map-1 (types/map keys-1 vals-1)
+        same-map (types/map keys-1 vals-1)
+        keys-2 (into-array [(types/atom "c")])
+        vals-2 (into-array [(types/int 3)])
+        map-2 (types/map keys-2 vals-2)]
+    (is (= "#{}" (map-type/->str (types/map))))
+    (is (= "#{a => 1,b => 2}" (map-type/->str map-1)))
+    (is (= "#{c => 3}" (map-type/->str map-2)))
+    (is (= true (map-type/equal? map-1 same-map)))
+    (is (= false (map-type/equal? map-2 same-map)))
+    (is (= -106678823 (map-type/hash map-1)))
+    (is (= -370477331 (map-type/hash map-2)))
+    (is (= 2 (map-type/get-arity map-1)))
+    (is (= 1 (map-type/get-arity map-2)))
+    (is (= "1" (long-type/->str (map-type/get map-1 (types/atom "a")))))
+    (is (= "3" (long-type/->str (map-type/get map-2 (types/atom "c")))))
+    (is (= 2 (count (map-type/get-keys map-1))))
+    (is (= 1 (count (map-type/get-values map-2))))))
