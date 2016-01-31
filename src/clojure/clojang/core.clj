@@ -3,14 +3,14 @@
             [dire.core :refer [with-handler!]]
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.boolean :as boolean]
-            [clojang.jinterface.erlang.long :as long]
+            [clojang.jinterface.erlang.int :as int]
             [clojang.jinterface.erlang.string :as string]
             [clojang.jinterface.erlang.tuple :as tuple]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.otp.nodes]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean long]))
+  (:refer-clojure :exclude [atom boolean byte int]))
 
 (declare edn->term)
 
@@ -71,10 +71,30 @@
   clojure.lang.BigInt
   (edn->term [edn]
     (types/long edn))
+  ;; byte
+  java.lang.Byte
+  (edn->term [edn]
+    (types/byte edn))
+  ;; char
+  java.lang.Character
+  (edn->term [edn]
+    (types/char edn))
+  ;; int
+  java.lang.Integer
+  (edn->term [edn]
+    (types/int edn))
   ;; short
   java.lang.Short
   (edn->term [edn]
     (types/short edn))
+  ; ;; uint
+  ; java.lang.Integer
+  ; (edn->term [edn]
+  ;   (types/uint edn))
+  ; ;; ushort
+  ; java.lang.Short
+  ; (edn->term [edn]
+  ;   (types/ushort edn))
   ;; string
   java.lang.String
   (edn->term [edn]
@@ -120,11 +140,31 @@
   ;; long
   com.ericsson.otp.erlang.OtpErlangLong
   (term->edn [erl-obj]
-    (long/get-bigint-value erl-obj))
+    (int/get-bigint-value erl-obj))
+  ;; byte
+  com.ericsson.otp.erlang.OtpErlangShort
+  (term->edn [erl-obj]
+    (int/get-byte-value erl-obj))
+  ;; char
+  com.ericsson.otp.erlang.OtpErlangShort
+  (term->edn [erl-obj]
+    (int/get-char-value erl-obj))
+  ;; int
+  com.ericsson.otp.erlang.OtpErlangShort
+  (term->edn [erl-obj]
+    (int/get-int-value erl-obj))
   ;; short
   com.ericsson.otp.erlang.OtpErlangShort
   (term->edn [erl-obj]
-    (long/get-short-value erl-obj))
+    (int/get-short-value erl-obj))
+  ;; uint
+  com.ericsson.otp.erlang.OtpErlangShort
+  (term->edn [erl-obj]
+    (int/get-uint-value erl-obj))
+  ;; ushort
+  com.ericsson.otp.erlang.OtpErlangShort
+  (term->edn [erl-obj]
+    (int/get-ushort-value erl-obj))
   ;; XXX Clojure/Java objects ...
   ;; string
   com.ericsson.otp.erlang.OtpErlangString

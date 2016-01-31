@@ -2,8 +2,13 @@
   (:require [clojang.util :as util]
             [clojang.jinterface.erlang.object :refer [object-behaviour]])
   (:import [com.ericsson.otp.erlang
+             OtpErlangByte
+             OtpErlangChar
+             OtpErlangInt
              OtpErlangLong
-             OtpErlangShort])
+             OtpErlangShort
+             OtpErlangUInt
+             OtpErlangUShort])
   (:refer-clojure :exclude [hash]))
 
 (defprotocol ErlangInt
@@ -71,5 +76,10 @@
           :get-uint-value (fn [this] (.uIntValue this))
           :get-ushort-value (fn [this] (.uShortValue this))}))
 
+(extend OtpErlangByte ErlangInt int-behaviour)
+(extend OtpErlangChar ErlangInt int-behaviour)
+(extend OtpErlangInt ErlangInt int-behaviour)
 (extend OtpErlangLong ErlangInt int-behaviour)
 (extend OtpErlangShort ErlangInt int-behaviour)
+(extend OtpErlangUInt ErlangInt int-behaviour)
+(extend OtpErlangUShort ErlangInt int-behaviour)

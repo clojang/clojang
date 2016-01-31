@@ -2,7 +2,7 @@
   (:require [clojang.jinterface.erlang :as erlang]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean char list float long map ref short]))
+  (:refer-clojure :exclude [atom boolean byte char int list float long map ref short]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Data types constructors
@@ -24,11 +24,6 @@
   "Constructor for an Erlang boolean (atom) data type."
   [bool]
   (erlang/init 'boolean bool))
-
-(defn char
-  "Constructor for an Erlang char."
-  [ch]
-  (erlang/init 'char ch))
 
 (defn tuple
   "Provides a Java representation of Erlang tuples. Tuples are created from
@@ -75,10 +70,35 @@
   [num]
   (erlang/init 'long num))
 
+(defn byte
+  "See the docstring for ``#'types/long``."
+  [num]
+  (erlang/init 'byte num))
+
+(defn char
+  "See the docstring for ``#'types/long``."
+  [num]
+  (erlang/init 'char num))
+
+(defn int
+  "See the docstring for ``#'types/long``."
+  [num]
+  (erlang/init 'int num))
+
 (defn short
   "See the docstring for ``#'types/long``."
   [num]
   (erlang/init 'short num))
+
+(defn uint
+  "See the docstring for ``#'types/long``."
+  [num]
+  (erlang/init 'uint num))
+
+(defn ushort
+  "See the docstring for ``#'types/long``."
+  [num]
+  (erlang/init 'ushort num))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Error handling
