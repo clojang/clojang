@@ -141,6 +141,8 @@ clojang.dev=> (conn/receive-rpc connx)
 clojang.dev=> (conn/receive-rpc connx)
 :pong
 clojang.dev=> (conn/send-rpc connx :ping-pong :get-ping-count)
+nil
+clojang.dev=> (conn/receive-rpc connx)
 3
 ```
 
