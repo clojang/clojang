@@ -15,3 +15,4 @@ docs/build
 rebar.lock
 erl_crash.dump
 _build/*
+*.beam
