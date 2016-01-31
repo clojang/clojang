@@ -100,6 +100,19 @@
   [num]
   (erlang/init 'ushort num))
 
+(defn double
+  "Provides a Java representation of Erlang floats and doubles. Erlang defines
+  only one floating point numeric type, however this class and its subclass
+  ``OtpErlangFloat`` are used to provide representations corresponding to the
+  Java types ``Double`` and ``Float``."
+  [num]
+  (erlang/init 'double num))
+
+(defn float
+  "See the docstring for ``#'types/double``."
+  [num]
+  (erlang/init 'float num))
+
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Error handling
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>

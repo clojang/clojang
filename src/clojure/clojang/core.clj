@@ -3,6 +3,7 @@
             [dire.core :refer [with-handler!]]
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.boolean :as boolean]
+            [clojang.jinterface.erlang.float :as float]
             [clojang.jinterface.erlang.int :as int]
             [clojang.jinterface.erlang.string :as string]
             [clojang.jinterface.erlang.tuple :as tuple]
@@ -10,7 +11,7 @@
             [clojang.jinterface.otp.nodes]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean byte int]))
+  (:refer-clojure :exclude [atom boolean byte float int]))
 
 (declare edn->term)
 
@@ -95,6 +96,14 @@
   ; java.lang.Short
   ; (edn->term [edn]
   ;   (types/ushort edn))
+  ;; float
+  java.lang.Float
+  (edn->term [edn]
+    (types/float edn))
+  ;; double
+  java.lang.Double
+  (edn->term [edn]
+    (types/double edn))
   ;; string
   java.lang.String
   (edn->term [edn]
@@ -165,6 +174,14 @@
   com.ericsson.otp.erlang.OtpErlangShort
   (term->edn [erl-obj]
     (int/get-ushort-value erl-obj))
+  ;; float
+  com.ericsson.otp.erlang.OtpErlangFloat
+  (term->edn [erl-obj]
+    (float/get-float-value erl-obj))
+  ;; double
+  com.ericsson.otp.erlang.OtpErlangDouble
+  (term->edn [erl-obj]
+    (float/get-double-value erl-obj))
   ;; XXX Clojure/Java objects ...
   ;; string
   com.ericsson.otp.erlang.OtpErlangString

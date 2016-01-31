@@ -2,7 +2,8 @@
   (:require [clojang.core :as clojang]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean byte char int list long short]))
+  (:refer-clojure :exclude [atom boolean byte char double float int list long
+                            short]))
 
 (defn undefined
   ""
@@ -72,6 +73,16 @@
   (clojang/->erlang arg))
 
 (defn ushort
+  ""
+  [arg]
+  (clojang/->erlang arg))
+
+(defn float
+  ""
+  [arg]
+  (clojang/->erlang arg))
+
+(defn double
   ""
   [arg]
   (clojang/->erlang arg))
