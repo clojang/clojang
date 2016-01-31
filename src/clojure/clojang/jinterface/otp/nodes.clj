@@ -18,6 +18,11 @@
   [node-name & args]
   (apply #'otp/init (into ['node node-name] args)))
 
+(defn self
+  "Constructor for ``OtpSelf``."
+  [node-name & args]
+  (apply #'otp/init (into ['self node-name] args)))
+
 (defn peer
   "Constructor for ``OtpPeer``.
 
@@ -193,6 +198,39 @@
     (.setFlags this flags))
   (whereis [this mbox-name]
     (.whereis this mbox-name)))
+
+(defprotocol SelfObject
+  "Represents an OTP node. It is used to connect to remote nodes or accept
+  incoming connections from remote nodes.
+
+  When the Java node will be connecting to a remote Erlang, Java or C node, it
+  must first identify itself as a node by creating an instance of this class,
+  after which it may connect to the remote node.
+
+  When you create an instance of this class, it will bind a socket to a port so
+  that incoming connections can be accepted. However the port number will not
+  be made available to other nodes wishing to connect until you explicitely
+  register with the port mapper daemon by calling publishPort(). "
+  (accept [this]
+    "Accept an incoming connection from a remote node.")
+  (connect [this peer]
+    "Open a connection to a remote node.")
+  (get-pid [this]
+    "Get the Erlang PID that will be used as the sender id in all \"anonymous\"
+    messages sent by this node.")
+  (publish-port [this]
+    "Make public the information needed by remote nodes that may wish to
+    connect to this one.")
+  (unpublish-port [this]
+    "Unregister the server node's name and port number from the Erlang port
+    mapper, thus preventing any new connections from remote nodes."))
+
+(extend-type OtpSelf SelfObject
+  (accept [this] (.accept this))
+  (connect [this peer] (.connect this peer))
+  (get-pid [this] (.pid this))
+  (publish-port [this] (.publishPort this))
+  (unpublish-port [this] (.unPublishPort this)))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Error handling
