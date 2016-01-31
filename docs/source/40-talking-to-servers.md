@@ -2,7 +2,9 @@
 
 ## Clojure Client with LFE Server
 
-In the examples directory of the Clojang source code there is an example LFE server. We're going to compile and then run that code from the LFE REPL, then from a Clojure REPL we'll talk to it.
+In the ``examples`` directory of the Clojang source code there is a module containing a variation on the classic "ping-pong" server. It's written in LFE, but it could have been done in any BEAM (Erlang VM) language. We're going to compile and then run that code from the LFE REPL.
+
+Then, from a Clojure REPL, we'll talk to it.
 
 Start the LFE REPL using the ``repl`` make target in the Clojang top-level directory:
 
@@ -26,10 +28,14 @@ Now we can start it:
 #(ok <0.51.0>)
 ```
 
-In a separate terminal window (also in the Clojang top-level directory), start up the Clojure REPL:
+In a separate terminal window (in the Clojang top-level directory, just like the ``make repl`` command), start up the Clojure REPL:
 
 ```bash
 $ lein repl
+nREPL server started on port 58369 on host 127.0.0.1 - nrepl://127.0.0.1:58369
+REPL-y 0.3.7, nREPL 0.2.10
+Clojure 1.8.0
+clojang.dev=>
 ```
 
 Now we can create nodes for two ends of the connection, and then open a connection between the two:
