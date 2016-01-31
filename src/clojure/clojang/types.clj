@@ -2,7 +2,7 @@
   (:require [clojang.core :as clojang]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean char list]))
+  (:refer-clojure :exclude [atom boolean char list long]))
 
 (defn undefined
   ""
@@ -35,6 +35,11 @@
   (clojang/->erlang arg))
 
 (defn string
+  ""
+  [arg]
+  (clojang/->erlang arg))
+
+(defn long
   ""
   [arg]
   (clojang/->erlang arg))

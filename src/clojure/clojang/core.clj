@@ -3,13 +3,14 @@
             [dire.core :refer [with-handler!]]
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.boolean :as boolean]
+            [clojang.jinterface.erlang.long :as long]
             [clojang.jinterface.erlang.string :as string]
             [clojang.jinterface.erlang.tuple :as tuple]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.otp.nodes]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
-  (:refer-clojure :exclude [atom boolean]))
+  (:refer-clojure :exclude [atom boolean long]))
 
 (declare edn->term)
 
@@ -20,8 +21,10 @@
 
 (defn list->ji-list
   "Convert a Clojure list into an Erlang JInterface list."
-  [v]
-  (types/list (into-array (types/object) (map #(edn->term %) v))))
+  ([]
+    (types/list))
+  ([v]
+    (types/list (into-array (types/object) (map #(edn->term %) v)))))
 
 (defprotocol EDNConverter
   "Convert EDN."
@@ -53,11 +56,21 @@
   clojure.lang.PersistentList
   (edn->term [edn]
     (list->ji-list edn))
+  clojure.lang.PersistentList$EmptyList
+  (edn->term [edn]
+    (list->ji-list))
   ;; char
   java.lang.Character
   (edn->term [edn]
     (types/char edn))
   ;; XXX map
+  ;; long
+  java.lang.Long
+  (edn->term [edn]
+    (types/long edn))
+  clojure.lang.BigInt
+  (edn->term [edn]
+    (types/long edn))
   ;; string
   java.lang.String
   (edn->term [edn]
@@ -100,6 +113,10 @@
   com.ericsson.otp.erlang.OtpErlangPid
   (term->edn [erl-obj]
     erl-obj)
+  ;; long
+  com.ericsson.otp.erlang.OtpErlangLong
+  (term->edn [erl-obj]
+    (long/get-bigint-value erl-obj))
   ;; XXX Clojure/Java objects ...
   ;; string
   com.ericsson.otp.erlang.OtpErlangString
