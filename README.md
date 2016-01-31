@@ -177,7 +177,7 @@ Shell got {<5926.1.0>,'hello, world'}
 From LFE:
 
 ```cl
-(lfe@mndltl01)> (! #(echo gurka@mndltl01) `#(,(self) hej!))
+(clojang-lfe@mndltl01)> (! #(echo gurka@mndltl01) `#(,(self) hej!))
 #(<0.35.0> hej!)
 ```
 
@@ -191,7 +191,7 @@ Then back in Clojure:
 Then, back in LFE:
 
 ```cl
-(lfe@mndltl01)> (c:flush)
+(clojang-lfe@mndltl01)> (c:flush)
 Shell got {<5926.1.0>,'hello-world'}
 ```
 
