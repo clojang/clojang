@@ -61,4 +61,4 @@
    get-pid
    unlink])
 
-(def ! #'send)
+(def ! "An alias for ``#'mbox/send``." #'send)
