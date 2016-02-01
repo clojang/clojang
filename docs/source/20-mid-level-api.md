@@ -134,7 +134,7 @@ An Erlang node acting as a client to another Erlang node typically sends a reque
 (def other (node/peer "clojang-lfe@mndltl01"))
 (def connx (node/connect self other))
 
-(conn/send-rpc connx :erlang :date)
+(conn/!rpc connx :erlang :date)
 (conn/receive-rpc connx)
 [2016 1 30]
 ```

@@ -128,11 +128,11 @@ clojang.dev=> (def connx (node/connect self other))
 With a connection established, we're able to execute Erlang module/function calls on the remote LFE/Erlang node:
 
 ```clojure
-clojang.dev=> (conn/send-rpc connx :ping-pong :ping)
+clojang.dev=> (conn/!rpc connx :ping-pong :ping)
 nil
-clojang.dev=> (conn/send-rpc connx :ping-pong :ping)
+clojang.dev=> (conn/!rpc connx :ping-pong :ping)
 nil
-clojang.dev=> (conn/send-rpc connx :ping-pong :ping)
+clojang.dev=> (conn/!rpc connx :ping-pong :ping)
 nil
 clojang.dev=> (conn/receive-rpc connx)
 :pong
@@ -140,7 +140,7 @@ clojang.dev=> (conn/receive-rpc connx)
 :pong
 clojang.dev=> (conn/receive-rpc connx)
 :pong
-clojang.dev=> (conn/send-rpc connx :ping-pong :get-ping-count)
+clojang.dev=> (conn/!rpc connx :ping-pong :get-ping-count)
 nil
 clojang.dev=> (conn/receive-rpc connx)
 3
@@ -148,4 +148,6 @@ clojang.dev=> (conn/receive-rpc connx)
 
 ## LFE Client with Clojure Server
 
-TBD
+In the case of an LFE server, Erlang/OTP defined the service specification (i.e., ``gen_server``), but there is no analog in Clojure (core, anyway; the [Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides an OTP-inspired ``gen-server``). Sticking with the RPC example, there is definitely no such thing in Clojure, since the Erlang RPC mechanism is very specific to Erlang.
+
+That being said, it's "simply" sturctured message passing, and there's no reason we can implement our own RPC server -- we just need to be able to hanle RPC messages. The Clojang library offers just this, and in fact, will automatically parse RPC-type messages sent from an Erlang VM node (in our case, LFE).

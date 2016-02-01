@@ -227,7 +227,7 @@ An Erlang node acting as a client to another Erlang node typically sends a reque
 (def other (nodes/peer "clojang-lfe@mndltl01"))
 (def connx (nodes/connect self other))
 
-(connection/send-rpc connx "erlang" "date" (types/list))
+(connection/!rpc connx "erlang" "date" (types/list))
 (connection/receive-rpc connx)
 #object[com.ericsson.otp.erlang.OtpErlangTuple 0x385465c1 "{2016,1,30}"]
 ```
