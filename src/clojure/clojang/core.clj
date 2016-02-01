@@ -83,6 +83,9 @@
   clojure.lang.PersistentVector
   (edn->term [edn]
     (vector->ji-tuple edn))
+  clojure.lang.PersistentVector$ChunkedSeq
+  (edn->term [edn]
+    (vector->ji-tuple edn))
   ;; list
   clojure.lang.PersistentList
   (edn->term [edn]
@@ -103,6 +106,9 @@
   (edn->term [edn]
     (types/long edn))
   clojure.lang.BigInt
+  (edn->term [edn]
+    (types/long edn))
+  java.math.BigInteger
   (edn->term [edn]
     (types/long edn))
   ;; byte
@@ -142,6 +148,9 @@
   (edn->term [edn]
     (types/string edn))
   ;; XXX JInterface objects
+  com.ericsson.otp.erlang.OtpConnection
+  (edn->term [obj]
+    obj)
   com.ericsson.otp.erlang.OtpErlangObject
   (edn->term [obj]
     obj))
@@ -152,6 +161,10 @@
     "Convert JInterface Erlang types to EDN."))
 
 (extend-protocol TermConverter
+  ;; nil
+  nil
+  (term->edn [erl-obj]
+    erl-obj)
   ;; atom / keyword & undefined
   com.ericsson.otp.erlang.OtpErlangAtom
   (term->edn [erl-obj]
@@ -179,10 +192,6 @@
   com.ericsson.otp.erlang.OtpErlangMap
   (term->edn [erl-obj]
     (ji-map->map erl-obj))
-  ;; pid
-  com.ericsson.otp.erlang.OtpErlangPid
-  (term->edn [erl-obj]
-    erl-obj)
   ;; long
   com.ericsson.otp.erlang.OtpErlangLong
   (term->edn [erl-obj]
@@ -219,7 +228,18 @@
   com.ericsson.otp.erlang.OtpErlangDouble
   (term->edn [erl-obj]
     (float/get-double-value erl-obj))
+  ;; pid
+  com.ericsson.otp.erlang.OtpErlangPid
+  (term->edn [erl-obj]
+    erl-obj)
+  ;; ref
+  com.ericsson.otp.erlang.OtpErlangRef
+  (term->edn [erl-obj]
+    erl-obj)
   ;; XXX Clojure/Java objects ...
+  java.lang.Object
+  (term->edn [obj]
+    obj)
   ;; string
   com.ericsson.otp.erlang.OtpErlangString
   (term->edn [erl-obj]
