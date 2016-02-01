@@ -3,6 +3,7 @@
             [clojang.core :as clojang]
             [clojang.jinterface.otp.nodes :as nodes]
             [clojang.jinterface.otp.connection :as connection]
+            [clojang.msg :as msg]
             [clojang.util :as util])
   (:refer-clojure :exclude [deliver new send]))
 
@@ -19,6 +20,14 @@
     (clojang/->clojure (connection/receive connx)))
   ([connx timeout]
     (clojang/->clojure (connection/receive connx timeout))))
+
+(defn receive-msg
+  "An alias for ``clojang.jinterface.otp.connection/receive-msg`` that returns the
+  received data as Clojure data types."
+  ([connx]
+    (msg/->map (connection/receive-msg connx)))
+  ([connx timeout]
+    (msg/->map (connection/receive-msg connx timeout))))
 
 (defn receive-rpc
   "An alias for ``clojang.jinterface.otp.connection/receive-rpc`` that returns the
@@ -58,7 +67,17 @@
    get-msg-count
    get-peer
    receive-buf
-   receive-msg
    get-self
    send-buf
    unlink])
+
+(def recv "" receive)
+(def recv-msg "" receive-msg)
+(def recv-buf "" receive-buf)
+(def recv-rpc "" receive-rpc)
+(def ! "" send)
+(def !rpc "" send-rpc)
+(def !buf "" send-buf)
+(def snd "" send)
+(def snd-rpc "" send-rpc)
+(def snd-buf "" send-buf)
