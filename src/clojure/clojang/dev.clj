@@ -9,6 +9,8 @@
             [clojang.conn :as conn]
             [clojang.core :as clojang]
             [clojang.mbox :as mbox]
+            [clojang.msg :as msg]
             [clojang.node :as node]
+            [clojang.rpc :as rpc]
             [clojang.types :as types]
             [clojang.util :as util]))
