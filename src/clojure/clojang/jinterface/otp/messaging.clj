@@ -2,7 +2,8 @@
   (:require [clojang.jinterface.otp :as otp]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang
-            OtpMbox])
+            OtpMbox
+            OtpMsg])
   (:refer-clojure :exclude [hash send]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -165,3 +166,64 @@
     (.unlink this recip-pid))
   (whereis [this mbox-name]
     (.whereis this mbox-name)))
+
+(defprotocol MsgObject
+  "Provides a carrier for Erlang messages.
+
+  Instances of this class are created to package header and payload information
+  in received Erlang messages so that the recipient can obtain both parts with
+  a single call to receiveMsg().
+
+  The header information that is available is as follows:
+
+  * a tag indicating the type of message
+  * the intended recipient of the message, either as a pid or as a String, but
+    never both.
+  * (sometimes) the sender of the message. Due to some eccentric
+    characteristics of the Erlang distribution protocol, not all messages have
+    information about the sending process. In particular, only messages whose
+    tag is regSendTag contain sender information.
+
+  Message are sent using the Erlang external format (see separate
+  documentation). When a message is received and delivered to the recipient
+  mailbox, the body of the message is still in this external representation
+  until ``get-msg`` is called, at which point the message is decoded. A copy of
+  the decoded message is stored in the OtpMsg so that subsequent calls to
+  ``get-msg`` do not require that the message be decoded a second time."
+  (get-msg [this]
+    "Deserialize and return a new copy of the message contained in this
+    ``OtpMsg``.")
+  (get-recipient [this]
+    "Get the name of the recipient for this message, if it is a ``regSendTag``
+    message.")
+  (get-recipient-name [this]
+    "Get the name of the recipient for this message.")
+  (get-recipient-pid [this]
+    "Get the Pid of the recipient for this message, if it is a ``sendTag``
+    message.")
+  (get-sender-pid [this]
+    "Get the Pid of the sender of this message.")
+  (get-type [this]
+    "Get the type marker from this message."))
+
+(extend-type OtpMsg MsgObject
+  (get-msg [this]
+    (.getMsg this))
+  (get-recipient [this]
+    (.getRecipient this))
+  (get-recipient-name [this]
+    (.getRecipientName this))
+  (get-recipient-pid [this]
+    (.getRecipientPid this))
+  (get-sender-pid [this]
+    (.getSenderPid this))
+  (get-type [this]
+    (.type this)))
+
+(def msg-type-lookup
+  {OtpMsg/exit2Tag :exit-2
+   OtpMsg/exitTag :exit
+   OtpMsg/linkTag :link
+   OtpMsg/regSendTag :reg-send
+   OtpMsg/sendTag :send
+   OtpMsg/unlinkTag :unlink})
