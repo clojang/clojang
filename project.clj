@@ -1,4 +1,4 @@
-(defproject clojang "0.1.0"
+(defproject clojang "0.1.0-dev"
   :description " Erlang's JInterface in Idiomatic Clojure"
   :url "https://github.com/oubiwann/clojang"
   :scm {:name "git"
