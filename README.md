@@ -241,7 +241,7 @@ This is what is used by the ``rebar3`` configuration to run the Clojang tests.
 
 ## Erlang, Clojure, and JInterface [&#x219F;](#table-of-contents)
 
-If you are interested in building your own JInterface ``.jar`` file for use with a Clojure project, be sure fo check out the page [Building JInterface for Clojure](http://oubiwann.github.io/clojang/current/89-building-jinterface.html) on the Clojang docs site.
+If you are interested in building your own JInterface ``.jar`` file for use with a Clojure project, be sure fo check out the page [Building JInterface for Clojure](https://oubiwann.github.io/clojang/current/05-building-jinterface.html) on the Clojang docs site.
 
 
 ## License [&#x219F;](#table-of-contents)
