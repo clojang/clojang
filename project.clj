@@ -6,6 +6,8 @@
   :license {:name "Apache License, Version 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/core.async "0.2.374"]
+                 [org.clojure/core.match "0.3.0-alpha4"]
                  [org.clojure/math.numeric-tower "0.0.4"]
                  [org.erlang.otp/jinterface "1.6.1"]
                  [dire "0.5.4"]
