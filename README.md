@@ -41,7 +41,7 @@ The mid-level Clojang API is intended for Clojure application developers who whi
 
 **Erlang VM <-> JVM Utilities**
 
-Finally, for Erlang applications that wish to interact with the JVM, a bit more work is needed: the Erlang VM needs to start up a JVM process (ideally supervised). Clojang aims to provide a basic framework (or at the very least, a set of examples) for doing this. Although the Erlang dialect used by Clojang is LFE (Lisp Flavoured Erlang), this code is 100% Core Erlang compatible and may be used by Erlang proper, Elixier, LFE, Joxa, and any others which run compiled ``.beam`` files.
+Finally, for Erlang applications that wish to interact with the JVM, a bit more work is needed: the Erlang VM needs to start up a JVM process (ideally supervised). Clojang aims to provide a basic framework (or at the very least, a set of examples) for doing this. Although the Erlang dialect used by Clojang is LFE (Lisp Flavoured Erlang), this code is 100% Core Erlang compatible and may be used by Erlang proper, Elixir, LFE, Joxa, and any others which run compiled ``.beam`` files.
 
 
 ## Dependencies [&#x219F;](#table-of-contents)
