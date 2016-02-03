@@ -151,18 +151,7 @@
   fail if there is no Epmd process running on the host where the specified node
   is running. See the Erlang documentation for information about starting Epmd.
 
-  This class contains only static methods, there are no constructors."
-  (lookup-names [this] [this inet-addr] [this inet-addr xport]
-    "")
-  (lookup-port [this node]
-    "Determine what port a node listens for incoming connections on.")
-  (publish-port [this node]
-    "Register with Epmd, so that other nodes are able to find and connect to
-    it.")
-  (unpublish-port [this node]
-    "Unregister from Epmd.")
-  (use-port [this port-num]
-    "Set the port number to be used to contact the epmd process."))
+  This class contains only static methods, there are no constructors.")
 
 (defn lookup-names
   ([] (OtpEpmd/lookupNames))
@@ -170,18 +159,23 @@
   ([inet-addr xport] (OtpEpmd/lookupNames inet-addr xport)))
 
 (defn lookup-port
+  "Determine what port a node listens for incoming connections on."
   [node]
   (OtpEpmd/lookupPort node))
 
 (defn publish-port
+  "Register with Epmd, so that other nodes are able to find and connect to
+  it."
   [node]
   (OtpEpmd/publishPort node))
 
 (defn unpublish-port
+  "Unregister from Epmd."
   [node]
   (OtpEpmd/unPublishPort node))
 
 (defn use-port
+  "Set the port number to be used to contact the epmd process."
   [port-num]
   (OtpEpmd/useEpmdPort port-num))
 
