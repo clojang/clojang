@@ -1,4 +1,4 @@
-# Talking to Servers
+# Talking to Servers: LFE & Clojure
 
 ## Clojure Client with LFE Server
 
@@ -164,7 +164,7 @@ pong
 
 ### Quick and Dirty
 
-What we've demonstrated above is the "right way" to start thinking about long-running processes in the Erlang VM: using the infrastructure of OTP to build for reliability. We could have written something very similar much more simply, though also very fragile.
+What we've demonstrated above is the "right way" to start thinking about long-running processes in the Erlang VM: using the infrastructure of OTP to build for reliability. We could have written something similar, but much more simply. It would also have been very fragile.
 
 For instance, we could have done it like this:
 
@@ -174,11 +174,13 @@ For instance, we could have done it like this:
                             (`#(ping ,caller)
                               (! caller 'pong) (png-png (+ 1 count)))
                             (`#(get-count ,caller)
-                              (! caller count) (png-png count))))
+                              (! caller count) (png-png count))
+                            (`#(stop, caller)
+                              (! caller 'stopped) 'stopped)))
 png-png
 ```
 
-Please don't write your LFE OTP apps like this, though :-) You'll slowly end-up reinventing OTP, though a partially implemented and bug-ridden one.
+Please don't write your LFE OTP apps like this, though :-) You'll slowly end-up reinventing OTP, though a partially-implemented and bug-ridden one.
 
 Back to this demonstration: all we need now to turn this into a simplistic server is to spawn it:
 
@@ -222,7 +224,7 @@ We're going to want to call this from Clojure too, so let's register the LFE pro
 true
 ```
 
-With that done, let's return to the Clojure REPL and make some calls to our second (simple, don't-deply-with-this) server:
+With that done, let's return to the Clojure REPL and make some calls to our second (simple, don't-deploy-with-this) server:
 
 ```clojure
 clojang.dev=> (conn/! connx :png-png [:ping (node/get-pid self)])
@@ -249,7 +251,7 @@ That looks not-so-erily familiar ...
 
 ## LFE Client with Clojure Server
 
-In the case of an LFE server, Erlang/OTP defined the service specification (i.e., ``gen_server``), but there is no analog in Clojure (core, anyway; the [Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides an OTP-inspired ``gen-server``). Sticking with the RPC example, there is no OTP-compliant mechanism for making calls on remote nodes in Clojure. This, of course, makes a great deal of sense since the OTP RPC mechanism is very specific to the Erlang VM.
+In the case of an LFE server, Erlang/OTP defined the service specification (i.e., ``gen_server``), but there is no analog in Clojure (core, anyway; the [Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides an OTP-inspired ``gen-server``). Sticking with the RPC example, there is no OTP-compliant mechanism for making calls on remote nodes in Clojure. This, of course, is no surprise, since the OTP RPC mechanism is very specific to the Erlang VM.
 
 That being said, it's "simply" sturctured message passing, and there's no reason we cannot implement our own RPC server -- we just need to be able to hanle RPC messages. The Clojang library offers just this, and in fact, will automatically parse RPC-type messages sent from an Erlang VM node (in our case, LFE, but the mechanism is dialect-agnostic).
 
@@ -258,23 +260,84 @@ To demonstate this we need to set up a long-running Clojure XXX (analog to Erlan
 We use the same example as above: a simple ping-pong server which accepts RPC calls. Here is the source code:
 
 ```clojure
-
+TBD
 ```
 
 To run the server in the Clojure REPL, slurp it and XXX:
 
 ```clojure
-
+TBD
 ```
 
 Now, from your LFE REPL, make some calls:
 
 ```cl
-
+TBD
 ```
 
 As with the previous example, it's possible to call the ping-pong server from the same node where the server is running:
 
 ```clojure
+TBD
+```
 
+### Quick and Dirty
+
+With the core.match library for Clojure, we are able to get remarkably close to the
+little server we wrote in LFE above:
+
+```clojure
+(require '[clojure.core.match :refer [match]])
+
+(defn png-png
+  []
+  (let [init-state 0
+        self (node/self :srvr)
+        _ (node/publish-port self)
+        cnnx (node/accept self)]
+    (loop [png-count init-state]
+      (match [(conn/receive cnnx)]
+        [[:ping caller]] (do (conn/! cnnx caller :pong) (recur (inc png-count)))
+        [[:get-count caller]] (do (conn/! cnnx caller png-count) (recur png-count))
+        [[:stop caller]] :stopped))))
+```
+
+Let's paste this server into the Clojure REPL and then run it:
+
+```clojure
+(png-png)
+```
+
+Now let's head over to an LFE REPL and talk to the Clojure server:
+
+```cl
+(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(ping ,(self)))
+#(ping <0.34.0>)
+(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(ping ,(self)))
+#(ping <0.34.0>)
+(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(ping ,(self)))
+#(ping <0.34.0>)
+(clojang-lfe@mndltl01)> (c:flush)
+Shell got pong
+Shell got pong
+Shell got pong
+ok
+(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(get-count ,(self)))
+#(get-count <0.34.0>)
+(clojang-lfe@mndltl01)> (c:flush)
+Shell got 3
+ok
+```
+
+Once we're done, we can ask the server to stop from LFE:
+
+```cl
+(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(stop ,(self)))
+#(stop <0.34.0>)
+```
+
+Back in the Clojure REPL you should now see:
+
+```clojure
+:stopped
 ```
