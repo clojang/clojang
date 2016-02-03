@@ -4,7 +4,8 @@
   (:import [com.ericsson.otp.erlang
             AbstractConnection
             OtpConnection
-            OtpCookedConnection])
+            OtpCookedConnection
+            OtpEpmd])
   (:refer-clojure :exclude [deliver send]))
 
 (defprotocol AbstractConnectionObject
@@ -133,3 +134,54 @@
 (extend OtpConnection
         ConnectionObject
         connection-behaviour)
+
+(defprotocol EpmdObject
+  "Provides methods for registering, unregistering and looking up nodes with
+  the Erlang portmapper daemon (Epmd). For each registered node, Epmd
+  maintains information about the port on which incoming connections are
+  accepted, as well as which versions of the Erlang communication protocol
+  the node supports.
+
+  Nodes wishing to contact other nodes must first request information from
+  Epmd before a connection can be set up, however this is done automatically
+  by ``OtpSelf.connect()`` when necessary.
+
+  The methods ``publishPort()`` and ``unPublishPort()`` will fail if an Epmd
+  process is not running on the localhost. Additionally ``lookupPort()`` will
+  fail if there is no Epmd process running on the host where the specified node
+  is running. See the Erlang documentation for information about starting Epmd.
+
+  This class contains only static methods, there are no constructors."
+  (lookup-names [this] [this inet-addr] [this inet-addr xport]
+    "")
+  (lookup-port [this node]
+    "Determine what port a node listens for incoming connections on.")
+  (publish-port [this node]
+    "Register with Epmd, so that other nodes are able to find and connect to
+    it.")
+  (unpublish-port [this node]
+    "Unregister from Epmd.")
+  (use-port [this port-num]
+    "Set the port number to be used to contact the epmd process."))
+
+(defn lookup-names
+  ([] (OtpEpmd/lookupNames))
+  ([inet-addr] (OtpEpmd/lookupNames inet-addr))
+  ([inet-addr xport] (OtpEpmd/lookupNames inet-addr xport)))
+
+(defn lookup-port
+  [node]
+  (OtpEpmd/lookupPort node))
+
+(defn publish-port
+  [node]
+  (OtpEpmd/publishPort node))
+
+(defn unpublish-port
+  [node]
+  (OtpEpmd/unPublishPort node))
+
+(defn use-port
+  [port-num]
+  (OtpEpmd/useEpmdPort port-num))
+
