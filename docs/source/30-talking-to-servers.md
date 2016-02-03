@@ -289,6 +289,8 @@ little server we wrote in LFE above:
 ```clojure
 (require '[clojure.core.match :refer [match]])
 
+;; XXX Right now this is hanging when executed a second
+;;     time; need to debug
 (defn png-png
   []
   (let [init-state 0
@@ -297,9 +299,13 @@ little server we wrote in LFE above:
         cnnx (node/accept self)]
     (loop [png-count init-state]
       (match [(conn/receive cnnx)]
-        [[:ping caller]] (do (conn/! cnnx caller :pong) (recur (inc png-count)))
-        [[:get-count caller]] (do (conn/! cnnx caller png-count) (recur png-count))
-        [[:stop caller]] :stopped))))
+        [[:ping caller]] (do (conn/! cnnx caller :pong)
+                             (recur (inc png-count)))
+        [[:get-count caller]] (do (conn/! cnnx caller png-count)
+                                  (recur png-count))
+        [[:stop caller]] (do (conn/unlink cnnx caller)
+                             (node/unpublish self)
+                             :stopped)))))
 ```
 
 Let's paste this server into the Clojure REPL and then run it:
