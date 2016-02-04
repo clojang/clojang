@@ -20,7 +20,8 @@
   :test-selectors {:default     :unit
                    :unit        :unit
                    :system      :system
-                   :integration :integration}
+                   :integration :integration
+                   :type        :type}
   :codox          {:output-path "docs/master/current"
                    :doc-paths   ["docs/source"]
                    :metadata    {:doc/format :markdown}}

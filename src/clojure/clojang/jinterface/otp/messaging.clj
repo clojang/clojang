@@ -1,25 +1,85 @@
 (ns clojang.jinterface.otp.messaging
-  (:require [clojang.jinterface.otp :as otp]
+  {:lang :core.typed}
+  (:require [clojure.core.typed :as t :refer [IFn ann ann-protocol]]
+            [clojure.core.typed.utils :refer [defprotocol]]
+            [clojang.jinterface.otp :as otp]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang
+            OtpErlangObject
+            OtpErlangPid
+            OtpInputStream
             OtpMbox
-            OtpMsg])
-  (:refer-clojure :exclude [hash send]))
+            OtpMsg
+            OtpNode])
+  (:refer-clojure :exclude [hash send defprotocol]))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP constructors
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(ann mbox [OtpNode -> (t/Nilable OtpMbox)])
 (defn mbox
   "A wrapper for the mbox-creation method on nodes. See
   ``clojang.jinterface.otp.nodes/node``."
-  [node-instance]
+  [^OtpNode node-instance]
   (.createMbox node-instance))
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; OTP protocols
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
+(ann-protocol MboxObject
+  close
+  [MboxObject -> nil]
+  equal?
+  [MboxObject Object -> boolean]
+  exit
+  (t/IFn [MboxObject OtpErlangObject -> nil]
+         ;; XXX In Java, reason can be a string.
+         #_[MboxObject String -> nil]
+         [MboxObject OtpErlangPid OtpErlangObject -> nil]
+         ;; XXX In Java, reason can be a string.
+         #_[MboxObject OtpErlangPid String -> nil])
+  get-name
+  [MboxObject -> (t/Nilable String)]
+  get-names
+  [MboxObject -> (Array3 String (t/Nilable String) (t/Nilable String))]
+  hash
+  [MboxObject -> int]
+  link
+  [MboxObject OtpErlangPid -> nil]
+  ping
+  (t/IFn [MboxObject String -> boolean]
+         [MboxObject String long -> boolean])
+  receive
+  (t/IFn [MboxObject -> (t/Nilable OtpErlangObject)]
+         [MboxObject long -> (t/Nilable OtpErlangObject)])
+  receive-buf
+  (t/IFn [MboxObject -> (t/Nilable OtpInputStream)]
+         [MboxObject long -> (t/Nilable OtpInputStream)])
+  receive-msg
+  (t/IFn [MboxObject -> (t/Nilable OtpMsg)]
+         [MboxObject long -> (t/Nilable OtpMsg)])
+  register-name
+  [MboxObject String -> t/Bool]
+  self
+  [MboxObject -> (t/Nilable OtpErlangPid)]
+  get-pid
+  [MboxObject -> (t/Nilable OtpErlangPid)]
+  send
+  (t/IFn [MboxObject OtpErlangPid OtpErlangObject -> nil]
+         ;; XXX Figure out how to accept a node name
+         #_[MboxObject String OtpErlangObject -> nil]
+         [MboxObject String String OtpErlangObject -> nil])
+  !
+  (t/IFn [MboxObject OtpErlangPid OtpErlangObject -> nil]
+         ;; XXX Figure out how to accept a node name
+         #_[MboxObject String OtpErlangObject -> nil]
+         [MboxObject String String OtpErlangObject -> nil])
+  unlink
+  [MboxObject OtpErlangPid -> nil]
+  whereis
+  [MboxObject String -> (t/Nilable OtpErlangPid)])
 (defprotocol MboxObject
   "Provides a simple mechanism for exchanging messages with Erlang processes
   or other instances of this class.
@@ -108,16 +168,17 @@
   (whereis [this mbox-name]
     "Determine the pid corresponding to a registered name on this node."))
 
-(extend-type OtpMbox MboxObject
+(extend-type OtpMbox
+  MboxObject
   (close [this]
     (.close this))
   (equal? [this other-obj]
     (.equals this other-obj))
   (exit
     ([this reason]
-      (.exit this))
-    ([this recip-pid reason]
-      (.exit recip-pid reason)))
+     (.exit this ^OtpErlangObject reason))
+    ([this ^OtpErlangPid recip-pid ^OtpErlangObject reason]
+     (.exit this recip-pid reason)))
   (get-name [this]
     (.getName this))
   (get-names [this]
@@ -126,26 +187,27 @@
     (.hashCode this))
   (link [this recip-pid]
     (.link this recip-pid))
-  (ping [this node-name timeout]
-    (.ping this timeout))
   ;; XXX put the ping with the default timeout in the mid-level API
-  (ping [this node-name]
-    (.ping this 1000))
+  (ping
+    ([this node-name]
+     (.ping this node-name 1000))
+    ([this node-name timeout]
+     (.ping this node-name timeout)))
   (receive
     ([this]
-      (.receive this))
+     (.receive this))
     ([this timeout]
-      (.receive this timeout)))
+     (.receive this timeout)))
   (receive-buf
     ([this]
-      (.receiveBuf this))
+     (.receiveBuf this))
     ([this timeout]
-      (.receiveBuf this timeout)))
+     (.receiveBuf this timeout)))
   (receive-msg
     ([this]
-      (.receiveMsg this))
+     (.receiveMsg this))
     ([this timeout]
-      (.receiveMsg this timeout)))
+     (.receiveMsg this timeout)))
   (register-name [this mbox-name]
     (.registerName this mbox-name))
   (self [this]
@@ -153,20 +215,33 @@
   (get-pid [this]
     (.self this))
   (send
-    ([this recip-pid-or-name msg]
-      (.send this recip-pid-or-name msg))
+    ([this ^OtpErlangPid recip-pid ^OtpErlangObject msg]
+     (.send this recip-pid msg))
     ([this mbox-name node-name msg]
-      (.send this mbox-name node-name msg)))
+     (.send this mbox-name node-name msg)))
   (!
-    ([this recip-pid-or-name msg]
-      (.send this recip-pid-or-name msg))
+    ([this recip-pid msg]
+     (send this recip-pid msg))
     ([this mbox-name node-name msg]
-      (.send this mbox-name node-name msg)))
+     (send this mbox-name node-name msg)))
   (unlink [this recip-pid]
     (.unlink this recip-pid))
   (whereis [this mbox-name]
     (.whereis this mbox-name)))
 
+(ann-protocol MsgObject
+  get-msg
+  [MsgObject -> (t/Nilable OtpErlangObject)]
+  get-recipient
+  [MsgObject -> (t/Nilable Object)]
+  get-recipient-name
+  [MsgObject -> (t/Nilable String)]
+  get-recipient-pid
+  [MsgObject -> (t/Nilable OtpErlangPid)]
+  get-sender-pid
+  [MsgObject -> (t/Nilable OtpErlangPid)]
+  get-type
+  [MsgObject -> int])
 (defprotocol MsgObject
   "Provides a carrier for Erlang messages.
 
@@ -206,7 +281,8 @@
   (get-type [this]
     "Get the type marker from this message."))
 
-(extend-type OtpMsg MsgObject
+(extend-type OtpMsg
+  MsgObject
   (get-msg [this]
     (.getMsg this))
   (get-recipient [this]
@@ -221,9 +297,9 @@
     (.type this)))
 
 (def msg-type-lookup
-  {OtpMsg/exit2Tag :exit-2
-   OtpMsg/exitTag :exit
-   OtpMsg/linkTag :link
+  {OtpMsg/exit2Tag   :exit-2
+   OtpMsg/exitTag    :exit
+   OtpMsg/linkTag    :link
    OtpMsg/regSendTag :reg-send
-   OtpMsg/sendTag :send
-   OtpMsg/unlinkTag :unlink})
+   OtpMsg/sendTag    :send
+   OtpMsg/unlinkTag  :unlink})
