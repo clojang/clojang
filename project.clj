@@ -21,7 +21,7 @@
                    :unit        :unit
                    :system      :system
                    :integration :integration
-                   :type        :type}
+                   :typed       :typed}
   :codox          {:output-path "docs/master/current"
                    :doc-paths   ["docs/source"]
                    :metadata    {:doc/format :markdown}}

@@ -3,5 +3,5 @@
             [clojure.test :refer [deftest is]]
             clojang.jinterface.otp.messaging))
 
-(deftest ^:type type-annotations-test
+(deftest ^:typed type-annotations-test
   (is (check-ns 'clojang.jinterface.otp.messaging)))
