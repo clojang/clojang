@@ -1,6 +1,6 @@
 (ns clojang.jinterface.otp.messaging
   {:lang :core.typed}
-  (:require [clojure.core.typed :as t :refer [IFn ann ann-protocol]]
+  (:require [clojure.core.typed :as t :refer [ann ann-protocol]]
             [clojure.core.typed.utils :refer [defprotocol]]
             [clojang.jinterface.otp :as otp]
             [clojang.util :as util])
