@@ -34,12 +34,8 @@
   equal?
   [MboxObject Object -> boolean]
   exit
-  (t/IFn [MboxObject OtpErlangObject -> nil]
-         ;; XXX In Java, reason can be a string.
-         #_[MboxObject String -> nil]
-         [MboxObject OtpErlangPid OtpErlangObject -> nil]
-         ;; XXX In Java, reason can be a string.
-         #_[MboxObject OtpErlangPid String -> nil])
+  (t/IFn [MboxObject (t/U String OtpErlangObject) -> nil]
+         [MboxObject OtpErlangPid (t/U String OtpErlangObject) -> nil])
   get-name
   [MboxObject -> (t/Nilable String)]
   get-names
@@ -67,14 +63,11 @@
   get-pid
   [MboxObject -> (t/Nilable OtpErlangPid)]
   send
-  (t/IFn [MboxObject OtpErlangPid OtpErlangObject -> nil]
-         ;; XXX Figure out how to accept a node name
-         #_[MboxObject String OtpErlangObject -> nil]
+  (t/IFn [MboxObject (t/U String OtpErlangPid) OtpErlangObject -> nil]
          [MboxObject String String OtpErlangObject -> nil])
   !
   (t/IFn [MboxObject OtpErlangPid OtpErlangObject -> nil]
-         ;; XXX Figure out how to accept a node name
-         #_[MboxObject String OtpErlangObject -> nil]
+         [MboxObject (t/U String OtpErlangPid) OtpErlangObject -> nil]
          [MboxObject String String OtpErlangObject -> nil])
   unlink
   [MboxObject OtpErlangPid -> nil]
@@ -176,9 +169,13 @@
     (.equals this other-obj))
   (exit
     ([this reason]
-     (.exit this ^OtpErlangObject reason))
-    ([this ^OtpErlangPid recip-pid ^OtpErlangObject reason]
-     (.exit this recip-pid reason)))
+     (if (string? reason)
+       (.exit this ^String reason)
+       (.exit this ^OtpErlangObject reason)))
+    ([this ^OtpErlangPid recip-pid reason]
+     (if (string? reason)
+       (.exit this recip-pid ^String reason)
+       (.exit this recip-pid ^OtpErlangObject reason))))
   (get-name [this]
     (.getName this))
   (get-names [this]
@@ -190,7 +187,7 @@
   ;; XXX put the ping with the default timeout in the mid-level API
   (ping
     ([this node-name]
-     (.ping this node-name 1000))
+     (ping this node-name 1000))
     ([this node-name timeout]
      (.ping this node-name timeout)))
   (receive
@@ -215,8 +212,10 @@
   (get-pid [this]
     (.self this))
   (send
-    ([this ^OtpErlangPid recip-pid ^OtpErlangObject msg]
-     (.send this recip-pid msg))
+    ([this recip-pid-or-mbox-name ^OtpErlangObject msg]
+     (if (string? recip-pid-or-mbox-name)
+       (.send this ^String recip-pid-or-mbox-name msg)
+       (.send this ^OtpErlangPid recip-pid-or-mbox-name msg)))
     ([this mbox-name node-name msg]
      (.send this mbox-name node-name msg)))
   (!
