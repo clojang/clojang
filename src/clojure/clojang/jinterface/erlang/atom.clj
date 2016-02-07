@@ -15,7 +15,7 @@
     ;;(get-max-length [this] "The maximun allowed length of an atom, in characters.")
     )
 
-(def atom-behaviour
+(def behaviour
   {:get-atom-value (fn [this] (.atomValue this))
    ;; The maxAtomLength static field isn't getting found ... not sure what's up widdat
    ;;:get-max-length (fn [this]
@@ -23,10 +23,10 @@
    :get-boolean-value (fn [this] (.booleanValue this))})
 
 (extend OtpErlangAtom object/ErlangObject object/behaviour)
-(extend OtpErlangAtom ErlangAtom atom-behaviour)
+(extend OtpErlangAtom ErlangAtom behaviour)
 
 (extend OtpErlangBoolean object/ErlangObject object/behaviour)
-(extend OtpErlangBoolean ErlangAtom atom-behaviour)
+(extend OtpErlangBoolean ErlangAtom behaviour)
 
 ;;; Aliases
 

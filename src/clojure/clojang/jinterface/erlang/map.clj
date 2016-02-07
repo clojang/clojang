@@ -20,7 +20,7 @@
   (get-values [this]
     "Get all the values from the map as an array."))
 
-(def map-behaviour
+(def behaviour
   {:get-arity (fn [this] (.arity this))
    :->set (fn [this] (.entrySet this))
    :get (fn [this key] (.get this key))
@@ -30,7 +30,7 @@
    :get-values (fn [this] (.values this))})
 
 (extend OtpErlangMap object/ErlangObject object/behaviour)
-(extend OtpErlangMap ErlangMap map-behaviour)
+(extend OtpErlangMap ErlangMap behaviour)
 
 ;;; Aliases
 
