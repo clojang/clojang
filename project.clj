@@ -24,5 +24,6 @@
                    :typed       :typed}
   :codox          {:output-path "docs/master/current"
                    :doc-paths   ["docs/source"]
+                   :namespaces  [#"^clojang\.(?!test)"]
                    :metadata    {:doc/format :markdown}}
   :profiles       {:testing     {:aot        :all}})
