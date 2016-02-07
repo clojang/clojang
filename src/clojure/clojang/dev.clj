@@ -1,8 +1,10 @@
 (ns ^{:doc
   "A development namespace that imports other useful namespaces for easy
-  prototyping, &c."}
+  prototyping, &c. The intended use is for this to be the initial namespace
+  when running ``lein repl`` from the Clojang project directory."}
   clojang.dev
-  (:require [clojang.jinterface.erlang.types :as ji-types]
+  (:require [clojure.core.match :refer [match]]
+            [clojang.jinterface.erlang.types :as ji-types]
             [clojang.jinterface.otp.connection :as connection]
             [clojang.jinterface.otp.messaging :as messaging]
             [clojang.jinterface.otp.nodes :as nodes]
