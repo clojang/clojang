@@ -81,23 +81,33 @@
   (->str [this]
     "Return a string representation of the node."))
 
-(extend-type AbstractNode AbstractNodeObject
-  (get-alivename [this]
-    (.alive this))
-  (get-cookie [this]
-    (.cookie this))
-  (create-transport [this addr port-num]
-    (.createTransport this addr port-num))
-  (create-server-transport [this port-num]
-    (.createServerTrasport this port-num))
-  (get-hostname [this]
-    (.host this))
-  (get-name [this]
-    (.node this))
-  (set-cookie [this value]
-    (.setCookie this value))
-  (->str [this]
-    (.toString this)))
+(def abstract-node-behaviour
+  {:get-alivename
+    (fn [this]
+      (.alive this))
+   :get-cookie
+    (fn [this]
+      (.cookie this))
+   :create-transport
+    (fn [this addr port-num]
+      (.createTransport this addr port-num))
+   :create-server-transport
+    (fn [this port-num]
+      (.createServerTrasport this port-num))
+   :get-hostname
+    (fn [this]
+      (.host this))
+   :get-name
+    (fn [this]
+      (.node this))
+   :set-cookie
+    (fn [this value]
+      (.setCookie this value))
+   :->str
+    (fn [this]
+      (.toString this))})
+
+(extend AbstractNode AbstractNodeObject abstract-node-behaviour)
 
 (defprotocol LocalNodeObject
   "This class represents local node types. It is used to group the node types
@@ -109,28 +119,24 @@
   (create-ref [this]
     "Create an Erlang ref.")
   (get-port [this]
-    "Get the port number used by this node.")
-  ;; protected
-  ; (get-epmd [this] "Get the EPMD socket.")
-  ; (set-epmd [this socket] "Set the Epmd socket after publishing this nodes
-  ;                          listen port to EPMD.")
-  )
+    "Get the port number used by this node."))
 
-(extend-type OtpLocalNode LocalNodeObject
-  (create-pid [this]
-    (.createPid this))
-  (create-port [this]
-    (.createPort this))
-  (create-ref [this]
-    (.createRef this))
-  (get-port [this]
-    (.port this))
-  ;; protected
-  ; (get-epmd [this]
-  ;   (.getEpmd this))
-  ; (set-epmd [this socket]
-  ;   (.setEpmd this socket))
-  )
+(def local-node-behaviour
+  {:create-pid
+    (fn [this]
+      (.createPid this))
+   :create-port
+    (fn [this]
+      (.createPort this))
+   :create-ref
+    (fn [this]
+      (.createRef this))
+   :get-port
+    (fn [this]
+      (.port this))})
+
+(extend OtpLocalNode AbstractNodeObject abstract-node-behaviour)
+(extend OtpLocalNode LocalNodeObject local-node-behaviour)
 
 (defprotocol NodeObject
   "Represents a local OTP node. This class is used when you do not wish to
@@ -173,31 +179,44 @@
   (whereis [this mbox-name]
     "Determine the pid corresponding to a registered name on this node."))
 
-(extend-type OtpNode NodeObject
-  (close [this]
-    (.close this))
-  (close-mbox
-    ([this mbox]
-      (.closeMbox this mbox))
-    ([this mbox reason]
-      (.closeMbox this mbox reason)))
-  (create-mbox
-    ([this]
-      (.createMbox this))
-    ([this name]
-      (.createMbox this name)))
-  (get-names [this]
-    (.getNames this))
-  (ping [this node-name timeout]
-    (.ping this node-name timeout))
-  (register-mbox [this mbox-name mbox]
-    (.registerName this mbox-name mbox))
-  (register-status-handler [this handler]
-    (.registerStatusHandler this handler))
-  (set-flags [this flags]
-    (.setFlags this flags))
-  (whereis [this mbox-name]
-    (.whereis this mbox-name)))
+(def node-behaviour
+  {:close
+    (fn [this]
+      (.close this))
+   :close-mbox
+    (fn
+      ([this mbox-obj]
+        (.closeMbox this mbox-obj))
+      ([this mbox-obj reason]
+        (.closeMbox this mbox-obj reason)))
+   :create-mbox
+    (fn
+      ([this]
+        (.createMbox this))
+      ([this mbox-name]
+        (.createMbox this mbox-name)))
+   :get-names
+    (fn [this]
+      (.getNames this))
+   :ping
+    (fn [this node-name timeout]
+      (.ping this node-name timeout))
+   :register-mbox
+    (fn [this mbox-name mbox-obj]
+      (.registerName this mbox-name mbox-obj))
+   :register-status-handler
+    (fn [this handler]
+      (.registerStatusHandler this handler))
+   :set-flags
+    (fn [this flags]
+      (.setFlags this flags))
+   :whereis
+    (fn [this mbox-name]
+      (.whereis this mbox-name))})
+
+(extend OtpNode AbstractNodeObject abstract-node-behaviour)
+(extend OtpNode LocalNodeObject local-node-behaviour)
+(extend OtpNode NodeObject node-behaviour)
 
 (defprotocol SelfObject
   "Represents an OTP node. It is used to connect to remote nodes or accept
@@ -225,12 +244,26 @@
     "Unregister the server node's name and port number from the Erlang port
     mapper, thus preventing any new connections from remote nodes."))
 
-(extend-type OtpSelf SelfObject
-  (accept [this] (.accept this))
-  (connect [this peer] (.connect this peer))
-  (get-pid [this] (.pid this))
-  (publish-port [this] (.publishPort this))
-  (unpublish-port [this] (.unPublishPort this)))
+(def self-behaviour
+  {:accept
+    (fn [this]
+      (.accept this))
+   :connect
+    (fn [this peer]
+      (.connect this peer))
+   :get-pid
+    (fn [this]
+      (.pid this))
+   :publish-port
+    (fn [this]
+      (.publishPort this))
+   :unpublish-port
+    (fn [this]
+      (.unPublishPort this))})
+
+(extend OtpSelf AbstractNodeObject abstract-node-behaviour)
+(extend OtpSelf LocalNodeObject local-node-behaviour)
+(extend OtpSelf SelfObject self-behaviour)
 
 ;;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 ;;; Error handling
