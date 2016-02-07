@@ -50,12 +50,31 @@
 (import-vars
   [nodes
 
+   ;; abstract-node-behaviour
+   get-alivename
    get-cookie
+   create-transport
+   create-server-transport
    get-hostname
    get-name
+   set-cookie
+   ->str
+   ;; local-node-behaviour
+   create-pid
+   create-port
+   create-ref
+   get-port
+   ;; node-behaviour
    close
+   close-mbox
+   create-mbox
+   ;; get-names -- see above
+   ;; ping -- see above
+   register-mbox
    register-status-handler
-
+   set-flags
+   ;; whereis -- see above
+   ;; self-behaviour
    accept
    connect
    get-pid
