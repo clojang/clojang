@@ -23,7 +23,7 @@
   (->str [this]
     "Convert to a string."))
 
-(def object-behaviour
+(def behaviour
   {:bind (fn [this binds] (.bind this binds))
    :clone (fn [this] (.clone this))
    :decode (fn [this buff] (.decode this buff))
@@ -33,4 +33,4 @@
    :match (fn [this term binds] (.match this term binds))
    :->str (fn [this] (.toString this))})
 
-(extend OtpErlangObject ErlangObject object-behaviour)
+(extend OtpErlangObject ErlangObject behaviour)

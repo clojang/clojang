@@ -2,7 +2,7 @@
   (:require [clojure.string :as clj-string]
             [dire.core :refer [with-handler!]]
             [clojang.jinterface.erlang.atom :as atom]
-            [clojang.jinterface.erlang.boolean :as boolean]
+            [clojang.jinterface.erlang.atom :as boolean]
             [clojang.jinterface.erlang.float :as float]
             [clojang.jinterface.erlang.int :as int]
             [clojang.jinterface.erlang.map :as map-type]
@@ -175,7 +175,7 @@
   ;; boolean
   com.ericsson.otp.erlang.OtpErlangBoolean
   (term->edn [erl-obj]
-    (boolean/get-value erl-obj))
+    (boolean/get-boolean-value erl-obj))
   ;; tuple /vector
   com.ericsson.otp.erlang.OtpErlangTuple
   (term->edn [erl-obj]

@@ -3,7 +3,7 @@
             [dire.core :refer [with-handler!]]
             [clojang.core :as clojang]
             [clojang.jinterface.erlang.atom :as atom]
-            [clojang.jinterface.erlang.boolean :as boolean]
+            [clojang.jinterface.erlang.atom :as boolean]
             [clojang.jinterface.erlang.string :as string]
             [clojang.jinterface.erlang.types :as types]
             [clojang.util :as util])

@@ -1,6 +1,7 @@
 (ns clojang.jinterface.erlang.int
-  (:require [clojang.util :as util]
-            [clojang.jinterface.erlang.object :refer [object-behaviour]])
+  (:require [potemkin :refer [import-vars]]
+            [clojang.util :as util]
+            [clojang.jinterface.erlang.object :as object])
   (:import [com.ericsson.otp.erlang
              OtpErlangByte
              OtpErlangChar
@@ -12,25 +13,6 @@
   (:refer-clojure :exclude [hash]))
 
 (defprotocol ErlangInt
-  (bind [this binds]
-    "Make new Erlang term replacing variables with the respective values
-    from bindings argument(s).")
-  (clone [this]
-    "Clone the Erlang object.")
-  (decode [this buff]
-    "Read binary data in the Erlang external format, and produce a
-    corresponding Erlang data type object.")
-  (encode [this buff]
-    "Convert the object according to the rules of the Erlang external
-    format.")
-  (equal? [this other-erl-obj]
-    "Determine if two Erlang objects are equal.")
-  (hash [this]
-    "Get the object hash code.")
-  (match [this term binds]
-    "Perform match operation against given term.")
-  (->str [this]
-    "Convert to a string.")
   (get-bigint-value [this]
     "Get this number as a BigInteger.")
   (get-bit-length [this]
@@ -61,25 +43,51 @@
   (get-ushort-value [this]
     "Get this number as a non-negative short."))
 
-(def int-behaviour
-  (merge object-behaviour
-         {:get-bigint-value (fn [this] (.bigIntegerValue this))
-          :get-bit-length (fn [this] (.bitLength this))
-          :get-byte-value (fn [this] (.byteValue this))
-          :get-char-value (fn [this] (.charValue this))
-          :get-int-value (fn [this] (.intValue this))
-          :long? (fn [this] (.isLong this))
-          :ulong? (fn [this] (.isULong this))
-          :get-long-value (fn [this] (.longValue this))
-          :get-short-value (fn [this] (.shortValue this))
-          :get-signum (fn [this] (.signum this))
-          :get-uint-value (fn [this] (.uIntValue this))
-          :get-ushort-value (fn [this] (.uShortValue this))}))
+(def behaviour
+  {:get-bigint-value (fn [this] (.bigIntegerValue this))
+   :get-bit-length (fn [this] (.bitLength this))
+   :get-byte-value (fn [this] (.byteValue this))
+   :get-char-value (fn [this] (.charValue this))
+   :get-int-value (fn [this] (.intValue this))
+   :long? (fn [this] (.isLong this))
+   :ulong? (fn [this] (.isULong this))
+   :get-long-value (fn [this] (.longValue this))
+   :get-short-value (fn [this] (.shortValue this))
+   :get-signum (fn [this] (.signum this))
+   :get-uint-value (fn [this] (.uIntValue this))
+   :get-ushort-value (fn [this] (.uShortValue this))})
 
-(extend OtpErlangByte ErlangInt int-behaviour)
-(extend OtpErlangChar ErlangInt int-behaviour)
-(extend OtpErlangInt ErlangInt int-behaviour)
-(extend OtpErlangLong ErlangInt int-behaviour)
-(extend OtpErlangShort ErlangInt int-behaviour)
-(extend OtpErlangUInt ErlangInt int-behaviour)
-(extend OtpErlangUShort ErlangInt int-behaviour)
+(extend OtpErlangByte object/ErlangObject object/behaviour)
+(extend OtpErlangByte ErlangInt behaviour)
+
+(extend OtpErlangChar object/ErlangObject object/behaviour)
+(extend OtpErlangChar ErlangInt behaviour)
+
+(extend OtpErlangInt object/ErlangObject object/behaviour)
+(extend OtpErlangInt ErlangInt behaviour)
+
+(extend OtpErlangLong object/ErlangObject object/behaviour)
+(extend OtpErlangLong ErlangInt behaviour)
+
+(extend OtpErlangShort object/ErlangObject object/behaviour)
+(extend OtpErlangShort ErlangInt behaviour)
+
+(extend OtpErlangUInt object/ErlangObject object/behaviour)
+(extend OtpErlangUInt ErlangInt behaviour)
+
+(extend OtpErlangUShort object/ErlangObject object/behaviour)
+(extend OtpErlangUShort ErlangInt behaviour)
+
+;;; Aliases
+
+(import-vars
+  [object
+   ;; object-behaviour
+   bind
+   clone
+   decode
+   encode
+   equal?
+   hash
+   match
+   ->str])

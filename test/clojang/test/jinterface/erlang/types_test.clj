@@ -4,11 +4,11 @@
             [clojang.jinterface.erlang :as erlang]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.erlang.atom :as atom-type]
-            [clojang.jinterface.erlang.boolean :as boolean-type]
-            [clojang.jinterface.erlang.char :as char-type]
+            [clojang.jinterface.erlang.atom :as boolean-type]
             [clojang.jinterface.erlang.map :as map-type]
             [clojang.jinterface.erlang.tuple :as tuple-type]
             [clojang.jinterface.erlang.list :as list-type]
+            [clojang.jinterface.erlang.int :as char-type]
             [clojang.jinterface.erlang.int :as long-type]
             [clojang.jinterface.erlang.string :as string-type])
   (:import [com.ericsson.otp.erlang]
@@ -46,13 +46,13 @@
     (is (= true (atom-type/equal? an-atom same-atom)))
     (is (= false (atom-type/equal? an-atom another-atom)))
     (is (= -1226849876 (atom-type/hash an-atom)))
-    (is (= "test-atom" (atom-type/get-value an-atom)))
-    (is (= "true" (atom-type/get-value true-1)))
-    (is (= "true" (atom-type/get-value true-2)))
+    (is (= "test-atom" (atom-type/get-atom-value an-atom)))
+    (is (= "true" (atom-type/get-atom-value true-1)))
+    (is (= "true" (atom-type/get-atom-value true-2)))
     (is (= true (atom-type/get-boolean-value true-1)))
     (is (= true (atom-type/get-boolean-value true-2)))
-    (is (= "false" (atom-type/get-value false-1)))
-    (is (= "false" (atom-type/get-value false-2)))
+    (is (= "false" (atom-type/get-atom-value false-1)))
+    (is (= "false" (atom-type/get-atom-value false-2)))
     (is (= false (atom-type/get-boolean-value false-1)))
     (is (= false (atom-type/get-boolean-value false-2)))))
 
@@ -67,8 +67,8 @@
         false-bool (types/boolean false)]
     (is (= "true" (boolean-type/get-atom-value true-bool)))
     (is (= "false" (boolean-type/get-atom-value false-bool)))
-    (is (= true (boolean-type/get-value true-bool)))
-    (is (= false (boolean-type/get-value false-bool)))))
+    (is (= true (boolean-type/get-boolean-value true-bool)))
+    (is (= false (boolean-type/get-boolean-value false-bool)))))
 
 (deftest ^:unit char-constructor-test
   (is (= com.ericsson.otp.erlang.OtpErlangChar

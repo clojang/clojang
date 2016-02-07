@@ -131,9 +131,8 @@
     :send-rpc (fn [this mod fun args] (.sendRPC this mod fun args))
     :unlink (fn [this dest-pid] (.unlink this dest-pid))})
 
-(extend OtpConnection
-        ConnectionObject
-        connection-behaviour)
+(extend OtpConnection AbstractConnectionObject abstract-connection-behaviour)
+(extend OtpConnection ConnectionObject connection-behaviour)
 
 (defprotocol EpmdObject
   "Provides methods for registering, unregistering and looking up nodes with

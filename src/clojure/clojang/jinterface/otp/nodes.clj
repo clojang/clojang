@@ -218,6 +218,8 @@
 (extend OtpNode LocalNodeObject local-node-behaviour)
 (extend OtpNode NodeObject node-behaviour)
 
+(extend OtpPeer AbstractNodeObject abstract-node-behaviour)
+
 (defprotocol SelfObject
   "Represents an OTP node. It is used to connect to remote nodes or accept
   incoming connections from remote nodes.
