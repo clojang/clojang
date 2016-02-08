@@ -57,19 +57,55 @@
       (util/->str-arg fun)
       (clojang/->erlang args))))
 
+(defn- -parse-lookup-names [results]
+  (into [] results))
+
+(defn lookup-names
+  ([]
+    (-> (connection/lookup-names)
+        (-parse-lookup-names)))
+  ([inet-addr-str]
+    (-> (java.net.InetAddress/getByName inet-addr-str)
+        (connection/lookup-names)
+        (-parse-lookup-names)))
+  ([inet-addr-str transport]
+    (-> (java.net.InetAddress/getByName inet-addr-str)
+        (connection/lookup-names transport)
+        (-parse-lookup-names))))
+
 ;;; Aliases
 
 (import-vars
   [connection
-
+   ;; abstract-connection-behaviour
+   close
    deliver
+   get-flags
+   get-trace-level
+   connected?
+   run
+   set-flags
+   set-trace-level
+   ;; connection-behaviour
+   ;; exit -- see above
    link
    get-msg-count
    get-peer
+   ;; receive -- see above
    receive-buf
+   ;; redeive-msg -- see above
+   ;; receive-rpc -- see above
    get-self
+   ;; send -- see above
    send-buf
-   unlink])
+   ;; send-rpc -- see above
+   unlink
+   ;; epmd
+   ;; lookup-names -- see above
+   lookup-port
+   publish-port
+   unpublish-port
+   use-port])
 
 (def recv "" receive)
 (def recv-msg "" receive-msg)
