@@ -180,7 +180,7 @@ For instance, we could have done it like this:
 png-png
 ```
 
-Please don't write your LFE OTP apps like this, though :-) You'll slowly end-up reinventing OTP, though a partially-implemented and bug-ridden one.
+Please don't write your LFE OTP apps like this, though :-) You'll slowly end-up reinventing OTP, though a partially-implemented and bug-ridden one ...
 
 Back to this demonstration: all we need now to turn this into a simplistic server is to spawn it:
 
@@ -224,7 +224,7 @@ We're going to want to call this from Clojure too, so let's register the LFE pro
 true
 ```
 
-With that done, let's return to the Clojure REPL and make some calls to our second (simple, don't-deploy-with-this) server:
+With that done, let's return to the Clojure REPL and make some calls to our second (simple-don't-deploy-with-this) server:
 
 ```clojure
 clojang.dev=> (conn/! connx :png-png [:ping (node/get-pid self)])
@@ -291,23 +291,23 @@ little server we wrote in LFE above:
 ```clojure
 (require '[clojure.core.match :refer [match]])
 
-;; XXX Right now this is hanging when executed a second
-;;     time; need to debug
 (defn png-png
   []
   (let [init-state 0
-        self (node/self :srvr)
-        _ (node/publish-port self)
-        cnnx (node/accept self)]
+        self (node/new :srvr)
+        inbox (mbox/new self :pinger)]
     (loop [png-count init-state]
-      (match [(conn/receive cnnx)]
-        [[:ping caller]] (do (conn/! cnnx caller :pong)
-                             (recur (inc png-count)))
-        [[:get-count caller]] (do (conn/! cnnx caller png-count)
-                                  (recur png-count))
-        [[:stop caller]] (do (conn/unlink cnnx caller)
-                             (node/unpublish self)
-                             :stopped)))))
+      (match [(mbox/receive inbox)]
+        [[:ping caller]]
+          (do (mbox/! inbox caller :pong)
+              (recur (inc png-count)))
+        [[:get-count caller]]
+          (do (mbox/! inbox caller png-count)
+              (recur png-count))
+        [[:stop caller]]
+          (do (mbox/close inbox)
+              (node/close self)
+              :stopped)))))
 ```
 
 Let's paste this server into the Clojure REPL and then run it:
@@ -319,18 +319,18 @@ Let's paste this server into the Clojure REPL and then run it:
 Now let's head over to an LFE REPL and talk to the Clojure server:
 
 ```cl
-(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(ping ,(self)))
+(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(ping ,(self)))
 #(ping <0.34.0>)
-(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(ping ,(self)))
+(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(ping ,(self)))
 #(ping <0.34.0>)
-(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(ping ,(self)))
+(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(ping ,(self)))
 #(ping <0.34.0>)
 (clojang-lfe@mndltl01)> (c:flush)
 Shell got pong
 Shell got pong
 Shell got pong
 ok
-(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(get-count ,(self)))
+(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(get-count ,(self)))
 #(get-count <0.34.0>)
 (clojang-lfe@mndltl01)> (c:flush)
 Shell got 3
@@ -340,7 +340,7 @@ ok
 Once we're done, we can ask the server to stop from LFE:
 
 ```cl
-(clojang-lfe@mndltl01)> (! #(srvr srvr@mndltl01) `#(stop ,(self)))
+(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(stop ,(self)))
 #(stop <0.34.0>)
 ```
 
