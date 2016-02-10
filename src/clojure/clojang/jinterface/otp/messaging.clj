@@ -4,7 +4,8 @@
             [clojure.core.typed.utils :refer [defprotocol]]
             [clojang.jinterface.otp :as otp]
             [clojang.util :as util])
-  (:import [com.ericsson.otp.erlang
+  (:import [clojure.lang Keyword]
+           [com.ericsson.otp.erlang
             OtpErlangObject
             OtpErlangPid
             OtpInputStream
@@ -295,6 +296,7 @@
   (get-type [this]
     (.type this)))
 
+(ann msg-type-lookup (t/Map int Keyword))
 (def msg-type-lookup
   {OtpMsg/exit2Tag   :exit-2
    OtpMsg/exitTag    :exit
