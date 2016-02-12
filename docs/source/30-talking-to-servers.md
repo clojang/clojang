@@ -248,12 +248,21 @@ clojang.dev=> (conn/receive connx)
 That looks not-so-erily familiar ...
 
 
-
 ## LFE Client with Clojure Server
 
-### Using XXX (core.async?)
+In the case of an LFE server, Erlang/OTP defined the service specification (i.e., ``gen_server``), but there is no analog in Clojure (core, anyway; the [Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides an OTP-inspired ``gen-server``).
 
-In the case of an LFE server, Erlang/OTP defined the service specification (i.e., ``gen_server``), but there is no analog in Clojure (core, anyway; the [Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides an OTP-inspired ``gen-server``). Sticking with the RPC example, there is no OTP-compliant mechanism for making calls on remote nodes in Clojure. This, of course, is no surprise, since the OTP RPC mechanism is very specific to the Erlang VM.
+Further complicating matters, JInterface uses Java threads when creating connections between nodes; any misbehaving nodes, mailboxes, or issues with the communications between the two can result in various errors (expected and otherwise) in the VM that is running the Clojure/JInterface code.
+
+As such, the more explicitly we deal with threads and their related issues in Clojure, the more likely we are to have a properly running Clojure+JInterface server. As such, using a particular framework in addition to this, could very well mask any issues that might arise with threads and JInterface, and unless you have a great deal of experience running threaded networking code in your Clojure (or other JVM language) framework of choice, we recommend not complicating matters.
+
+Note that an ideal solution would take advantage of any Erlang-term generating or parsing code in JInterface, while leaving the message passing to a library built upon core.async. This would provide Clojure programmers with two highly performant microthread sysmtems (core.async and the Erlang VM) which specialize in concurrency. Alas, that day has not yet arrived ...
+
+### Creating a JInterface Server
+
+Since there is no framework built around JInterface nodes, mailboxes, and connections, we'll be working the threads that JInterface creates, taking basic defensive measures (not the best approach, but programming with threads doesn't leave us much choice).
+
+Sticking with the RPC example, there is no OTP-compliant mechanism for making calls on remote nodes in Clojure. This, of course, is no surprise, since the OTP RPC mechanism is very specific to the Erlang VM.
 
 That being said, it's "simply" sturctured message passing, and there's no reason we cannot implement our own RPC server -- we just need to be able to hanle RPC messages. The Clojang library offers just this, and in fact, will automatically parse RPC-type messages sent from an Erlang VM node (in our case, LFE, but the mechanism is dialect-agnostic).
 
