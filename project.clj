@@ -15,7 +15,7 @@
                    [dire "0.5.4"]
                    [potemkin "0.4.3"]
                    [twig "0.1.2"]]
-  :plugins        [[lein-codox "0.9.1"]
+  :plugins        [[lein-codox "0.9.4"]
                    [lein-simpleton "1.3.0"]]
   :source-paths   ["src/clojure", "test"]
   :repl-options   {:init-ns clojang.dev}
