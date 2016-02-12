@@ -1,5 +1,6 @@
 (ns clojang.core
   (:require [clojure.string :as clj-string]
+            [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
             [clojang.jinterface.erlang.atom :as atom]
             [clojang.jinterface.erlang.atom :as boolean]
@@ -17,7 +18,7 @@
 (declare edn->term term->edn)
 
 (defn ->erl-array [xs]
-  (into-array (types/object) (map #(edn->term %) xs)))
+  (into-array (types/object) (map edn->term xs)))
 
 (defn ->clj-vector [xs]
   (map #(term->edn %) (into [] xs)))
@@ -149,6 +150,15 @@
     (types/string edn))
   ;; XXX JInterface objects
   com.ericsson.otp.erlang.OtpConnection
+  (edn->term [obj]
+    obj)
+  com.ericsson.otp.erlang.OtpNode
+  (edn->term [obj]
+    obj)
+  com.ericsson.otp.erlang.OtpMbox
+  (edn->term [obj]
+    obj)
+  com.ericsson.otp.erlang.OtpErlangPid
   (edn->term [obj]
     obj)
   com.ericsson.otp.erlang.OtpErlangObject

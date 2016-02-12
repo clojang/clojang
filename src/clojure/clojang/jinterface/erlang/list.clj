@@ -2,9 +2,7 @@
   (:require [potemkin :refer [import-vars]]
             [clojang.util :as util]
             [clojang.jinterface.erlang.object :as object])
-  (:import [com.ericsson.otp.erlang
-            OtpErlangList
-            OtpErlangString])
+  (:import [com.ericsson.otp.erlang OtpErlangList])
   (:refer-clojure :exclude [hash]))
 
 (defprotocol ErlangList

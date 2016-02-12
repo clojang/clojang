@@ -4,6 +4,9 @@
   when running ``lein repl`` from the Clojang project directory."}
   clojang.dev
   (:require [clojure.core.match :refer [match]]
+            [clojure.tools.logging :as log]
+            [clojure.tools.namespace.repl :as repl]
+            [dire.core :refer [with-handler! with-finally!]]
             [clojang.jinterface.erlang.types :as ji-types]
             [clojang.jinterface.otp.connection :as connection]
             [clojang.jinterface.otp.messaging :as messaging]
@@ -16,3 +19,5 @@
             [clojang.rpc :as rpc]
             [clojang.types :as types]
             [clojang.util :as util]))
+
+(def reload #'repl/refresh)
