@@ -17,6 +17,7 @@
             [clojang.msg :as msg]
             [clojang.node :as node]
             [clojang.rpc :as rpc]
+            [clojang.startup :as startup]
             [clojang.types :as types]
             [clojang.util :as util]))
 

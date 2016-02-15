@@ -80,3 +80,15 @@
       (into acc [x]))
     []
     (map ->str-arg args)))
+
+(defn defined?
+  [item]
+  (cond
+    empty? false
+    nil? false))
+
+(defn close-splash-screen
+  ""
+  []
+  (-> (java.awt.SplashScreen/getSplashScreen)
+      (.close)))

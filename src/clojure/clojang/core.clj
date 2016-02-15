@@ -11,6 +11,7 @@
             [clojang.jinterface.erlang.tuple :as tuple]
             [clojang.jinterface.erlang.types :as types]
             [clojang.jinterface.otp.nodes]
+            [clojang.node :as node]
             [clojang.util :as util])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))

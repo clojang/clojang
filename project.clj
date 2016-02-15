@@ -11,13 +11,20 @@
                    [org.clojure/core.typed "0.3.22"]
                    [org.clojure/math.numeric-tower "0.0.4"]
                    [org.clojure/tools.namespace "0.2.11"]
+                   [org.clojure/tools.logging "0.3.1"]
                    [org.erlang.otp/jinterface "1.6.1"]
                    [dire "0.5.4"]
                    [potemkin "0.4.3"]
-                   [twig "0.1.2"]]
+                   [twig "0.1.4"]]
   :plugins        [[lein-codox "0.9.4"]
                    [lein-simpleton "1.3.0"]]
   :source-paths   ["src/clojure", "test"]
+  :aot            [clojure.tools.logging.impl
+                   clojang.startup]
+  :jvm-opts       ["-Dnode.sname=clojang"
+                   "-splash:resources/images/clojang-logo-250x.png"]
+  :manifest       {"Premain-Class" "clojang.startup"}
+  :java-agents    [[clojang "0.1.0-dev"]]
   :repl-options   {:init-ns clojang.dev}
   :test-selectors {:default     :unit
                    :unit        :unit
