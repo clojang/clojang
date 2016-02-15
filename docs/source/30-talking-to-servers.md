@@ -8,34 +8,54 @@ This tutorial covers the two-sided topic of communications between LFE and Cloju
 
 ## Clojure Client with LFE Server
 
-Creating robust servers is the bread and butter of LFE/OTP, so we'll start with Clojure as a client with LFE servers. We'll take a look at two examples:
+Creating robust servers is the bread and butter of LFE/OTP, so we'll start with Clojure as a client and LFE taking the role of running some servers. We'll look at two examples:
 
-1. A very simple (and fragile) LFE server, and
+1. A very simple LFE server, and
 1. An LFE ``gen_server`` built with OTP
 
 
-### Quick and Dirty
+### A Simple LFE Server
 
-Before we look at the "right way" to start thinking about long-running processes in the Erlang VM (using the infrastructure of OTP to build for reliability), we're going to try out a highly simplified LFE server ... of the "ping-pong" variety:
+Before we look at the "right way" to start thinking about long-running processes in the Erlang VM (using the infrastructure of OTP to build for reliability), we're going to try out a highly simplified LFE server ... of the "ping-pong" variety.
 
-```cl
-(clojang-lfe@mndltl01)> (defun ping-pong (count)
-                          (receive
-                            (`#(ping ,caller)
-                              (! caller 'pong) (ping-pong (+ 1 count)))
-                            (`#(get-count ,caller)
-                              (! caller count) (ping-pong count))
-                            (`#(stop, caller)
-                              (! caller 'stopped) 'stopped)))
-ping-pong
+First, start up an LFE REPL by running this command in the cloned ``clojang`` directory:
+
+```bash
+$ make repl
+LFE Shell V7.2 (abort with ^G)
+(clojang-lfe@mndltl01)>
 ```
 
-Please don't write your LFE OTP apps like this, though :-) You'll slowly end-up reinventing OTP, though a partially-implemented and bug-ridden one ...
-
-Back to this demonstration: all we need now to turn this into a simplistic server is to spawn it:
+This will put you at an LFE prompt showing the node name and the host, indicating that you are running in "distributed" mode, able to communicate with other nodes:
 
 ```cl
-(clojang-lfe@mndltl01)> (set ping-pong-pid (spawn (lambda () (ping-pong 0))))
+(clojang-lfe@mndltl01)>
+```
+
+Paste the following into the REPL at the prompt:
+
+```cl
+(defun ping-pong (count)
+  (receive
+    (`#(ping ,caller)
+      (! caller 'pong) (ping-pong (+ 1 count)))
+    (`#(get-count ,caller)
+      (! caller count) (ping-pong count))
+    (`#(stop ,caller)
+      (! caller 'stopped) 'stopped)))
+
+(defun start-server (init-state)
+  (spawn
+    (lambda ()
+      (ping-pong init-state))))
+```
+
+Keep in mind that this is for demonstration purposes only! The simplicity of the above example may inspire you, but you'll need more than this to run your LFE/Elixir/Erlang apps in production!
+
+All we need now to turn this into a simplistic server is to spawn it:
+
+```cl
+(clojang-lfe@mndltl01)> (set ping-pong-pid (start-server 0))
 <0.71.0>
 ```
 
@@ -74,25 +94,77 @@ We're going to want to call this from Clojure too, so let's register the LFE pro
 true
 ```
 
-With that done, let's return to the Clojure REPL and make some calls to our second (simple-don't-deploy-with-this) server:
+In a separate terminal window (in the Clojang top-level directory, just like the ``make repl`` command), start up the Clojure REPL:
 
-```clojure
-clojang.dev=> (conn/! connx :ping-pong [:ping (node/get-pid self)])
+```bash
+$ lein repl
+nREPL server started on port 58369 on host 127.0.0.1 - nrepl://127.0.0.1:58369
+REPL-y 0.3.7, nREPL 0.2.10
+Clojure 1.8.0
+clojang.dev=>
+```
+
+The Clojang project automatically loads up a development namespace for you, ``clojang.dev``, when you start the Clojure REPL, with everything you need to start talking to Erlang nodes.
+
+We're going to need to create some JInterface objects using Clojang wrapper functions in order to talk to LFE: Let's create nodes for two ends of a connection to the LFE node (our LFE REPL), and then open the connection:
+
+```clj
+clojang.dev=> (def client (node/new "ping-client@mndltl01"))
+#'clojang.dev/client
+clojang.dev=> (def inbox (mbox/new client :pinger))
+#'clojang.dev/inbox
+clojang.dev=> (def pid (mbox/get-pid inbox))
+#'clojang.dev/pid
+clojang.dev=> (def lfe "clojang-lfe@mndltl01")
+#'clojang.dev/lfe
+```
+
+Now we can try out some calls to our simple LFE server:
+
+```clj
+clojang.dev=> (mbox/! inbox :ping-pong lfe [:ping pid])
 nil
-clojang.dev=> (conn/! connx :ping-pong [:ping (node/get-pid self)])
+clojang.dev=> (mbox/! inbox :ping-pong lfe [:ping pid])
 nil
-clojang.dev=> (conn/! connx :ping-pong [:ping (node/get-pid self)])
+clojang.dev=> (mbox/! inbox :ping-pong lfe [:ping pid])
 nil
-clojang.dev=> (conn/receive connx)
+clojang.dev=> (mbox/receive inbox)
 :pong
-clojang.dev=> (conn/receive connx)
+clojang.dev=> (mbox/receive inbox)
 :pong
-clojang.dev=> (conn/receive connx)
+clojang.dev=> (mbox/receive inbox)
 :pong
-clojang.dev=> (conn/! connx :ping-pong [:get-count (node/get-pid self)])
+clojang.dev=> (mbox/! inbox :ping-pong lfe [:get-count pid])
 nil
-clojang.dev=> (conn/receive connx)
+clojang.dev=> (mbox/receive inbox)
 6
+clojang.dev=> (mbox/! inbox :ping-pong lfe [:stop pid])
+nil
+clojang.dev=> (mbox/receive inbox)
+:stopped
+```
+
+Back on the LFE side, we can check to make sure that the process was indeed stopped:
+
+```cl
+(clojang-lfe@mndltl01)> (is_process_alive ping-pong-pid)
+false
+```
+
+Let's clean up our JInterface objects:
+
+```clj
+clojang.dev=> (mbox/close inbox)
+nil
+clojang.dev=> (node/close client)
+nil
+```
+
+To make sure our node no longer has an open port, we can query EPMD:
+
+```clj
+clojang.dev=> (conn/lookup-names)
+["name clojang-lfe at port 52346"]
 ```
 
 
@@ -180,15 +252,7 @@ In the ``examples`` directory of the Clojang source code there is a module conta
 
 We're going to compile and then run that code from the LFE REPL. Then, from a Clojure REPL, we'll talk to it.
 
-Start the LFE REPL using the ``repl`` make target in the Clojang top-level directory:
-
-```bash
-$ make repl
-LFE Shell V7.2 (abort with ^G)
-(clojang-lfe@mndltl01)>
-```
-
-Next, compile the example:
+From the previous example, you should already have your LFE REPL running. Let's go ahead and compile the example:
 
 ```cl
 (clojang-lfe@mndltl01)> (c "examples/ping-pong.lfe")
@@ -202,28 +266,7 @@ Now we can start it:
 #(ok <0.45.0>)
 ```
 
-In a separate terminal window (in the Clojang top-level directory, just like the ``make repl`` command), start up the Clojure REPL:
-
-```bash
-$ lein repl
-nREPL server started on port 58369 on host 127.0.0.1 - nrepl://127.0.0.1:58369
-REPL-y 0.3.7, nREPL 0.2.10
-Clojure 1.8.0
-clojang.dev=>
-```
-
-Now we can create nodes for two ends of the connection, and then open a connection between the two:
-
-```clojure
-clojang.dev=> (def self (node/self :client))
-#'clojang.dev/self
-clojang.dev=> (def other (node/peer "clojang-lfe@mndltl01"))
-#'clojang.dev/other
-clojang.dev=> (def connx (node/connect self other))
-#'clojang.dev/connx
-```
-
-With a connection established, we're able to execute Erlang module/function calls on the remote LFE/Erlang node:
+With our LFE server running, let's jump back over to the Clojure REPL and make some RPC calls to our LFE server by passing the module (``:ping-pong``) and the function name (``:ping``):
 
 ```clojure
 clojang.dev=> (conn/!rpc connx :ping-pong :ping)
@@ -244,7 +287,7 @@ clojang.dev=> (conn/receive-rpc connx)
 3
 ```
 
-While the emphasis here is remote communications, it goes without saying that local sends are also possible. Since this is a ``gen_server`` implementation, the proper way to do this is by calling the API we defined:
+While the emphasis here is remote communications, it goes without saying that local LFE sends are also possible. Since this is a ``gen_server`` implementation, the proper way to do this is by calling the API we defined:
 
 ```cl
 (clojang-lfe@mndltl01)> (ping-pong:ping)
@@ -263,7 +306,7 @@ pong
 Just as with the LFE server examples above, we'll write a simple Clojure server first, communicate with it via an LFE client, and then write a bit more robust example Clojure server.
 
 
-### Quick and Dirty
+### Simple Clojure Server
 
 With the core.match library for Clojure, we are able to get remarkably close to the
 little server we wrote in LFE above:
