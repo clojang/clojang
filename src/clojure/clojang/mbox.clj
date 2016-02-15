@@ -118,6 +118,7 @@
    receive-buf
    receive-msg
    self
+   ping
    get-pid
    unlink])
 
