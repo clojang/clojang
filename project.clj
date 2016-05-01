@@ -32,7 +32,7 @@
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]
         [twig "0.1.6"]]
-      :source-paths ["test", "dev-resources/src"]}
+      :source-paths ["test"]}
     :dev {
       :dependencies [
         [org.clojure/tools.namespace "0.2.11"]
