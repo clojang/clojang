@@ -15,30 +15,17 @@
 * [Shells & REPLs](#shells--repls-)
 * [Documentation](#documentation-)
 * [Usage](#usage-)
-  * [Low-level API](#low-level-api-)
-  * [Mid-level API](#mid-level-api-)
-  * [Running Tests](#running-tests-)
-* [Erlang, Clojure, and JInterface](#erlang-clojure-and-jinterface-)
+* [Running Tests](#running-tests-)
 * [License](#license-)
 
 
 ## Introduction [&#x219F;](#contents)
 
-This project provides a solution to the [aesthetic problem of JInterface](https://github.com/oubiwann/clojang/wiki/Example:-JInterface-in-Clojure). While JInterface is an invaluable tool for projects that need to have JVM and Erlang VM languages communicating with each other, it is rather verbose and cumbersom to do so in Clojure. The syntatical burden is often enough to discourage experimentation and play -- essential ingrediates for innovation. The primary goal of Clojang is to make it not only easy to write for the Clojure/Erlang interface, but fun as well.
+This project provides a solution to the [aesthetic problem of JInterface](https://github.com/oubiwann/clojang/wiki/Example:-JInterface-in-Clojure). While JInterface is an invaluable tool for projects that need to have JVM and Erlang VM languages communicating with each other, it is rather verbose and cumbersom to do so in Clojure.
 
-**Low-level API**
+The [jiface low-level API](https://github.com/clojang/jiface) solves this to a certain extent, but it requires that programmers perform all their own type conversions, manual creation of notes, etc.
 
-The first step towards that was to write a Clojure wrapper for JInterface -- a low-level one that is essentially identical to native JInterface. This will be useful for anyone from a functional programming background who wants low-level access to JInterface via idiomatic Clojure.
-
-**Mid-level API**
-
-The second step was to use that low-level API to create a "mid-level" API, one that automatically performned the necessary type conversions of function parameters and returned results, allowing one to write the sort of Clojure one would normally do, without having to cast to Erlang types as is necessary in the low-level Clojure API.
-
-The mid-level Clojang API is intended for Clojure application developers who which to integrate with languages running on the Erlang VM without having to compromise on the Clojure side.
-
-**Erlang VM <-> JVM Utilities**
-
-Finally, for Erlang applications that wish to interact with the JVM, a bit more work is needed: the Erlang VM needs to start up a JVM process (ideally supervised). Clojang aims to provide a basic framework (or at the very least, a set of examples) for doing this. Although the Erlang dialect used by Clojang is LFE (Lisp Flavoured Erlang), this code is 100% Core Erlang compatible and may be used by Erlang proper, Elixir, LFE, Joxa, and any others which run compiled ``.beam`` files.
+The Clojang library, however, provides an interface that is not only syntactically idiomatic Clojure (not unlike the jiface library), but even more so, provides developers with the same level of convenience they have come to expect when using Clojure libraries in general, without the need to perform many manual operations in order to handle Erlang data.
 
 
 ## Dependencies [&#x219F;](#contents)
@@ -82,6 +69,7 @@ Clojure:
 $ lein repl
 ```
 
+
 ## Documentation [&#x219F;](#contents)
 
 Project documentation, including Clojang API reference docs, Javadocs for JInterface, and the Erlang JInterface User's Guide, is availble here:
@@ -101,57 +89,13 @@ Quick links for the other docs:
 
 Using Clojang in a project is just like any other Clojure library. Just add the following to the ``:dependencies`` in your ``project.clj`` file:
 
-![Clojars Project](http://clojars.org/clojang/latest-version.svg)
+[![Clojars Project][clojars-badge]][clojars]
 
 For the Erlang/LFE side of things, you just need to add the Github URL to your ``rebar.config`` file, as with any other rebar-based Erlang VM project.
 
 As for actual code usage, the documentation section provides links to developer guides and API references, but below are also provided two quick examples, one each in the low- and mid-level APIs.
 
-### Low-level API [&#x219F;](#contents)
 
-```clojure
-(require '[clojang.jinterface.otp.messaging :as messaging]
-         '[clojang.jinterface.otp.nodes :as nodes]
-         '[clojang.jinterface.erlang.types :as types]
-         '[clojang.jinterface.erlang.tuple :as tuple-type])
-(def node (nodes/node "gurka"))
-(def mbox (messaging/mbox node))
-(messaging/register-name mbox "echo")
-(def msg (into-array
-           (types/object)
-           [(messaging/self mbox)
-            (types/atom "hello, world")]))
-(messaging/! mbox "echo" "gurka" (types/tuple msg))
-(messaging/receive mbox)
-#object[com.ericsson.otp.erlang.OtpErlangTuple
-        0x4c9e3fa6
-        "{#Pid<gurka@mndltl01.1.0>,'hello, world'}"]
-```
-
-From LFE:
-
-```cl
-(lfe@mndltl01)> (! #(echo gurka@mndltl01) `#(,(self) hej!))
-#(<0.35.0> hej!)
-```
-
-Then back in Clojure:
-
-```clojure
-(def data (messaging/receive mbox))
-(def lfe-pid (tuple-type/get-element data 0))
-(messaging/! mbox lfe-pid (types/tuple msg))
-```
-
-Then, back in LFE:
-
-```cl
-(lfe@mndltl01)> (c:flush)
-Shell got {<5926.1.0>,'hello, world'}
-```
-
-
-### Mid-level API [&#x219F;](#contents)
 
 ```clojure
 (require '[clojang.mbox :as mbox]
@@ -193,7 +137,7 @@ Shell got {<5926.1.0>,'hello-world'}
 ```
 
 
-### Running Tests [&#x219F;](#contents)
+## Running Tests [&#x219F;](#contents)
 
 All the tests may be run with just one command:
 
@@ -234,11 +178,6 @@ $ lein test :all
 ```
 
 This is what is used by the ``rebar3`` configuration to run the Clojang tests.
-
-
-## Erlang, Clojure, and JInterface [&#x219F;](#contents)
-
-If you are interested in building your own JInterface ``.jar`` file for use with a Clojure project, be sure fo check out the page [Building JInterface for Clojure](https://oubiwann.github.io/clojang/current/80-building-jinterface.html) on the Clojang docs site.
 
 
 ## License [&#x219F;](#contents)
