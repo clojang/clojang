@@ -1,7 +1,7 @@
 language: clojure
 script:
   - epmd -daemon
-  - lein with-profile +testing test
+  - lein with-profile base,user,testing test
 jdk:
   - oraclejdk8
   - oraclejdk7
