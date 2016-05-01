@@ -9,14 +9,13 @@
     :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [
     [clojang/jiface "0.1.2-SNAPSHOT"]
-    [clojang/agent "0.1.1"]]
+    [clojang/agent "0.1.2"]]
   :plugins [
     [lein-codox "0.9.5"]
     [lein-simpleton "1.3.0"]]
-  :source-paths
-    ["src/clojure", "test"]
+  :source-paths ["src/clojure"]
   :jvm-opts ["-Dnode.sname=clojang"]
-  :java-agents [[clojang/agent "0.1.1"]]
+  :java-agents [[clojang/agent "0.1.2"]]
   :test-selectors {
     :default :unit
     :unit :unit
@@ -31,8 +30,9 @@
     :testing {
       :aot :all
       :dependencies [
-        [org.clojure/math.numeric-tower "0.0.4"]]
-      :source-paths ["test"]}
+        [org.clojure/math.numeric-tower "0.0.4"]
+        [twig "0.1.6"]]
+      :source-paths ["test", "dev-resources/src"]}
     :dev {
       :dependencies [
         [org.clojure/tools.namespace "0.2.11"]
