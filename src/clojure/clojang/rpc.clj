@@ -8,10 +8,10 @@
   compatible with the RPC capabilities of an Erlang/OTP ``gen_server``."}
   clojang.rpc
   (:require [potemkin :refer [import-vars]]
+            [jiface.otp.nodes :as nodes]
+            [jiface.otp.connection :as connection]
             [clojang.core :as clojang]
             [clojang.conn :as conn]
-            [clojang.jinterface.otp.nodes :as nodes]
-            [clojang.jinterface.otp.connection :as connection]
             [clojang.msg :as msg]
             [clojang.node :as node]
             [clojang.util :as util])

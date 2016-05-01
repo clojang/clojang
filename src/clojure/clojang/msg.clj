@@ -1,6 +1,6 @@
 (ns clojang.msg
   (:require [potemkin :refer [import-vars]]
-            [clojang.jinterface.otp.messaging :as messaging]
+            [jiface.otp.messaging :as messaging]
             [clojang.core :as clojang]
             [clojang.node :as node]
             [clojang.util :as util]))

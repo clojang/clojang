@@ -1,8 +1,8 @@
 (ns clojang.conn
   (:require [potemkin :refer [import-vars]]
+            [jiface.otp.nodes :as nodes]
+            [jiface.otp.connection :as connection]
             [clojang.core :as clojang]
-            [clojang.jinterface.otp.nodes :as nodes]
-            [clojang.jinterface.otp.connection :as connection]
             [clojang.msg :as msg]
             [clojang.util :as util])
   (:refer-clojure :exclude [deliver new send]))

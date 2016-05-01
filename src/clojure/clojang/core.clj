@@ -2,17 +2,16 @@
   (:require [clojure.string :as clj-string]
             [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
-            [clojang.jinterface.erlang.atom :as atom]
-            [clojang.jinterface.erlang.atom :as boolean]
-            [clojang.jinterface.erlang.float :as float]
-            [clojang.jinterface.erlang.int :as int]
-            [clojang.jinterface.erlang.map :as map-type]
-            [clojang.jinterface.erlang.string :as string]
-            [clojang.jinterface.erlang.tuple :as tuple]
-            [clojang.jinterface.erlang.types :as types]
-            [clojang.jinterface.otp.nodes]
-            [clojang.node :as node]
-            [clojang.util :as util])
+            [jiface.erlang.atom :as atom]
+            [jiface.erlang.atom :as boolean]
+            [jiface.erlang.float :as float]
+            [jiface.erlang.int :as int]
+            [jiface.erlang.map :as map-type]
+            [jiface.erlang.string :as string]
+            [jiface.erlang.tuple :as tuple]
+            [jiface.erlang.types :as types]
+            [jiface.otp.nodes]
+            [clojang.node :as node])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))
 

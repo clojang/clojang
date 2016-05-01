@@ -1,16 +1,13 @@
 # clojang
 
-[![][clojang-logo]][clojang-logo-large]
+[![Build Status][travis-badge]][travis][![Clojars Project][clojars-badge]][clojars]
 
-[clojang-logo]: resources/images/clojang-logo-250x.png
-[clojang-logo-large]: resources/images/clojang-logo-1000x.png
+[![Clojang logo][clojang-logo]][clojang-logo-large]
 
 *Erlang's JInterface in Idiomatic Clojure*
 
-![Clojars Project](http://clojars.org/clojang/latest-version.svg)
 
-
-#### Table of Contents
+#### Contents
 
 * [Introduction](#introduction-)
 * [Dependencies](#dependencies-)
@@ -25,7 +22,7 @@
 * [License](#license-)
 
 
-## Introduction [&#x219F;](#table-of-contents)
+## Introduction [&#x219F;](#contents)
 
 This project provides a solution to the [aesthetic problem of JInterface](https://github.com/oubiwann/clojang/wiki/Example:-JInterface-in-Clojure). While JInterface is an invaluable tool for projects that need to have JVM and Erlang VM languages communicating with each other, it is rather verbose and cumbersom to do so in Clojure. The syntatical burden is often enough to discourage experimentation and play -- essential ingrediates for innovation. The primary goal of Clojang is to make it not only easy to write for the Clojure/Erlang interface, but fun as well.
 
@@ -44,7 +41,7 @@ The mid-level Clojang API is intended for Clojure application developers who whi
 Finally, for Erlang applications that wish to interact with the JVM, a bit more work is needed: the Erlang VM needs to start up a JVM process (ideally supervised). Clojang aims to provide a basic framework (or at the very least, a set of examples) for doing this. Although the Erlang dialect used by Clojang is LFE (Lisp Flavoured Erlang), this code is 100% Core Erlang compatible and may be used by Erlang proper, Elixir, LFE, Joxa, and any others which run compiled ``.beam`` files.
 
 
-## Dependencies [&#x219F;](#table-of-contents)
+## Dependencies [&#x219F;](#contents)
 
 * Java
 * Erlang
@@ -52,7 +49,7 @@ Finally, for Erlang applications that wish to interact with the JVM, a bit more 
 * rebar3
 
 
-## Building [&#x219F;](#table-of-contents)
+## Building [&#x219F;](#contents)
 
 ``rebar3`` is used for the top-level builds of the project. It runs ``lein`` under the covers in order to build the Clojure code and create the Clojang``.jar`` file. As such, to build everything -- LFE, Erlang, and Clojure -- you need only do the following:
 
@@ -63,7 +60,7 @@ If you wish to build your own JInterface ``.jar`` file and not use the one we've
 * [Building JInterface for Clojure](http://oubiwann.github.io/clojang/current/80-building-jinterface.html)
 
 
-## Shells & REPLs [&#x219F;](#table-of-contents)
+## Shells & REPLs [&#x219F;](#contents)
 
 There are three interactive programming environments you may start, each of which will have full access to the project's libraries/dependencies.
 
@@ -85,7 +82,7 @@ Clojure:
 $ lein repl
 ```
 
-## Documentation [&#x219F;](#table-of-contents)
+## Documentation [&#x219F;](#contents)
 
 Project documentation, including Clojang API reference docs, Javadocs for JInterface, and the Erlang JInterface User's Guide, is availble here:
 
@@ -100,7 +97,7 @@ Quick links for the other docs:
 * [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java) - Javadoc-generated API documentation built from the JInterface source code
 
 
-## Usage [&#x219F;](#table-of-contents)
+## Usage [&#x219F;](#contents)
 
 Using Clojang in a project is just like any other Clojure library. Just add the following to the ``:dependencies`` in your ``project.clj`` file:
 
@@ -110,7 +107,7 @@ For the Erlang/LFE side of things, you just need to add the Github URL to your `
 
 As for actual code usage, the documentation section provides links to developer guides and API references, but below are also provided two quick examples, one each in the low- and mid-level APIs.
 
-### Low-level API [&#x219F;](#table-of-contents)
+### Low-level API [&#x219F;](#contents)
 
 ```clojure
 (require '[clojang.jinterface.otp.messaging :as messaging]
@@ -154,7 +151,7 @@ Shell got {<5926.1.0>,'hello, world'}
 ```
 
 
-### Mid-level API [&#x219F;](#table-of-contents)
+### Mid-level API [&#x219F;](#contents)
 
 ```clojure
 (require '[clojang.mbox :as mbox]
@@ -196,7 +193,7 @@ Shell got {<5926.1.0>,'hello-world'}
 ```
 
 
-### Running Tests [&#x219F;](#table-of-contents)
+### Running Tests [&#x219F;](#contents)
 
 All the tests may be run with just one command:
 
@@ -239,15 +236,25 @@ $ lein test :all
 This is what is used by the ``rebar3`` configuration to run the Clojang tests.
 
 
-## Erlang, Clojure, and JInterface [&#x219F;](#table-of-contents)
+## Erlang, Clojure, and JInterface [&#x219F;](#contents)
 
 If you are interested in building your own JInterface ``.jar`` file for use with a Clojure project, be sure fo check out the page [Building JInterface for Clojure](https://oubiwann.github.io/clojang/current/80-building-jinterface.html) on the Clojang docs site.
 
 
-## License [&#x219F;](#table-of-contents)
+## License [&#x219F;](#contents)
 
 ```
 Copyright © 2015-2016 Duncan McGreggor
 
 Distributed under the Apache License Version 2.0.
 ```
+
+
+<!-- Named page links below: /-->
+
+[travis]: https://travis-ci.org/clojang/clojang
+[travis-badge]: https://travis-ci.org/clojang/clojang.png?branch=master
+[clojang-logo]: resources/images/clojang-logo-250x.png
+[clojang-logo-large]: resources/images/clojang-logo-1000x.png
+[clojars]: https://clojars.org/clojang/clojang
+[clojars-badge]: https://img.shields.io/clojars/v/clojang/clojang.svg

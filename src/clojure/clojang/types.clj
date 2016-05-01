@@ -1,6 +1,5 @@
 (ns clojang.types
-  (:require [clojang.core :as clojang]
-            [clojang.util :as util])
+  (:require [clojang.core :as clojang])
   (:import [com.ericsson.otp.erlang
              OtpErlangAtom
              OtpErlangBoolean

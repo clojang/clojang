@@ -2,11 +2,10 @@
   (:require [clojure.test :refer :all]
             [dire.core :refer [with-handler!]]
             [clojang.core :as clojang]
-            [clojang.jinterface.erlang.atom :as atom]
-            [clojang.jinterface.erlang.atom :as boolean]
-            [clojang.jinterface.erlang.string :as string]
-            [clojang.jinterface.erlang.types :as types]
-            [clojang.util :as util])
+            [jiface.erlang.atom :as atom]
+            [jiface.erlang.atom :as boolean]
+            [jiface.erlang.string :as string]
+            [jiface.erlang.types :as types])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean]))
 

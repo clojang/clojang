@@ -1,6 +1,7 @@
 (ns clojang.node
   (:require [potemkin :refer [import-vars]]
-            [clojang.jinterface.otp.nodes :as nodes]
+            [jiface.otp.nodes :as nodes]
+            [jiface.util :as ji-util]
             [clojang.util :as util])
   (:refer-clojure :exclude [new]))
 
@@ -41,7 +42,7 @@
   be used."
   []
   (if-let [name (get-short-name)]
-    (format "%s@%s" name (util/get-hostname))
+    (format "%s@%s" name (ji-util/get-hostname))
     (get-long-name)))
 
 (defn get-name
