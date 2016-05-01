@@ -1,0 +1,14 @@
+language: clojure
+script:
+  - epmd -daemon
+  - lein with-profile +testing test
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk6
+  - openjdk7
+  #- openjdk8
+addons:
+  apt:
+    sources:
+      - erlang
