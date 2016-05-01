@@ -6,37 +6,37 @@
             [clojang.util :as util]))
 
 (defn get-msg
-  "An alias for ``clojang.jinterface.otp.messaging/get-msg`` that returns a
+  "An alias for ``jiface.otp.messaging/get-msg`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
   (clojang/->clojure (messaging/get-msg msg)))
 
 (defn get-recipient
-  "An alias for ``clojang.jinterface.otp.messaging/get-recipient`` that returns a
+  "An alias for ``jiface.otp.messaging/get-recipient`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
   (clojang/->clojure (messaging/get-recipient msg)))
 
 (defn get-recipient-name
-  "An alias for ``clojang.jinterface.otp.messaging/get-recipient-name`` that returns a
+  "An alias for ``jiface.otp.messaging/get-recipient-name`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
   (clojang/->clojure (messaging/get-recipient-name msg)))
 
 (defn get-recipient-pid
-  "An alias for ``clojang.jinterface.otp.messaging/get-recipient-pid`` that returns a
+  "An alias for ``jiface.otp.messaging/get-recipient-pid`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
   (clojang/->clojure (messaging/get-recipient-pid msg)))
 
 (defn get-sender-pid
-  "An alias for ``clojang.jinterface.otp.messaging/get-sender-pid`` that returns a
+  "An alias for ``jiface.otp.messaging/get-sender-pid`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
   (clojang/->clojure (messaging/get-sender-pid msg)))
 
 (defn get-type
-  "An alias for ``clojang.jinterface.otp.messaging/get-type`` that returns a
+  "An alias for ``jiface.otp.messaging/get-type`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
   (-> msg

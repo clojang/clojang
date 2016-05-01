@@ -14,14 +14,14 @@
 (declare get-name)
 
 (defn register-name
-  "An alias for ``clojang.jinterface.otp.messaging/register-name`` that also
+  "An alias for ``jiface.otp.messaging/register-name`` that also
   allows for mailbox and node name arguments to be symbols, keywords, or
   strings."
   [& args]
   (apply #'messaging/register-name (util/->str-args args)))
 
 (defn new
-  "An alias for ``clojang.jinterface.otp.messaging/mbox``."
+  "An alias for ``jiface.otp.messaging/mbox``."
   ([node-instance]
     (messaging/mbox node-instance))
   ([node-instance mbox-name]
@@ -30,7 +30,7 @@
       mbox)))
 
 (defmulti send
-  "An alias for ``clojang.jinterface.otp.messaging/send``. This version of
+  "An alias for ``jiface.otp.messaging/send``. This version of
   the function also:
   * allows for mailbox and node name arguments to be symbols, keywords, or
     strings;
@@ -92,13 +92,13 @@
                   (clojang/->erlang msg)))
 
 (defn get-names
-  "An alias for ``clojang.jinterface.otp.messaging/get-names`` that returns a
+  "An alias for ``jiface.otp.messaging/get-names`` that returns a
   vector of names on the same node as the given inbox"
   [inbox]
   (into [] (messaging/get-names inbox)))
 
 (defn receive
-  "An alias for ``clojang.jinterface.otp.messaging/receive`` that returns the
+  "An alias for ``jiface.otp.messaging/receive`` that returns the
   received data as Clojure data types."
   ([inbox]
     (clojang/->clojure (messaging/receive inbox)))
