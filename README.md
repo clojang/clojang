@@ -42,9 +42,7 @@ The Clojang library, however, provides an interface that is not only syntactical
 
 * ``rebar3 compile``
 
-If you wish to build your own JInterface ``.jar`` file and not use the one we've uploaded to Clojars, you'll need to follow the instrucations given in the documentation here:
-
-* [Building JInterface for Clojure](http://oubiwann.github.io/clojang/current/80-building-jinterface.html)
+If you wish to build your own JInterface ``.jar`` file and not use the one we've uploaded to Clojars, you'll need to follow the instrucations given in the [jinterface-builder Clojang project](https://github.com/clojang/jinterface-builder).
 
 
 ## Shells & REPLs [&#x219F;](#contents)
