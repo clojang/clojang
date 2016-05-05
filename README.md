@@ -1,6 +1,4 @@
-# clojang
-
-[![Build Status][travis-badge]][travis][![Clojars Project][clojars-badge]][clojars]
+# clojang [![Build Status][travis-badge]][travis][![Clojars Project][clojars-badge]][clojars]
 
 [![Clojang logo][clojang-logo]][clojang-logo-large]
 
