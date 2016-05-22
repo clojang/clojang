@@ -70,15 +70,15 @@ $ lein repl
 
 Project documentation, including Clojang API reference docs, Javadocs for JInterface, and the Erlang JInterface User's Guide, is availble here:
 
-* [http://oubiwann.github.io/clojang/current/](http://oubiwann.github.io/clojang/current/)
+* [http://clojang.github.io/clojang/current/](http://clojang.github.io/clojang/current/)
 
 Quick links for the other docs:
 
 * Clojang User Guides:
-  * [jiface](http://clojang.github.io/jiface/current/) - A translation of the *JInterface User's Guide* (Erlang documantaion) from Java into Clojure; this is refered to as the Clojang low-level API.
-  * [Clojang](http://clojang.github.io/clojang/current/20-mid-level.html) - An adaptation of the *Low-level API User's Guide* for even more idiomatic Clojure use
-* [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html) - The JInterface (Java support for Erlang Ports) documentation provided in Erlang distributions
-* [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java) - Javadoc-generated API documentation built from the JInterface source code
+  * [jiface User's Guide](http://clojang.github.io/jiface/current/10-low-level-api.html/) - A translation of the *JInterface User's Guide* (Erlang documantaion) from Java into Clojure; this is refered to as the Clojang low-level API.
+  * [Clojang User's Guide](http://clojang.github.io/clojang/current/20-mid-level-api.html) - An adaptation of the *jiface User's Guide* which demonstrates the improved API that Clojang offers
+* [JInterface User's Guide](http://clojang.github.io/clojang/current/erlang/jinterface_users_guide.html) - The JInterface (Java support for Erlang Ports) documentation provided in Erlang distributions
+* [Jinterface Javadocs](http://clojang.github.io/clojang/current/erlang/java) - Javadoc-generated API documentation built from the JInterface source code
 
 
 ## Usage [&#x219F;](#contents)
