@@ -6,6 +6,6 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/core.match "0.3.0-alpha4"]
                  [org.clojure/core.typed "0.3.22"]
-                 [twig "0.1.2"]
-                 [clojang "0.1.0-dev"]]
+                 [clojusc/twig "0.2.1"]
+                 [clojang "0.2.0-SNAPSHOT"]]
   :main ping-pong.core)
