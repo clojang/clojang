@@ -8,36 +8,44 @@
     :name "Apache License, Version 2.0"
     :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [
-    [clojang/jiface "0.1.2-SNAPSHOT"]
-    [clojang/agent "0.1.3-SNAPSHOT"]]
-  :plugins [
-    [lein-codox "0.9.5"]
-    [lein-simpleton "1.3.0"]]
+    [org.clojure/core.memoize "0.5.8"]
+    [clojang/jiface "0.1.2-SNAPSHOT"]]
   :source-paths ["src/clojure"]
-  :jvm-opts ["-Dnode.sname=clojang"]
-  :java-agents [[clojang/agent "0.1.3-SNAPSHOT"]]
-  :test-selectors {
-    :default :unit
-    :unit :unit
-    :system :system
-    :integration :integration}
-  :codox {
-    :output-path "docs/master/current"
-    :doc-paths ["docs/source"]
-    :namespaces [#"^clojang\.(?!test)"]
-    :metadata {:doc/format :markdown}}
   :profiles {
+    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :testing {
       :aot :all
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]
         [twig "0.1.6"]]
-      :source-paths ["test"]}
+      :source-paths ["test"]
+      :test-selectors {
+      :default :unit
+      :unit :unit
+      :system :system
+      :integration :integration}}
+    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    :docs {
+      :plugins [
+        [lein-codox "0.9.5"]
+        [lein-simpleton "1.3.0"]]
+      :dependencies [[twig "0.1.6"]]
+      :codox {
+        :output-path "docs/master/current"
+        :doc-paths ["docs/source"]
+        :namespaces [#"^clojang\.(?!test)"
+                     #"^clojang\.(?!agent)"]
+        :metadata {:doc/format :markdown}}}
+    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :dev {
       :dependencies [
+        [clojang/agent "0.1.4-SNAPSHOT"]
         [org.clojure/tools.namespace "0.2.11"]
         [twig "0.1.6"]]
       :source-paths ["dev-resources/src"]
-      :jvm-opts ["-splash:resources/images/clojang-logo-250x.png"]
-      :aot [clojure.tools.logging.impl]
+      :jvm-opts [
+        "-splash:resources/images/clojang-logo-250x.png"
+        "-Dnode.sname=clojang"
+        "-Dheadless"]
+      :java-agents [[clojang/agent "0.1.4-SNAPSHOT"]]
       :repl-options {:init-ns clojang.dev}}})
