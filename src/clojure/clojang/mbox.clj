@@ -1,5 +1,6 @@
 (ns clojang.mbox
-  (:require [potemkin :refer [import-vars]]
+  (:require [clojure.core.memoize :as memo]
+            [potemkin :refer [import-vars]]
             [jiface.otp.messaging :as messaging]
             [clojang.core :as clojang]
             [clojang.node :as node]
@@ -29,6 +30,29 @@
       (register-name mbox (util/->str-arg mbox-name))
       mbox)))
 
+(def get-default
+  "Get the mbox for the default node.
+
+  If an optional node instance is passed, a new mbox will be returned for that
+  node.
+
+  The results of this function are memoized as the intent is to obtain a
+  singleton instance for the default node. (The Erlang JInterface docs
+  recommend that only one node be run per JVM instance.)"
+  (memo/lru
+    (fn
+      ([]
+        (get-default (node/get-node)))
+      ([node-obj]
+        (clojang.mbox/new node-obj)))))
+
+(defn self
+  ""
+  ([]
+    (self (get-default)))
+  ([mbox]
+    (messaging/self mbox)))
+
 (defmulti send
   "An alias for ``jiface.otp.messaging/send``. This version of
   the function also:
@@ -39,6 +63,13 @@
   * allows for 'client' data to be passed (a map of
     ``{:self node :inbox mbox}`` -- simplifies message-passing code)"
   (fn [& args] (mapv class args)))
+
+(defmethod send [clojure.lang.PersistentArrayMap java.lang.Object]
+                [[process-name remote-node-name] msg]
+  (send (get-default)
+        process-name
+        remote-node-name
+        (clojang/->erlang msg)))
 
 (defmethod send [OtpMbox OtpErlangPid java.lang.Object]
                 [client-mbox pid msg]
@@ -100,24 +131,33 @@
 (defn receive
   "An alias for ``jiface.otp.messaging/receive`` that returns the
   received data as Clojure data types."
+  ([]
+    (clojang/->clojure (messaging/receive (get-default))))
   ([inbox]
     (clojang/->clojure (messaging/receive inbox)))
   ([inbox timeout]
     (clojang/->clojure (messaging/receive inbox timeout))))
+
+(defn close
+  ""
+  ([]
+    (close (get-default)))
+  ([node]
+    (messaging/close node)))
 
 ;;; Aliases
 
 (import-vars
   [messaging
 
-   close
+   ;; close
    equal?
    exit
    link
    get-name
    receive-buf
    receive-msg
-   self
+   ;;self
    ping
    get-pid
    unlink])

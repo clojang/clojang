@@ -15,6 +15,11 @@
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))
 
+(defn !
+  ""
+  [process-name msg]
+  )
+
 (declare edn->term term->edn)
 
 (defn ->erl-array [xs]
