@@ -1,3 +1,6 @@
+build:
+	@lein compile
+
 show-versions:
 	@echo Project: $(PROJ), $(PROJ_VERSION)
 	@echo Erlang: $(ERL_VERSION)
