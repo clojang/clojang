@@ -8,16 +8,19 @@
     :name "Apache License, Version 2.0"
     :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [
+    [org.clojure/clojure "1.8.0"]
     [org.clojure/core.memoize "0.5.8"]
-    [clojang/jiface "0.1.2-SNAPSHOT"]]
+    [clojang/agent "0.2.0-SNAPSHOT"]
+    [clojang/jiface "0.2.0-SNAPSHOT"]]
   :source-paths ["src/clojure"]
   :profiles {
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    :testing {
+    :test {
       :aot :all
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]
-        [twig "0.1.6"]]
+        [clojusc/twig "0.2.1"]]
+      :jvm-opts ["-Dheadless"]
       :source-paths ["test"]
       :test-selectors {
       :default :unit
@@ -39,13 +42,13 @@
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :dev {
       :dependencies [
-        [clojang/agent "0.1.4-SNAPSHOT"]
         [org.clojure/tools.namespace "0.2.11"]
-        [twig "0.1.6"]]
+        [clojusc/twig "0.2.1"]]
       :source-paths ["dev-resources/src"]
       :jvm-opts [
+        ;"-verbose:class"
+        ;"-Dheadless"
         "-splash:resources/images/clojang-logo-250x.png"
-        "-Dnode.sname=clojang"
-        "-Dheadless"]
-      :java-agents [[clojang/agent "0.1.4-SNAPSHOT"]]
+        "-Dnode.sname=clojang"]
+      :java-agents [[clojang/agent "0.2.0-SNAPSHOT"]]
       :repl-options {:init-ns clojang.dev}}})
