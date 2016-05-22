@@ -106,7 +106,17 @@ clojang.dev=>
 
 The Clojang project automatically loads up a development namespace for you, ``clojang.dev``, when you start the Clojure REPL, with everything you need to start talking to Erlang nodes.
 
-We're going to need to create some JInterface objects using Clojang wrapper functions in order to talk to LFE: Let's create nodes for two ends of a connection to the LFE node (our LFE REPL), and then open the connection:
+We're going to need to create some jiface objects using Clojang wrapper functions in order to talk to LFE: Let's create nodes for two ends of a connection to the LFE node (our LFE REPL), and then open the connection:
+
+```clj
+
+```
+
+Now we can try out some calls to our simple LFE server:
+
+```clj
+(mbox/! [:ping-pong "clojang-lfe@mndltl01"] )
+```
 
 ```clj
 clojang.dev=> (def client (node/new "ping-client@mndltl01"))

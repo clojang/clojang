@@ -75,9 +75,9 @@ Project documentation, including Clojang API reference docs, Javadocs for JInter
 Quick links for the other docs:
 
 * Clojang User Guides:
-  * [Low-level API](http://oubiwann.github.io/clojang/current/10-low-level.html) - A translation of the *JInterface User's Guide* (Erlang documantaion) from Java into Clojure
-  * [Mid-level API](http://oubiwann.github.io/clojang/current/20-mid-level.html) - An adaptation of the *Low-level API User's Guide* for even more idiomatic Clojure use
-* [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html) - The JInterface documentation provided in Erlang distributions
+  * [jiface](http://clojang.github.io/jiface/current/) - A translation of the *JInterface User's Guide* (Erlang documantaion) from Java into Clojure; this is refered to as the Clojang low-level API.
+  * [Clojang](http://clojang.github.io/clojang/current/20-mid-level.html) - An adaptation of the *Low-level API User's Guide* for even more idiomatic Clojure use
+* [JInterface User's Guide](http://oubiwann.github.io/clojang/current/erlang/jinterface_users_guide.html) - The JInterface (Java support for Erlang Ports) documentation provided in Erlang distributions
 * [Jinterface Javadocs](http://oubiwann.github.io/clojang/current/erlang/java) - Javadoc-generated API documentation built from the JInterface source code
 
 
@@ -97,14 +97,13 @@ As for actual code usage, the documentation section provides links to developer 
 (require '[clojang.mbox :as mbox]
          '[clojang.node :as node])
 
-(def gurka (node/new :gurka))
-(def inbox (mbox/new gurka :echo))
+(mbox/! inbox :echo :gurka [(mbox/self) :hello-word])
+(mbox/receive)
+```
 
-(def msg [(mbox/get-pid inbox) :hello-world])
+The last function
 
-(mbox/! inbox :echo :gurka msg)
-(mbox/receive inbox)
-
+```
 [#object[com.ericsson.otp.erlang.OtpErlangPid
          0x1fe20514
          "#Pid<gurka@mndltl01.1.0>"]

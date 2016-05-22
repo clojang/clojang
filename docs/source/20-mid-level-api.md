@@ -1,13 +1,23 @@
-# Clojang User's Guide: The Mid-level API
+# Clojang User's Guide
 
-**NOTICE**: This document is a copy of the *Clojang User's Guide: The Low-level API*, but with significant changes made. Unlike the low-level guide, this one provides information for developers interested in using the Clojang API which is designed to save time and effort without the need of manually translating between Clojure and JInterface Erlang data types.
-
-Where usage is identical to the low-level API guide, related content is not duplicated in this guide (with the exception of code and text necessary for establishing a clear context).
+**NOTICE**: This document is an adaptatoin of the *jiface User's Guide*, (which, in turn was copied from the [JInterface User's Guide](erlang/jinterface_users_guide.html)); the adaptations include significant changes, due to a much more simplified API (or, perhaps more accurately, a more varied API but with sane defaults provided). Unlike the low-level guide upon which it is based, this one provides information for developers interested in using the Clojang API which is designed to save time and effort without the need of manually translating between Clojure and JInterface's Erlang data types.
 
 
 ## Nodes
 
-A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``. In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
+A node as defined by Erlang/OTP is an instance of the Erlang Runtime System, a virtual machine roughly equivalent to a JVM. Each node has a unique name in the form of an identifier composed partly of the hostname on which the node is running, e.g ``gurka@sallad.com``.
+
+When starting an Erlang VM in distribution mode, a node process is started, one with its own message box and the ability to send and receive messages. JInterface by itself does no such thing when the JVM is started. However, Clojang makes use of a Java agent (written in Clojure) to provide this same facility. As such, a Clojure REPL running Clojang has its own default node and associated message box, just like an Erlang or LFE node.
+
+Assuming you have an Erlang ``epmd`` daemon running, when you start a Clojang REPL:
+
+```
+$ make repl
+```
+
+n
+
+In this example, the host name is appended automatically to the identifier, and the port number is chosen by the underlying system:
 
 ```clojure
 => (require '[clojang.conn :as conn]
@@ -63,6 +73,7 @@ nil
 If the call to ``(nodes/ping ...)`` succeeds, a connection to the remote node has been established. Note that it is not necessary to ping remote nodes before communicating with them, but by using ping you can determine if the remote exists before attempting to communicate with it.
 
 Connections are only permitted by nodes using the same security cookie. The cookie is a short string provided either as an argument when creating [node](clojang/current/clojang.jinterface.otp.nodes.html#var-NodeObject) objects, or found in the user's home directory in the file ``.erlang.cookie``. When a connection attempt is made, the string is used as part of the authentication process. If you are having trouble getting communication to work, use the trace facility (described later in this document) to show the connection establishment. A likely problem is that the cookies are different.
+
 
 ## Sending and Receiving Messages
 
