@@ -11,15 +11,15 @@
     [org.clojure/clojure "1.8.0"]
     [org.clojure/core.memoize "0.5.8"]
     [clojang/agent "0.2.0-SNAPSHOT"]
-    [clojang/jiface "0.2.0-SNAPSHOT"]]
+    [clojang/jiface "0.2.0-SNAPSHOT"]
+    [clojusc/twig "0.3.0"]]
   :source-paths ["src/clojure"]
   :profiles {
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :test {
       :aot :all
       :dependencies [
-        [org.clojure/math.numeric-tower "0.0.4"]
-        [clojusc/twig "0.2.1"]]
+        [org.clojure/math.numeric-tower "0.0.4"]]
       :jvm-opts ["-Dheadless"]
       :source-paths ["test"]
       :test-selectors {
@@ -30,9 +30,8 @@
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :docs {
       :plugins [
-        [lein-codox "0.9.5"]
+        [lein-codox "0.10.2"]
         [lein-simpleton "1.3.0"]]
-      :dependencies [[twig "0.1.6"]]
       :codox {
         :output-path "docs/master/current"
         :doc-paths ["docs/source"]
@@ -42,13 +41,12 @@
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :dev {
       :dependencies [
-        [org.clojure/tools.namespace "0.2.11"]
-        [clojusc/twig "0.2.1"]]
+        [org.clojure/tools.namespace "0.2.11"]]
       :source-paths ["dev-resources/src"]
       :jvm-opts [
         ;"-verbose:class"
         ;"-Dheadless"
-        "-splash:resources/images/clojang-logo-250x.png"
+        "-splash:resources/images/logo-5-250x.png"
         "-Dnode.sname=clojang"]
       :java-agents [[clojang/agent "0.2.0-SNAPSHOT"]]
       :repl-options {:init-ns clojang.dev}}})
