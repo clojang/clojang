@@ -56,7 +56,7 @@
 (def get-node
   "Get the default node object for the currently running instance of the JVM.
   In general, one should not need more than one node per JVM."
-  (let [default-node (nodes/node (name (get-default-name)))]
+  (let [default-node (nodes/node (get-default-name))]
     (fn [] default-node)))
 
 (defn get-names
