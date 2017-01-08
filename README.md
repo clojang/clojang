@@ -181,7 +181,7 @@ This is what is used by the ``rebar3`` configuration to run the Clojang tests.
 ## License [&#x219F;](#contents)
 
 ```
-Copyright © 2015-2016 Duncan McGreggor
+Copyright © 2016-2017 Duncan McGreggor
 
 Distributed under the Apache License Version 2.0.
 ```
