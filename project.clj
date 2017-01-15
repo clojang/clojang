@@ -16,7 +16,7 @@
   :source-paths ["src/clojure"]
   :profiles {
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    :test {
+    :testing {
       :aot :all
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]]
