@@ -21,12 +21,11 @@
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]]
       :jvm-opts ["-Dheadless"]
-      :source-paths ["test"]
       :test-selectors {
-      :default :unit
-      :unit :unit
-      :system :system
-      :integration :integration}}
+        :default :unit
+        :unit :unit
+        :system :system
+        :integration :integration}}
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :docs {
       :aot :all
