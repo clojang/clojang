@@ -32,89 +32,89 @@
 (defn undefined
   ""
   []
-  (clojang/->erlang nil))
+  (clojang/->erl nil))
 
 (defn atom
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn boolean
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn tuple
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn list
   ""
   ([]
-    (clojang/->erlang '()))
+    (clojang/->erl '()))
   ([arg]
-    (clojang/->erlang arg)))
+    (clojang/->erl arg)))
 
 (defn char
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn string
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn long
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn byte
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn char
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn int
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn short
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn uint
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn ushort
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn float
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn double
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 (defn map
   ""
   [arg]
-  (clojang/->erlang arg))
+  (clojang/->erl arg))
 
 ;;; Predicates
 
@@ -122,7 +122,7 @@
   ""
   [arg]
   (and (instance? OtpErlangAtom arg)
-       (= (clojang/->clojure arg) nil)))
+       (= (clojang/->clj arg) nil)))
 
 (defn atom?
   ""

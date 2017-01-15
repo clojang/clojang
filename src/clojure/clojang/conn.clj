@@ -11,15 +11,15 @@
   "An alias for ``jiface.otp.connection/exit`` that automatically
   converts the ``reason`` argument to an appropriate Erlang type."
   [dest-pid reason]
-  (apply #'connection/exit dest-pid (clojang/->erlang reason)))
+  (apply #'connection/exit dest-pid (clojang/->erl reason)))
 
 (defn receive
   "An alias for ``jiface.otp.connection/receive`` that returns the
   received data as Clojure data types."
   ([connx]
-    (clojang/->clojure (connection/receive connx)))
+    (clojang/->clj (connection/receive connx)))
   ([connx timeout]
-    (clojang/->clojure (connection/receive connx timeout))))
+    (clojang/->clj (connection/receive connx timeout))))
 
 (defn receive-msg
   "An alias for ``jiface.otp.connection/receive-msg`` that returns the
@@ -33,13 +33,13 @@
   "An alias for ``jiface.otp.connection/receive-rpc`` that returns the
   received data as Clojure data types."
   [connx]
-  (clojang/->clojure (connection/receive-rpc connx)))
+  (clojang/->clj (connection/receive-rpc connx)))
 
 (defn send
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (clojang/->erlang msg)))
+  (connection/send connx (util/->str-arg dest) (clojang/->erl msg)))
 
 (defn send-rpc
   "An alias for ``jiface.otp.connection/send-rpc`` that also allows for
@@ -49,13 +49,13 @@
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (clojang/->erlang '())))
+      (clojang/->erl '())))
   ([connx mod fun args]
     (connection/send-rpc
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (clojang/->erlang args))))
+      (clojang/->erl args))))
 
 (defn- -parse-lookup-names [results]
   (into [] results))

@@ -21,7 +21,7 @@
   "An alias for ``jiface.otp.connection/exit`` that automatically
   converts the ``reason`` argument to an appropriate Erlang type."
   [dest-pid reason]
-  (apply #'connection/exit dest-pid (clojang/->erlang reason)))
+  (apply #'connection/exit dest-pid (clojang/->erl reason)))
 
 (defn rpc? [msg-data]
   (let [gen (first msg-data)]
@@ -71,7 +71,7 @@
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (clojang/->erlang msg)))
+  (connection/send connx (util/->str-arg dest) (clojang/->erl msg)))
 
 (defn receive
   "This function is called by the RPC server in anticipation of a message from
@@ -111,7 +111,7 @@
         ;; to a function that will eval mod/func/args ... the following
         ;; is just a placeholder
         result (get-in msg-data [:rpc-data :args])
-        response (clojang/->erlang [client-ref result])
+        response (clojang/->erl [client-ref result])
         ]
     (connection/send connx client-pid response)
     [:ok response]))

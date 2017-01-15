@@ -69,38 +69,38 @@
   (send (get-default)
         process-name
         remote-node-name
-        (clojang/->erlang msg)))
+        (clojang/->erl msg)))
 
 (defmethod send [OtpMbox OtpErlangPid java.lang.Object]
                 [client-mbox pid msg]
   (messaging/send client-mbox
                   pid
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defmethod send [OtpMbox OtpNode OtpErlangPid java.lang.Object]
                 [client-mbox _node pid msg]
   (messaging/send client-mbox
                   pid
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defmethod send [clojure.lang.PersistentArrayMap OtpErlangPid java.lang.Object]
                 [client pid msg]
   (messaging/send (:inbox client)
                   pid
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defmethod send [OtpMbox java.lang.Object java.lang.Object]
                 [client-mbox mbox-name msg]
   (messaging/send client-mbox
                   (name mbox-name)
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defmethod send [OtpMbox OtpMbox OtpNode java.lang.Object]
                 [client-mbox mbox-obj node-obj msg]
   (messaging/send client-mbox
                   (get-name mbox-obj)
                   (node/get-name node-obj)
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defmethod send [OtpMbox
                  java.lang.Object
@@ -110,7 +110,7 @@
   (messaging/send client-mbox
                   (name mbox-name)
                   (name node-name)
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defmethod send [clojure.lang.PersistentArrayMap
                  java.lang.Object
@@ -120,7 +120,7 @@
   (messaging/send (:inbox client)
                   (name mbox-name)
                   (name node-name)
-                  (clojang/->erlang msg)))
+                  (clojang/->erl msg)))
 
 (defn get-names
   "An alias for ``jiface.otp.messaging/get-names`` that returns a
@@ -132,11 +132,11 @@
   "An alias for ``jiface.otp.messaging/receive`` that returns the
   received data as Clojure data types."
   ([]
-    (clojang/->clojure (messaging/receive (get-default))))
+    (clojang/->clj (messaging/receive (get-default))))
   ([inbox]
-    (clojang/->clojure (messaging/receive inbox)))
+    (clojang/->clj (messaging/receive inbox)))
   ([inbox timeout]
-    (clojang/->clojure (messaging/receive inbox timeout))))
+    (clojang/->clj (messaging/receive inbox timeout))))
 
 (defn close
   ""
