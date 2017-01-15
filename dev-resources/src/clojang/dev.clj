@@ -4,6 +4,8 @@
   when running ``lein repl`` from the Clojang project directory."}
   clojang.dev
   (:require [clojure.core.match :refer [match]]
+            [clojure.pprint :refer [print-table]]
+            [clojure.reflect :refer [reflect]]
             [clojure.tools.logging :as log]
             [clojure.tools.namespace.repl :as repl]
             [dire.core :refer [with-handler! with-finally!]]
@@ -22,4 +24,12 @@
             [clojang.types :as types]
             [clojang.util :as util]))
 
+(defn show-methods
+  ""
+  [obj]
+  (print-table
+    (sort-by :name
+(filter :exception-types (:members (reflect obj))))))
+
 (def reload #'repl/refresh)
+
