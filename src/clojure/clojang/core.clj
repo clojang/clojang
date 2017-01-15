@@ -1,5 +1,6 @@
 (ns clojang.core
-  (:require [clojure.string :as clj-string]
+  (:require [clojang.node :as node]
+            [clojure.string :as clj-string]
             [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
             [jiface.erlang.atom :as atom]
@@ -10,8 +11,7 @@
             [jiface.erlang.string :as string]
             [jiface.erlang.tuple :as tuple]
             [jiface.erlang.types :as types]
-            [jiface.otp.nodes]
-            [clojang.node :as node])
+            [jiface.otp.nodes])
   (:import [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))
 
