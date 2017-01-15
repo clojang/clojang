@@ -1,4 +1,4 @@
-(defproject clojang "0.2.0-SNAPSHOT"
+(defproject clojang "0.2.0"
   :description "Erlang's JInterface in Idiomatic Clojure"
   :url "https://github.com/clojang/clojang"
   :scm {
@@ -9,9 +9,9 @@
     :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [
     [org.clojure/clojure "1.8.0"]
-    [org.clojure/core.memoize "0.5.9"]
-    [clojang/agent "0.2.0-SNAPSHOT"]
-    [clojang/jiface "0.2.0-SNAPSHOT"]
+    [org.clojure/core.memoize "0.5.8"]
+    [clojang/agent "0.2.0"]
+    [clojang/jiface "0.2.0"]
     [clojusc/twig "0.3.0"]]
   :source-paths ["src/clojure"]
   :profiles {
@@ -29,6 +29,7 @@
       :integration :integration}}
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :docs {
+      :aot :all
       :plugins [
         [lein-codox "0.10.2"]
         [lein-simpleton "1.3.0"]]
@@ -48,5 +49,5 @@
         ;"-Dheadless"
         "-splash:resources/images/logo-5-250x.png"
         "-Dnode.sname=clojang"]
-      :java-agents [[clojang/agent "0.2.0-SNAPSHOT"]]
+      :java-agents [[clojang/agent "0.2.0"]]
       :repl-options {:init-ns clojang.dev}}})

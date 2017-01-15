@@ -41,8 +41,8 @@
   node's short name will be checked, and it that's null, the long name will
   be used."
   []
-  (if-let [name (get-short-name)]
-    (format "%s@%s" name (ji-util/get-hostname))
+  (if-let [short-name (get-short-name)]
+    (format "%s@%s" short-name (ji-util/get-hostname))
     (get-long-name)))
 
 (defn get-name
