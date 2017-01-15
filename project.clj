@@ -14,9 +14,23 @@
     [clojang/jiface "0.3.0-SNAPSHOT"]
     [clojusc/twig "0.3.0"]]
   :source-paths ["src/clojure"]
+  :codox {
+    :project {:name "clojang"}
+    :themes [:rdash]
+    :output-path "docs/master/current"
+    :doc-paths ["docs/source"]
+    :namespaces [#"^clojang\.(?!test)"
+                 #"^clojang\.(?!agent)"]
+    :metadata {:doc/format :markdown}}
   :profiles {
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :testing {
+       :plugins
+         [[lein-ancient "0.6.10"]
+          [jonase/eastwood "0.2.3" :exclusions [org.clojure/clojure]]
+          [lein-bikeshed "0.4.1"]
+          [lein-kibit "0.1.2" :exclusions [org.clojure/clojure]]
+          [venantius/yagni "0.1.4"]]
       :aot :all
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]]
@@ -29,15 +43,10 @@
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :docs {
       :aot :all
+      :dependencies [[codox-theme-rdash "0.1.1"]]
       :plugins [
         [lein-codox "0.10.2"]
-        [lein-simpleton "1.3.0"]]
-      :codox {
-        :output-path "docs/master/current"
-        :doc-paths ["docs/source"]
-        :namespaces [#"^clojang\.(?!test)"
-                     #"^clojang\.(?!agent)"]
-        :metadata {:doc/format :markdown}}}
+        [lein-simpleton "1.3.0"]]}
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :dev {
       :dependencies [
