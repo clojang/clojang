@@ -9,7 +9,7 @@
     :url  "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [
     [org.clojure/clojure "1.8.0"]
-    [org.clojure/core.memoize "0.5.8"]
+    [org.clojure/core.memoize "0.5.9"]
     [clojang/agent "0.3.0-SNAPSHOT"]
     [clojang/jiface "0.3.0-SNAPSHOT"]
     [clojusc/twig "0.3.0"]]
