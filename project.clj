@@ -1,5 +1,5 @@
 (defproject clojang "0.3.0-SNAPSHOT"
-  :description "Erlang's JInterface in Idiomatic Clojure"
+  :description "Erlang/OTP Communications in Clojure (wraps jiface + JInterface)"
   :url "https://github.com/clojang/clojang"
   :scm {
     :name "git"
