@@ -20,7 +20,10 @@
 
 ;;; Helper Functions
 
+;; XXX standardize the following ...
+
 (defn ->erl-array [xs]
+  "Convert a Clojure seq into a Java array of Erlang JInterface obects."
   (into-array (types/object) (map clj->term xs)))
 
 (defn ->clj-vector [xs]

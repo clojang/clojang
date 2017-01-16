@@ -53,17 +53,17 @@
   ([node]
     (nodes/get-name node)))
 
-(def get-node
+(defn get-default-node
   "Get the default node object for the currently running instance of the JVM.
   In general, one should not need more than one node per JVM."
-  (let [default-node (nodes/node (get-default-name))]
-    (fn [] default-node)))
+  []
+  (nodes/default-node (get-default-name)))
 
 (defn get-names
   "An alias for ``jiface.otp.nodes/get-names`` that returns a list
   of a node's registered mailbox names as a list of strings."
   ([]
-    (get-names (get-node)))
+    (get-names (get-default-node)))
   ([node]
     (into [] (nodes/get-names node))))
 
@@ -71,7 +71,7 @@
   "An alias ``jiface.otp.nodes/ping`` that also allows for a
   2-arity call (with the default timeout set to 1000)."
   ([other-node]
-    (ping (get-node) other-node))
+    (ping (get-default-node) other-node))
   ([this-node other-node]
     (ping this-node other-node 1000))
   ([this-node other-node timeout]
@@ -84,6 +84,8 @@
   (apply #'nodes/whereis (util/->str-args args)))
 
 ;;; Aliases
+
+(def get-node #'get-default-node)
 
 (import-vars
   [nodes

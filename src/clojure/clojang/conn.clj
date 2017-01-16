@@ -2,7 +2,7 @@
   (:require [potemkin :refer [import-vars]]
             [jiface.otp.nodes :as nodes]
             [jiface.otp.connection :as connection]
-            [clojang.core :as clojang]
+            [clojang.converter :as converter]
             [clojang.msg :as msg]
             [clojang.util :as util])
   (:refer-clojure :exclude [deliver new send]))
@@ -11,15 +11,15 @@
   "An alias for ``jiface.otp.connection/exit`` that automatically
   converts the ``reason`` argument to an appropriate Erlang type."
   [dest-pid reason]
-  (apply #'connection/exit dest-pid (clojang/->erl reason)))
+  (apply #'connection/exit dest-pid (converter/clj->term reason)))
 
 (defn receive
   "An alias for ``jiface.otp.connection/receive`` that returns the
   received data as Clojure data types."
   ([connx]
-    (clojang/->clj (connection/receive connx)))
+    (converter/term->clj (connection/receive connx)))
   ([connx timeout]
-    (clojang/->clj (connection/receive connx timeout))))
+    (converter/term->clj (connection/receive connx timeout))))
 
 (defn receive-msg
   "An alias for ``jiface.otp.connection/receive-msg`` that returns the
@@ -33,13 +33,13 @@
   "An alias for ``jiface.otp.connection/receive-rpc`` that returns the
   received data as Clojure data types."
   [connx]
-  (clojang/->clj (connection/receive-rpc connx)))
+  (converter/term->clj (connection/receive-rpc connx)))
 
 (defn send
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (clojang/->erl msg)))
+  (connection/send connx (util/->str-arg dest) (converter/clj->term msg)))
 
 (defn send-rpc
   "An alias for ``jiface.otp.connection/send-rpc`` that also allows for
@@ -49,13 +49,13 @@
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (clojang/->erl '())))
+      (converter/clj->term '())))
   ([connx mod fun args]
     (connection/send-rpc
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (clojang/->erl args))))
+      (converter/clj->term args))))
 
 (defn- -parse-lookup-names [results]
   (into [] results))

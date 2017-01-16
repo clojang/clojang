@@ -1,5 +1,6 @@
 (ns clojang.core
-  (:require [clojang.converter :as converter]))
+  (:require [clojang.converter :as converter]
+            [clojang.mbox :as mbox]))
 
 ;;; Aliases
 
@@ -13,7 +14,6 @@
 
 ;;; Functions
 
-(defn !
-  ""
-  [process-name msg]
-  )
+(def ! #'mbox/send)
+(def receive #'mbox/receive)
+(def self #'mbox/self)
