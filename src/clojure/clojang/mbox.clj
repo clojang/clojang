@@ -17,14 +17,14 @@
 (declare get-name)
 
 (defn register-name
-  "An alias for ``jiface.otp.messaging/register-name`` that also
+  "An alias for `jiface.otp.messaging/register-name` that also
   allows for mailbox and node name arguments to be symbols, keywords, or
   strings."
   [& args]
   (apply #'messaging/register-name (util/->str-args args)))
 
 (defn new
-  "An alias for ``jiface.otp.messaging/mbox``."
+  "An alias for `jiface.otp.messaging/mbox`."
   ([node-instance]
     (messaging/mbox node-instance))
   ([node-instance mbox-name]
@@ -54,14 +54,14 @@
     (messaging/self mbox)))
 
 (defmulti send
-  "An alias for ``jiface.otp.messaging/send``. This version of
+  "An alias for `jiface.otp.messaging/send`. This version of
   the function also:
   * allows for mailbox and node name arguments to be symbols, keywords, or
     strings;
   * allows for node and mbox objects to be passed (useful for dire's
-    ``with-finally!`` function);
+    `with-finally!` function);
   * allows for 'client' data to be passed (a map of
-    ``{:self node :inbox mbox}`` -- simplifies message-passing code)"
+    `{:self node :inbox mbox}` -- simplifies message-passing code)"
   (fn [& args] (mapv class args)))
 
 (defmethod send [clojure.lang.PersistentVector]
@@ -81,33 +81,23 @@
         msg))
 
 (defmethod send [OtpMbox
-                 clojure.lang.Keyword
-                 java.lang.String
-                 clojure.lang.PersistentVector]
-                [remote-mbox remote-mbox-name remote-node-name msg]
-  (send remote-mbox
-        (name remote-mbox-name)
-        remote-node-name
-        msg))
-
-(defmethod send [OtpMbox
-                 java.lang.String
-                 java.lang.String
+                 java.lang.Object
+                 java.lang.Object
                  clojure.lang.PersistentVector]
                 [remote-mbox remote-mbox-name remote-node-name msg]
   (messaging/send remote-mbox
-                  remote-mbox-name
-                  remote-node-name
+                  (util/->str-arg remote-mbox-name)
+                  (util/->str-arg remote-node-name)
                   (converter/clj->term msg)))
 
 (defn get-names
-  "An alias for ``jiface.otp.messaging/get-names`` that returns a
+  "An alias for `jiface.otp.messaging/get-names` that returns a
   vector of names on the same node as the given inbox"
   [inbox]
   (into [] (messaging/get-names inbox)))
 
 (defn receive
-  "An alias for ``jiface.otp.messaging/receive`` that returns the
+  "An alias for `jiface.otp.messaging/receive` that returns the
   received data as Clojure data types."
   ([]
     (converter/term->clj (messaging/receive (get-default))))
@@ -139,5 +129,3 @@
    ping
    get-pid
    unlink])
-
-(def ! "An alias for ``#'mbox/send``." #'send)

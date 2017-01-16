@@ -4,7 +4,6 @@
             [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
             [jiface.erlang.atom :as atom]
-            [jiface.erlang.atom :as boolean]
             [jiface.erlang.float :as float]
             [jiface.erlang.int :as int]
             [jiface.erlang.map :as map-type]
@@ -20,28 +19,23 @@
 
 ;;; Helper Functions
 
-;; XXX standardize the following ...
-
 (defn ->erl-array [xs]
   "Convert a Clojure seq into a Java array of Erlang JInterface obects."
   (into-array (types/object) (map clj->term xs)))
 
-(defn ->clj-vector [xs]
-  (map #(term->clj %) (into [] xs)))
-
-(defn vector->ji-tuple
+(defn ->erl-tuple
   "Convert a Clojure vector into an Erlang JInterface tuple."
   [v]
   (types/tuple (->erl-array v)))
 
-(defn list->ji-list
+(defn ->erl-list
   "Convert a Clojure list into an Erlang JInterface list."
   ([]
     (types/list))
   ([v]
     (types/list (->erl-array v))))
 
-(defn map->ji-map
+(defn ->erl-map
   "Convert a Clojure map into an Erlang JInterface map."
   ([]
     (types/map))
@@ -49,7 +43,10 @@
     (types/map (->erl-array (keys m))
                (->erl-array (vals m)))))
 
-(defn ji-map->map
+(defn ->clj-vector [xs]
+  (map #(term->clj %) (into [] xs)))
+
+(defn ->clj-map
   "Convert an Erlang JInterface map into a Clojure map."
   [erl-obj]
   ;; XXX Is it guaranteed that keys/values will be extracted in a correlated
@@ -90,17 +87,17 @@
   ;; tuple /vector
   clojure.lang.PersistentVector
   (clj->term [clj-obj]
-    (vector->ji-tuple clj-obj))
+    (->erl-tuple clj-obj))
   clojure.lang.PersistentVector$ChunkedSeq
   (clj->term [clj-obj]
-    (vector->ji-tuple clj-obj))
+    (->erl-tuple clj-obj))
   ;; list
   clojure.lang.PersistentList
   (clj->term [clj-obj]
-    (list->ji-list clj-obj))
+    (->erl-list clj-obj))
   clojure.lang.PersistentList$EmptyList
   (clj->term [clj-obj]
-    (list->ji-list))
+    (->erl-list))
   ;; char
   java.lang.Character
   (clj->term [clj-obj]
@@ -108,7 +105,7 @@
   ;; map
   clojure.lang.PersistentArrayMap
   (clj->term [clj-obj]
-    (map->ji-map clj-obj))
+    (->erl-map clj-obj))
   ;; long
   java.lang.Long
   (clj->term [clj-obj]
@@ -191,7 +188,7 @@
   ;; boolean
   com.ericsson.otp.erlang.OtpErlangBoolean
   (term->clj [erl-obj]
-    (boolean/get-boolean-value erl-obj))
+    (atom/get-boolean-value erl-obj))
   ;; tuple /vector
   com.ericsson.otp.erlang.OtpErlangTuple
   (term->clj [erl-obj]
@@ -207,7 +204,7 @@
   ;; map
   com.ericsson.otp.erlang.OtpErlangMap
   (term->clj [erl-obj]
-    (ji-map->map erl-obj))
+    (->clj-map erl-obj))
   ;; long
   com.ericsson.otp.erlang.OtpErlangLong
   (term->clj [erl-obj]
