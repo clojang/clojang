@@ -1,4 +1,4 @@
-(ns clojang.converter
+(ns clojang.types.converter
   (:require [clojang.node :as node]
             [clojure.string :as clj-string]
             [clojure.tools.logging :as log]
