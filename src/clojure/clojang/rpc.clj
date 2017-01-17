@@ -16,6 +16,8 @@
             [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [deliver send]))
 
+(declare send receive)
+
 (defn open [self peer]
   (node/connect self peer))
 
@@ -32,11 +34,32 @@
 (defn close [rpc-client]
   (conn/close (:conn rpc-client)))
 
-(defn send [rpc-client & args]
-  (apply conn/send-rpc (into [(:conn rpc-client)] args)))
+(defn wasteful-send
+  [remote-node-name args]
+  (let [rpc-client (connect remote-node-name)
+        result (apply send (into [rpc-client] args))]
+    (close rpc-client)
+    result))
 
-(defn receive [rpc-client & args]
-  (apply conn/receive-rpc (into [(:conn rpc-client)] args)))
+;;; XXX currently broken ...
+(defn wasteful-receive
+  [remote-node-name args]
+  (let [rpc-client (connect remote-node-name)
+        result (apply conn/receive-rpc (into [(:conn rpc-client)] args))]
+    (close rpc-client)
+    result))
+
+(defn send
+  [rpc-client & args]
+  (if (string? rpc-client)
+    (wasteful-send rpc-client args)
+    (apply conn/send-rpc (into [(:conn rpc-client)] args))))
+
+(defn receive
+  [rpc-client & args]
+  (if (string? rpc-client)
+    (wasteful-receive rpc-client args)
+    (apply conn/receive-rpc (into [(:conn rpc-client)] args))))
 
 ; (defn rpc? [msg-data]
 ;   (let [gen (first msg-data)]
