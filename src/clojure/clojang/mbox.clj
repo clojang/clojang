@@ -117,6 +117,23 @@
       :pong
       :pang)))
 
+(defn get-pid [inbox]
+  (types/erl->clj (messaging/get-pid inbox)))
+
+(defn link
+  ([pid]
+    (link (get-default) pid))
+  ([inbox pid]
+    (messaging/link inbox (types/clj->erl pid))
+    :ok))
+
+(defn unlink
+  ([pid]
+    (unlink (get-default) pid))
+  ([inbox pid]
+    (messaging/unlink inbox (types/clj->erl pid))
+    :ok))
+
 (defn close
   ""
   ([]
@@ -134,11 +151,12 @@
    ;; close -- see above
    equal?
    exit
-   link
+   ;;link -- see above
    get-name
    receive-buf
    receive-msg
    ;; self -- see above
    ;; ping -- see above
-   get-pid
-   unlink])
+   ;; get-pid -- see above
+   ;; unlink -- see above
+   ])

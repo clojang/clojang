@@ -185,10 +185,47 @@ The simplest way to do this is to encapsulate arbitrary data in messages of
 type OtpErlangBinary. The OtpErlangBinary class can be created from arbitrary
 Java objects that implement the Serializable or Externalizable interface:
 
+```clj
+TBD
+```
+
 
 ## Linking to Remote Processes
 
-TBD
+Erlang defines a concept known as linked processes. A link is an implicit
+connection between two processes that causes an exception to be raised in one
+of the processes if the other process terminates for any reason. Links are
+bidirectional: it does not matter which of the two processes created the link
+or which of the linked processes eventually terminates; an exception will be
+raised in the remaining process. Links are also idempotent: at most one link
+can exist between two given processes, only one operation is necessary to
+remove the link.
+
+`clojang` provides a similar mechanism. Also here, no distinction is made
+between mailboxes and Erlang processes. A link can be created to a remote
+mailbox or process when its pid is known:
+
+```clj
+(mbox/link (mbox/get-pid inbox))
+```
+
+The link can be removed by either of the processes in a similar manner:
+
+```clj
+(mbox/unlink (mbox/get-pid inbox))
+```
+
+If the remote process terminates while the link is still in place, an
+exception will be raised on a subsequent call to `receive`:
+
+```clj
+(try
+  (receive inbox)
+  (catch OtpErlangExit ex
+    (println (format "Remote pid %s has terminated" (clojang/->clj (.pid ex)))))
+  (catch OtpErlangDecodeException ex
+    (println "Received message could not be decoded:" ex)))
+```
 
 
 ##  Using EPMD
