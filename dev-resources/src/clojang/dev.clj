@@ -30,7 +30,9 @@
   [obj]
   (print-table
     (sort-by :name
-(filter :exception-types (:members (reflect obj))))))
+      (filter (fn [x]
+                (contains? (:flags x) :public))
+              (:members (reflect obj))))))
 
 (def reload #'repl/refresh)
 

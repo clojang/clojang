@@ -43,13 +43,3 @@
       (messaging/get-type)
       (clojang/->clj)
       (messaging/msg-type-lookup)))
-
-(defn ->map
-  "Convert the JInterface OtpMsg object into a Clojure map."
-  [otp-msg]
-  {:msg (get-msg otp-msg)
-   :recipient (get-recipient otp-msg)
-   :recipient-name (get-recipient-name otp-msg)
-   :recipient-pid (get-recipient-pid otp-msg)
-   :get-sender-pid (get-sender-pid otp-msg)
-   :msg-type (get-type otp-msg)})

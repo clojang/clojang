@@ -86,3 +86,8 @@
   ""
   [arg]
   (clojang/->erl arg))
+
+(defn pid
+  ""
+  [node id serial creation]
+  (clojang/->erl [node id serial creation]))

@@ -1,27 +1,21 @@
-(ns ^{:doc
+(ns clojang.rpc
   "The ``clojang.rpc`` namespace has no analong in the JInterface package. This
   namepsace intends to provide a similar interface as that provided by the
   ``clojang.conn`` namespace: a set of functions for sending and receiving
   messages to and from remote processes. In this case, however, there is a
   very specfic client we expect to be receiving requests from and replying to:
   an RPC client, and one that expects this namespace to provide functions
-  compatible with the RPC capabilities of an Erlang/OTP ``gen_server``."}
-  clojang.rpc
-  (:require [potemkin :refer [import-vars]]
-            [jiface.otp.nodes :as nodes]
-            [jiface.otp.connection :as connection]
+  compatible with the RPC capabilities of an Erlang/OTP ``gen_server``."
+  (:require [clojang.conn :as conn]
             [clojang.core :as clojang]
-            [clojang.conn :as conn]
             [clojang.msg :as msg]
             [clojang.node :as node]
-            [clojang.util :as util])
+            [clojang.util :as util]
+            [jiface.otp.connection :as connection]
+            [jiface.otp.nodes :as nodes]
+            [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [deliver new send]))
 
-(defn exit
-  "An alias for ``jiface.otp.connection/exit`` that automatically
-  converts the ``reason`` argument to an appropriate Erlang type."
-  [dest-pid reason]
-  (apply #'connection/exit dest-pid (clojang/->erl reason)))
 
 (defn rpc? [msg-data]
   (let [gen (first msg-data)]
@@ -42,7 +36,7 @@
    :args arguments
    :group-leader group-leader})
 
-(defn msg->rpc-data
+(defn get-rpc-data
   "Convert RPC message data to a Clojure map, if the message contains RPC
   data. If not, set the ``:rpc-data`` value to ``nil``."
   [msg-data]
@@ -50,28 +44,29 @@
     {:rpc? is-rpc
      :rpc-data (if is-rpc (parse-rpc msg-data) nil)}))
 
-(defn ->map
+(defn msg->rpc-msg
   "Convert the JInterface ``OtpMsg`` to a Clojure map, parsing any RPC data
   that may be included in the message."
   [otp-msg]
-  (let [converted-msg (msg/->map otp-msg)
-        msg-data (:msg converted-msg)]
-    (merge converted-msg
-           (msg->rpc-data msg-data))))
+  (let [msg (clojang/->clj otp-msg)
+        msg-data (:msg msg)]
+    (merge msg
+           (get-rpc-data msg-data))))
 
 (defn receive-msg
   "An alias for ``jiface.otp.connection/receive-msg`` that returns the
   received data as Clojure data types."
   ([connx]
-    (->map (connection/receive-msg connx)))
+    (msg->rpc-msg (connection/receive-msg connx)))
   ([connx timeout]
-    (->map (connection/receive-msg connx timeout))))
+    (msg->rpc-msg (connection/receive-msg connx timeout))))
 
 (defn send
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (clojang/->erl msg)))
+  (connection/send connx (util/->str-arg dest) (clojang/->erl msg))
+  :ok)
 
 (defn receive
   "This function is called by the RPC server in anticipation of a message from
@@ -121,6 +116,7 @@
 (import-vars
   [connection
 
+   exit
    deliver
    link
    get-msg-count
@@ -129,8 +125,3 @@
    get-self
    send-buf
    unlink])
-
-(def recv "" receive)
-(def ! "" send)
-(def snd "" send)
-
