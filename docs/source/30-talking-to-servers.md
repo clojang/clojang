@@ -253,60 +253,70 @@ but it could have been done in any BEAM (Erlang VM) language. Here's the code:
   (gen_server:call (server-name) 'ping-count))
 ```
 
-We're going to compile and then run that code from the LFE REPL. Then, from a Clojure REPL, we'll talk to it.
+We're going to compile and then run that code from the LFE REPL. Then, from a
+Clojure REPL, we'll talk to it.
 
-From the previous example, you should already have your LFE REPL running. Let's go ahead and compile the example:
+From the previous example, you should already have your LFE REPL running.
+Let's go ahead and compile the example:
 
 ```cl
-(clojang-lfe@mndltl01)> (c "examples/ping-pong.lfe")
+(clojang-lfe@host)> (c "examples/ping-pong.lfe")
 (#(module ping-pong))
 ```
 
 Now we can start it:
 
 ```cl
-(clojang-lfe@mndltl01)> (ping-pong:start)
+(clojang-lfe@host)> (ping-pong:start)
 #(ok <0.45.0>)
 ```
 
-With our LFE server running, let's jump back over to the Clojure REPL and make some RPC calls to our LFE server by passing the module (``:ping-pong``) and the function name (``:ping``):
+With our LFE server running, let's jump back over to the Clojure REPL, create
+an RPC client connection, and make some RPC calls to our LFE server by passing
+the module (`:ping-pong`) and the function name (`:ping`):
 
 ```clojure
-clojang.dev=> (conn/!rpc connx :ping-pong :ping)
-nil
-clojang.dev=> (conn/!rpc connx :ping-pong :ping)
-nil
-clojang.dev=> (conn/!rpc connx :ping-pong :ping)
-nil
-clojang.dev=> (conn/receive-rpc connx)
+clojang.dev=> (def rpc-client (rpc/connect "clojang-lfe"))
+#'clojang.dev/rpc-client
+clojang.dev=> (rpc/! rpc-client :ping-pong :ping)
+:ok
+clojang.dev=> (rpc/! rpc-client :ping-pong :ping)
+:ok
+clojang.dev=> (rpc/! rpc-client :ping-pong :ping)
+:ok
+clojang.dev=> (rpc/receive rpc-client)
 :pong
-clojang.dev=> (conn/receive-rpc connx)
+clojang.dev=> (rpc/receive rpc-client)
 :pong
-clojang.dev=> (conn/receive-rpc connx)
+clojang.dev=> (rpc/receive rpc-client)
 :pong
-clojang.dev=> (conn/!rpc connx :ping-pong :get-ping-count)
-nil
-clojang.dev=> (conn/receive-rpc connx)
+clojang.dev=> (rpc/! rpc-client :ping-pong :get-ping-count)
+:ok
+clojang.dev=> (rpc/receive rpc-client)
 3
 ```
 
-While the emphasis here is remote communications, it goes without saying that local LFE sends are also possible. Since this is a ``gen_server`` implementation, the proper way to do this is by calling the API we defined:
+While the emphasis here is remote communications, it goes without saying that
+local LFE sends are also possible. Since this is a `gen_server`
+implementation, the proper way to do this is by calling the API we defined:
 
 ```cl
-(clojang-lfe@mndltl01)> (ping-pong:ping)
+(clojang-lfe@host)> (ping-pong:ping)
 pong
-(clojang-lfe@mndltl01)> (ping-pong:ping)
+(clojang-lfe@host)> (ping-pong:ping)
 pong
-(clojang-lfe@mndltl01)> (ping-pong:ping)
+(clojang-lfe@host)> (ping-pong:ping)
 pong
-(clojang-lfe@mndltl01)> (ping-pong:get-ping-count)
+(clojang-lfe@host)> (ping-pong:get-ping-count)
 6
 ```
 
 
 ## LFE Client with Clojure Server
 
-Just as with the LFE server examples above, we'll write a simple Clojure server first, communicate with it via an LFE client, and then write a bit more robust example Clojure server.
+Just as with the LFE server examples above, we'll write a simple Clojure
+server first, communicate with it via an LFE client, and then write a bit more
+robust example Clojure server.
 
 
 ### Simple Clojure Server
@@ -336,7 +346,10 @@ little server we wrote in LFE above:
               :stopped)))))
 ```
 
-Not only are both LFE and Clojure Lisps (though LFE is a Lisp-2 ... and then some ... while Clojure is a Lisp-1), but with the addition of core.match to the Clojure code, we can have a very similar developer experience in both languages. How nice!
+Not only are both LFE and Clojure Lisps (though LFE is a Lisp-2 ... and then
+some ... while Clojure is a Lisp-1), but with the addition of core.match to
+the Clojure code, we can have a very similar developer experience in both
+languages. How nice!
 
 Let's paste this server into the Clojure REPL and then run it:
 
@@ -347,20 +360,20 @@ Let's paste this server into the Clojure REPL and then run it:
 Now let's head over to an LFE REPL and talk to the Clojure server:
 
 ```cl
-(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(ping ,(self)))
+(clojang-lfe@host)> (! #(pinger srvr@host) `#(ping ,(self)))
 #(ping <0.34.0>)
-(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(ping ,(self)))
+(clojang-lfe@host)> (! #(pinger srvr@host) `#(ping ,(self)))
 #(ping <0.34.0>)
-(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(ping ,(self)))
+(clojang-lfe@host)> (! #(pinger srvr@host) `#(ping ,(self)))
 #(ping <0.34.0>)
-(clojang-lfe@mndltl01)> (c:flush)
+(clojang-lfe@host)> (c:flush)
 Shell got pong
 Shell got pong
 Shell got pong
 ok
-(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(get-count ,(self)))
+(clojang-lfe@host)> (! #(pinger srvr@host) `#(get-count ,(self)))
 #(get-count <0.34.0>)
-(clojang-lfe@mndltl01)> (c:flush)
+(clojang-lfe@host)> (c:flush)
 Shell got 3
 ok
 ```
@@ -368,7 +381,7 @@ ok
 Once we're done, we can ask the server to stop from LFE:
 
 ```cl
-(clojang-lfe@mndltl01)> (! #(pinger srvr@mndltl01) `#(stop ,(self)))
+(clojang-lfe@host)> (! #(pinger srvr@host) `#(stop ,(self)))
 #(stop <0.34.0>)
 ```
 
@@ -381,26 +394,55 @@ Back in the Clojure REPL you should now see:
 
 ### XXX [Do something with the text below]
 
-In the case of an LFE server, Erlang/OTP defined the service specification (i.e., ``gen_server``), but there is no analog in Clojure (core, anyway; the [Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides an OTP-inspired ``gen-server``).
+In the case of an LFE server, Erlang/OTP defined the service specification
+(i.e., `gen_server`), but there is no analog in Clojure (core, anyway; the
+[Pulsar](http://docs.paralleluniverse.co/pulsar/#behaviors) library provides
+an OTP-inspired `gen-server`).
 
-Further complicating matters, JInterface uses Java threads when creating connections between nodes; any misbehaving nodes, mailboxes, or issues with the communications between the two can result in various errors (expected and otherwise) in the VM that is running the Clojure/JInterface code.
+Further complicating matters, JInterface uses Java threads when creating
+connections between nodes; any misbehaving nodes, mailboxes, or issues with
+the communications between the two can result in various errors (expected and
+otherwise) in the VM that is running the Clojure/JInterface code.
 
-As such, the more explicitly we deal with threads and their related issues in Clojure, the more likely we are to have a properly running Clojure+JInterface server. As such, using a particular framework in addition to this, could very well mask any issues that might arise with threads and JInterface, and unless you have a great deal of experience running threaded networking code in your Clojure (or other JVM language) framework of choice, we recommend not complicating matters.
+As such, the more explicitly we deal with threads and their related issues in
+Clojure, the more likely we are to have a properly running Clojure+JInterface
+server. As such, using a particular framework in addition to this, could very
+well mask any issues that might arise with threads and JInterface, and unless
+you have a great deal of experience running threaded networking code in your
+Clojure (or other JVM language) framework of choice, we recommend not
+complicating matters.
 
-Note that an ideal solution would take advantage of any Erlang-term generating or parsing code in JInterface, while leaving the message passing to a library built upon core.async. This would provide Clojure programmers with two highly performant microthread sysmtems (core.async and the Erlang VM) which specialize in concurrency. Alas, that day has not yet arrived ...
+Note that an ideal solution would take advantage of any Erlang-term generating
+or parsing code in JInterface, while leaving the message passing to a library
+built upon core.async. This would provide Clojure programmers with two highly
+performant microthread sysmtems (core.async and the Erlang VM) which
+specialize in concurrency. Alas, that day has not yet arrived ...
 
 
 ### Creating a JInterface Server
 
-Since there is no framework built around JInterface nodes, mailboxes, and connections, we'll be working the threads that JInterface creates, taking basic defensive measures (not the best approach, but programming with threads doesn't leave us much choice).
+Since there is no framework built around JInterface nodes, mailboxes, and
+connections, we'll be working the threads that JInterface creates, taking
+basic defensive measures (not the best approach, but programming with threads
+doesn't leave us much choice).
 
-Sticking with the RPC example, there is no OTP-compliant mechanism for making calls on remote nodes in Clojure. This, of course, is no surprise, since the OTP RPC mechanism is very specific to the Erlang VM.
+Sticking with the RPC example, there is no OTP-compliant mechanism for making
+calls on remote nodes in Clojure. This, of course, is no surprise, since the
+OTP RPC mechanism is very specific to the Erlang VM.
 
-That being said, it's "simply" sturctured message passing, and there's no reason we cannot implement our own RPC server -- we just need to be able to hanle RPC messages. The Clojang library offers just this, and in fact, will automatically parse RPC-type messages sent from an Erlang VM node (in our case, LFE, but the mechanism is dialect-agnostic).
+That being said, it's "simply" sturctured message passing, and there's no
+reason we cannot implement our own RPC server -- we just need to be able to
+hanle RPC messages. The Clojang library offers just this, and in fact, will
+automatically parse RPC-type messages sent from an Erlang VM node (in our
+case, LFE, but the mechanism is dialect-agnostic).
 
-To demonstate this we need to set up a long-running Clojure XXX (analog to Erlang VM "process", dependent upon implementation) and then make requests to it. The Clojure XXX needs to accept OTP messages, parse them, evaluate the specified code, and then send the results back to the LFE node.
+To demonstate this we need to set up a long-running Clojure XXX (analog to
+Erlang VM "process", dependent upon implementation) and then make requests to
+it. The Clojure XXX needs to accept OTP messages, parse them, evaluate the
+specified code, and then send the results back to the LFE node.
 
-We use the same example as above: a simple ping-pong server which accepts RPC calls. Here is the source code:
+We use the same example as above: a simple ping-pong server which accepts RPC
+calls. Here is the source code:
 
 ```clojure
 TBD
@@ -418,7 +460,8 @@ Now, from your LFE REPL, make some calls:
 TBD
 ```
 
-As with the previous example, it's possible to call the ping-pong server from the same node where the server is running:
+As with the previous example, it's possible to call the ping-pong server from
+the same node where the server is running:
 
 ```clojure
 TBD
