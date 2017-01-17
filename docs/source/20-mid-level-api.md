@@ -86,19 +86,19 @@ if it is alive and accepting connections. Paste the following function in your
 REPL:
 
 ```clj
-(defn print-liveliness [this-node other-node]
-  (if (node/ping this-node other-node 1000)
-    (println "It's aliiiive!")
-    (println "Mate, this node wouldn't go 'voom' if ...")))
+(defn print-liveliness [node-name]
+  (case (node/ping node-name)
+    :pong (println "It's aliiiive!")
+    :pang (println "Mate, this node wouldn't go 'voom' if ...")))
 ```
 
 Now let's use it:
 
 ```clj
-user=> (print-liveliness gurka :gurka)
+user=> (print-liveliness :gurka)
 It's aliiiive!
 nil
-user=> (print-liveliness gurka :nohost)
+user=> (print-liveliness :nohost)
 Mate, this node wouldn't go 'voom' if ...
 nil
 ```

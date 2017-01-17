@@ -105,6 +105,18 @@
   ([inbox timeout]
     (types/erl->clj (messaging/receive inbox timeout))))
 
+(defn ping
+  "An alias for `jiface.otp.messaging/ping` that returns the
+  same values as Erlang (pong/pang)."
+  ([node-name]
+    (ping (get-default) node-name 1000))
+  ([node-name timeout]
+    (ping (get-default) node-name timeout))
+  ([inbox node-name timeout]
+    (if (apply #'messaging/ping (util/->str-args [inbox node-name timeout]))
+      :pong
+      :pang)))
+
 (defn close
   ""
   ([]
@@ -119,14 +131,14 @@
 (import-vars
   [messaging
 
-   ;; close
+   ;; close -- see above
    equal?
    exit
    link
    get-name
    receive-buf
    receive-msg
-   ;;self
-   ping
+   ;; self -- see above
+   ;; ping -- see above
    get-pid
    unlink])

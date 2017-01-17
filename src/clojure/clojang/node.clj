@@ -70,12 +70,14 @@
 (defn ping
   "An alias ``jiface.otp.nodes/ping`` that also allows for a
   2-arity call (with the default timeout set to 1000)."
-  ([other-node]
-    (ping (get-default-node) other-node))
-  ([this-node other-node]
-    (ping this-node other-node 1000))
-  ([this-node other-node timeout]
-    (apply #'nodes/ping (util/->str-args [this-node other-node timeout]))))
+  ([node-name]
+    (ping node-name 1000))
+  ([node-name timeout]
+    (ping (get-default-node) node-name timeout))
+  ([this-node node-name timeout]
+    (if (apply #'nodes/ping (util/->str-args [this-node node-name timeout]))
+      :pong
+      :pang)))
 
 (defn whereis
   "An alias for ``jiface.otp.nodes/whereis`` that also allows for
