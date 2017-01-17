@@ -1,6 +1,5 @@
 (ns clojang.types.converter
-  (:require [clojang.types.pid]
-            [clojang.types.msg]
+  (:require [clojang.types.record]
             [clojure.string :as clj-string]
             [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
@@ -14,15 +13,16 @@
             [jiface.erlang.types :as types]
             [jiface.otp.nodes]
             [jiface.otp.messaging :as messaging])
-  (:import [clojang.types.pid]
-           [clojang.types.msg]
+  (:import [clojang.types.record]
            [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))
 
 (declare clj->erl
          erl->clj)
 
-;;; Helper Functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Helper Functions   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn clj-seq->erl-array [xs]
   "Convert a Clojure seq into a Java array of Erlang JInterface obects."
@@ -31,7 +31,9 @@
 (defn erl-tuple->clj-vector [xs]
   (map #(erl->clj %) (into [] xs)))
 
-;;; Clojure to Erlang conversions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Clojure to Erlang conversions   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmulti clj->erl
   "Convert Clojure types to Erlang/JInterface types."
@@ -128,7 +130,7 @@
   [^java.lang.String clj-obj]
   (types/string clj-obj))
 
-(defmethod clj->erl clojang.types.pid.Pid
+(defmethod clj->erl clojang.types.record.Pid
   [^clojang.types.pid.Pid clj-obj]
   (types/pid (:node clj-obj)
              (:id clj-obj)
@@ -139,7 +141,9 @@
   [clj-obj]
   clj-obj)
 
-;;; Erlang to Clojure conversions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Erlang to Clojure conversions   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmulti erl->clj
   "Convert Erlang/JInterface types to Clojure types."
@@ -223,7 +227,7 @@
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangPid
   [^com.ericsson.otp.erlang.OtpErlangPid erl-obj]
-  (clojang.types.pid/map->Pid
+  (clojang.types.record/map->Pid
     {:node (erl->clj (pid/get-node erl-obj))
      :id (erl->clj (pid/get-id erl-obj))
      :serial (erl->clj (pid/get-serial-num erl-obj))
@@ -232,7 +236,7 @@
 (defmethod erl->clj com.ericsson.otp.erlang.OtpMsg
   [^com.ericsson.otp.erlang.OtpMsg erl-obj]
 
-  (clojang.types.msg/map->Msg
+  (clojang.types.record/map->Msg
     {:msg (erl->clj (messaging/get-msg erl-obj))
      :recipient (erl->clj (messaging/get-recipient erl-obj))
      :recipient-name (erl->clj (messaging/get-recipient-name erl-obj))

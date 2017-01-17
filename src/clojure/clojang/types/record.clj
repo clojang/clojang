@@ -1,4 +1,10 @@
-(ns clojang.types.msg)
+(ns clojang.types.record)
+
+(defrecord Pid
+  [creation
+   node
+   id
+   serial])
 
 (defrecord Msg
   [msg
