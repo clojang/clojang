@@ -1,8 +1,8 @@
 (ns clojang.node
-  (:require [potemkin :refer [import-vars]]
+  (:require [clojang.util :as util]
             [jiface.otp.nodes :as nodes]
             [jiface.util :as ji-util]
-            [clojang.util :as util])
+            [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [new]))
 
 (defn new
@@ -83,7 +83,9 @@
   [& args]
   (apply #'nodes/whereis (util/->str-args args)))
 
-;;; Aliases
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def get-node #'get-default-node)
 

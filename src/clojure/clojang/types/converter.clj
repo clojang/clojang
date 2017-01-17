@@ -131,7 +131,7 @@
   (types/string clj-obj))
 
 (defmethod clj->erl clojang.types.record.Pid
-  [^clojang.types.pid.Pid clj-obj]
+  [^clojang.types.record.Pid clj-obj]
   (types/pid (:node clj-obj)
              (:id clj-obj)
              (:serial clj-obj)

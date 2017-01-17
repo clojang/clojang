@@ -1,6 +1,6 @@
 (ns clojang.types.core
-  (:require [clojang.core :as clojang]
-            [clojang.types.constructor]
+  (:require [clojang.types.constructor]
+            [clojang.types.converter]
             [clojang.types.predicate]
             [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [atom boolean byte char char? double float float?
@@ -32,6 +32,11 @@
     undefined
     uint
     ushort])
+
+(import-vars
+  [clojang.types.converter
+    clj->erl
+    erl->clj])
 
 (import-vars
   [clojang.types.predicate

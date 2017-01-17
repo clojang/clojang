@@ -1,6 +1,6 @@
 (ns clojang.mbox
   (:require [clojang.agent.const :as const]
-            [clojang.types.converter :as converter]
+            [clojang.types.core :as types]
             [clojang.node :as node]
             [clojang.util :as util]
             [clojure.core.memoize :as memo]
@@ -13,8 +13,6 @@
             OtpMsg
             OtpNode])
   (:refer-clojure :exclude [new send]))
-
-(declare get-name)
 
 (defn register-name
   "An alias for `jiface.otp.messaging/register-name` that also
@@ -51,7 +49,7 @@
   ([]
     (self (get-default)))
   ([mbox]
-    (converter/erl->clj (messaging/self mbox))))
+    (types/erl->clj (messaging/self mbox))))
 
 (defmulti send
   "An alias for `jiface.otp.messaging/send`. This version of
@@ -88,7 +86,7 @@
   (messaging/send remote-mbox
                   (util/->str-arg remote-mbox-name)
                   (util/->str-arg remote-node-name)
-                  (converter/clj->erl msg))
+                  (types/clj->erl msg))
   :ok)
 
 (defn get-names
@@ -101,11 +99,11 @@
   "An alias for `jiface.otp.messaging/receive` that returns the
   received data as Clojure data types."
   ([]
-    (converter/erl->clj (messaging/receive (get-default))))
+    (types/erl->clj (messaging/receive (get-default))))
   ([inbox]
-    (converter/erl->clj (messaging/receive inbox)))
+    (types/erl->clj (messaging/receive inbox)))
   ([inbox timeout]
-    (converter/erl->clj (messaging/receive inbox timeout))))
+    (types/erl->clj (messaging/receive inbox timeout))))
 
 (defn close
   ""
@@ -114,7 +112,9 @@
   ([node]
     (messaging/close node)))
 
-;;; Aliases
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import-vars
   [messaging

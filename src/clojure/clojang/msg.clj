@@ -1,39 +1,39 @@
 (ns clojang.msg
-  (:require [potemkin :refer [import-vars]]
-            [jiface.otp.messaging :as messaging]
-            [clojang.core :as clojang]
+  (:require [clojang.types.core :as types]
             [clojang.node :as node]
-            [clojang.util :as util]))
+            [clojang.util :as util]
+            [jiface.otp.messaging :as messaging]
+            [potemkin :refer [import-vars]]))
 
 (defn get-msg
   "An alias for ``jiface.otp.messaging/get-msg`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
-  (clojang/->clj (messaging/get-msg msg)))
+  (types/erl->clj (messaging/get-msg msg)))
 
 (defn get-recipient
   "An alias for ``jiface.otp.messaging/get-recipient`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
-  (clojang/->clj (messaging/get-recipient msg)))
+  (types/erl->clj (messaging/get-recipient msg)))
 
 (defn get-recipient-name
   "An alias for ``jiface.otp.messaging/get-recipient-name`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
-  (clojang/->clj (messaging/get-recipient-name msg)))
+  (types/erl->clj (messaging/get-recipient-name msg)))
 
 (defn get-recipient-pid
   "An alias for ``jiface.otp.messaging/get-recipient-pid`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
-  (clojang/->clj (messaging/get-recipient-pid msg)))
+  (types/erl->clj (messaging/get-recipient-pid msg)))
 
 (defn get-sender-pid
   "An alias for ``jiface.otp.messaging/get-sender-pid`` that returns a
   vector of names on the same node as the given inbox"
   [msg]
-  (clojang/->clj (messaging/get-sender-pid msg)))
+  (types/erl->clj (messaging/get-sender-pid msg)))
 
 (defn get-type
   "An alias for ``jiface.otp.messaging/get-type`` that returns a
@@ -41,5 +41,5 @@
   [msg]
   (-> msg
       (messaging/get-type)
-      (clojang/->clj)
+      (types/erl->clj)
       (messaging/msg-type-lookup)))

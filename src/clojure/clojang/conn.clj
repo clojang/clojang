@@ -1,6 +1,6 @@
 (ns clojang.conn
   (:require [clojang.msg :as msg]
-            [clojang.types.converter :as converter]
+            [clojang.types.core :as types]
             [clojang.util :as util]
             [jiface.otp.connection :as connection]
             [jiface.otp.nodes :as nodes]
@@ -11,35 +11,35 @@
   "An alias for ``jiface.otp.connection/exit`` that automatically
   converts the ``reason`` argument to an appropriate Erlang type."
   [dest-pid reason]
-  (apply #'connection/exit dest-pid (converter/clj->erl reason)))
+  (apply #'connection/exit dest-pid (types/clj->erl reason)))
 
 (defn receive
   "An alias for ``jiface.otp.connection/receive`` that returns the
   received data as Clojure data types."
   ([connx]
-    (converter/erl->clj (connection/receive connx)))
+    (types/erl->clj (connection/receive connx)))
   ([connx timeout]
-    (converter/erl->clj (connection/receive connx timeout))))
+    (types/erl->clj (connection/receive connx timeout))))
 
 (defn receive-msg
   "An alias for ``jiface.otp.connection/receive-msg`` that returns the
   received data as Clojure data types."
   ([connx]
-    (converter/erl->clj (connection/receive-msg connx)))
+    (types/erl->clj (connection/receive-msg connx)))
   ([connx timeout]
-    (converter/erl->clj (connection/receive-msg connx timeout))))
+    (types/erl->clj (connection/receive-msg connx timeout))))
 
 (defn receive-rpc
   "An alias for ``jiface.otp.connection/receive-rpc`` that returns the
   received data as Clojure data types."
   [connx]
-  (converter/erl->clj (connection/receive-rpc connx)))
+  (types/erl->clj (connection/receive-rpc connx)))
 
 (defn send
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (converter/clj->erl msg))
+  (connection/send connx (util/->str-arg dest) (types/clj->erl msg))
   :ok)
 
 (defn send-rpc
@@ -50,14 +50,14 @@
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (converter/clj->erl '()))
+      (types/clj->erl '()))
     :ok)
   ([connx mod fun args]
     (connection/send-rpc
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (converter/clj->erl args))
+      (types/clj->erl args))
     :ok))
 
 (defn- -parse-lookup-names [results]
@@ -76,7 +76,9 @@
         (connection/lookup-names transport)
         (-parse-lookup-names))))
 
-;;; Aliases
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import-vars
   [connection

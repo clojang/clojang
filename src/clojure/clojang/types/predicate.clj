@@ -1,5 +1,5 @@
 (ns clojang.types.predicate
-  (:require [clojang.core :as clojang])
+  (:require [clojang.types.converter :as types])
   (:import [com.ericsson.otp.erlang
              OtpErlangAtom
              OtpErlangBoolean
@@ -135,7 +135,7 @@
   ""
   [arg]
   (and (instance? OtpErlangAtom arg)
-       (= (clojang/->clj arg) nil)))
+       (= (types/erl->clj arg) nil)))
 
 (defn uint?
   ""

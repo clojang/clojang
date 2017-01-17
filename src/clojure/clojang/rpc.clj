@@ -7,7 +7,7 @@
   an RPC client, and one that expects this namespace to provide functions
   compatible with the RPC capabilities of an Erlang/OTP ``gen_server``."
   (:require [clojang.conn :as conn]
-            [clojang.core :as clojang]
+            [clojang.types.core :as types]
             [clojang.msg :as msg]
             [clojang.node :as node]
             [clojang.util :as util]
@@ -48,7 +48,7 @@
   "Convert the JInterface ``OtpMsg`` to a Clojure map, parsing any RPC data
   that may be included in the message."
   [otp-msg]
-  (let [msg (clojang/->clj otp-msg)
+  (let [msg (types/erl->clj otp-msg)
         msg-data (:msg msg)]
     (merge msg
            (get-rpc-data msg-data))))
@@ -65,7 +65,7 @@
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (clojang/->erl msg))
+  (connection/send connx (util/->str-arg dest) (types/clj->erl msg))
   :ok)
 
 (defn receive
@@ -106,12 +106,14 @@
         ;; to a function that will eval mod/func/args ... the following
         ;; is just a placeholder
         result (get-in msg-data [:rpc-data :args])
-        response (clojang/->erl [client-ref result])
+        response (types/clj->erl [client-ref result])
         ]
     (connection/send connx client-pid response)
     [:ok response]))
 
-;;; Aliases
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import-vars
   [connection

@@ -1,5 +1,5 @@
 (ns clojang.types.constructor
-  (:require [clojang.core :as clojang]
+  (:require [clojang.types.converter :as types]
             [clojang.types.predicate]
             [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [atom boolean byte char double
@@ -8,86 +8,86 @@
 (defn atom
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn boolean
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn byte
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn char
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn double
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn float
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn int
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn list
   ""
   ([]
-    (clojang/->erl '()))
+    (types/clj->erl '()))
   ([arg]
-    (clojang/->erl arg)))
+    (types/clj->erl arg)))
 
 (defn long
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn map
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn short
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn string
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn tuple
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn undefined
   ""
   []
-  (clojang/->erl nil))
+  (types/clj->erl nil))
 
 (defn uint
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn ushort
   ""
   [arg]
-  (clojang/->erl arg))
+  (types/clj->erl arg))
 
 (defn pid
   ""
   [node id serial creation]
-  (clojang/->erl [node id serial creation]))
+  (types/clj->erl [node id serial creation]))

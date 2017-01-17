@@ -1,12 +1,12 @@
 (ns clojang.core
-  (:require [clojang.types.converter :as converter]
+  (:require [clojang.types.core :as types]
             [clojang.mbox :as mbox]))
 
 ;;; Aliases
 
-(def ->erl #'converter/clj->erl)
+(def ->erl #'types/clj->erl)
 
-(def ->clj #'converter/erl->clj)
+(def ->clj #'types/erl->clj)
 
 ;;; Functions
 
