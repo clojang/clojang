@@ -222,7 +222,8 @@ exception will be raised on a subsequent call to `receive`:
 (try
   (receive inbox)
   (catch OtpErlangExit ex
-    (println (format "Remote pid %s has terminated" (clojang/->clj (.pid ex)))))
+    (println (format "Remote pid %s has terminated"
+                     (clojang/->clj (.pid ex)))))
   (catch OtpErlangDecodeException ex
     (println "Received message could not be decoded:" ex)))
 ```
@@ -230,7 +231,36 @@ exception will be raised on a subsequent call to `receive`:
 
 ##  Using EPMD
 
-TBD
+Epmd is the Erlang Port Mapper Daemon. Distributed Erlang nodes register with
+epmd on the localhost to indicate to other nodes that they exist and can
+accept connections. Epmd maintains a register of node and port number
+information, and when a node wishes to connect to another node, it first
+contacts epmd in order to find out the correct port number to connect to.
+
+The basic interaction with EPMD is done through instances of OtpEpmd class.
+Nodes wishing to contact other nodes must first request information from Epmd
+before a connection can be set up, however this is done automatically by
+OtpSelf.connect() when necessary.
+
+When you use OtpSelf.connect() to connect to an Erlang node, a connection is
+first made to epmd and, if the node is known, a connection is then made to the
+Erlang node.
+
+Java nodes can also register themselves with epmd if they want other nodes in
+the system to be able to find and connect to them. This is done by call to
+method OtpEpmd.publishPort().
+
+Be aware that on some systems (such as VxWorks), a failed node will not be
+detected by this mechanism since the operating system does not automatically
+close descriptors that were left open when the node failed. If a node has
+failed in this way, epmd will prevent you from registering a new node with the
+old name, since it thinks that the old name is still in use. In this case, you
+must unregister the name explicitly, by using OtpEpmd.unPublishPort()
+
+This will cause epmd to close the connection from the far end. Note that if
+the name was in fact still in use by a node, the results of this operation are
+unpredictable. Also, doing this does not cause the local end of the connection
+to close, so resources may be consumed.
 
 
 ## Remote Procedure Calls
