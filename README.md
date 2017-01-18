@@ -69,7 +69,7 @@ which will have full access to the project's libraries/dependencies.
 LFE:
 
 ```bash
-$ make repl
+$ make lfe-repl
 ```
 
 Erlang:
@@ -81,7 +81,7 @@ $ rebar3 shell
 Clojure:
 
 ```bash
-$ lein repl
+$ lein clj-repl
 ```
 
 
@@ -123,42 +123,36 @@ examples, one each in the low- and mid-level APIs.
 
 
 
-```clojure
-(require '[clojang.mbox :as mbox]
+```clj
+(require '[clojang.core :refer [! receive self]]
          '[clojang.node :as node])
 
-(mbox/! inbox :echo :gurka [(mbox/self) :hello-word])
-(mbox/receive)
-```
-
-The last function
-
-```
-[#object[com.ericsson.otp.erlang.OtpErlangPid
-         0x1fe20514
-         "#Pid<gurka@mndltl01.1.0>"]
- :hello-world]
+(! [(self) :hello-word])
+(let [[pid msg] (receive)]
+  (println msg))
 ```
 
 From LFE:
 
 ```cl
-(clojang-lfe@mndltl01)> (! #(echo gurka@mndltl01) `#(,(self) hej!))
+(clojang-lfe@mndltl01)> (! #(default clojang@host) `#(,(self) hej!))
 #(<0.35.0> hej!)
 ```
 
-Then back in Clojure:
+Then back in Clojure, the same that we used before:
 
-```clojure
-(let [[lfe-pid _] (mbox/receive inbox)]
-  (mbox/! inbox lfe-pid msg))
+```clj
+(let [[pid msg] (receive)]
+  (println msg)
+  (! pid "hello, world!"))
 ```
 
 Then, back in LFE:
 
 ```cl
 (clojang-lfe@mndltl01)> (c:flush)
-Shell got {<5926.1.0>,'hello-world'}
+Shell got "hello, world!"
+ok
 ```
 
 
