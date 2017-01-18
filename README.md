@@ -124,8 +124,7 @@ examples, one each in the low- and mid-level APIs.
 
 
 ```clj
-(require '[clojang.core :refer [! receive self]]
-         '[clojang.node :as node])
+(require '[clojang.core :refer [! receive self]])
 
 (! [(self) :hello-word])
 (let [[pid msg] (receive)]
