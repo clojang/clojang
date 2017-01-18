@@ -3,7 +3,7 @@
 [![Dependencies Status][deps-badge]][deps]
 [![Clojars Project][clojars-badge]][clojars]
 
-*Erlang's JInterface in Idiomatic Clojure*
+*Erlang/OTP Communications in Clojure (wraps jiface + JInterface)*
 
 [![Clojang logo][logo]][logo-large]
 

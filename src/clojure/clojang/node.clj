@@ -1,8 +1,9 @@
 (ns clojang.node
-  (:require [potemkin :refer [import-vars]]
+  (:require [clojang.util :as util]
+            [clojure.core.memoize :as memo]
             [jiface.otp.nodes :as nodes]
             [jiface.util :as ji-util]
-            [clojang.util :as util])
+            [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [new]))
 
 (defn new
@@ -53,29 +54,31 @@
   ([node]
     (nodes/get-name node)))
 
-(def get-node
+(defn get-default-node
   "Get the default node object for the currently running instance of the JVM.
   In general, one should not need more than one node per JVM."
-  (let [default-node (nodes/node (get-default-name))]
-    (fn [] default-node)))
+  []
+  (nodes/default-node (get-default-name)))
 
 (defn get-names
   "An alias for ``jiface.otp.nodes/get-names`` that returns a list
   of a node's registered mailbox names as a list of strings."
   ([]
-    (get-names (get-node)))
+    (get-names (get-default-node)))
   ([node]
     (into [] (nodes/get-names node))))
 
 (defn ping
   "An alias ``jiface.otp.nodes/ping`` that also allows for a
   2-arity call (with the default timeout set to 1000)."
-  ([other-node]
-    (ping (get-node) other-node))
-  ([this-node other-node]
-    (ping this-node other-node 1000))
-  ([this-node other-node timeout]
-    (apply #'nodes/ping (util/->str-args [this-node other-node timeout]))))
+  ([node-name]
+    (ping node-name 1000))
+  ([node-name timeout]
+    (ping (get-default-node) node-name timeout))
+  ([this-node node-name timeout]
+    (if (apply #'nodes/ping (util/->str-args [this-node node-name timeout]))
+      :pong
+      :pang)))
 
 (defn whereis
   "An alias for ``jiface.otp.nodes/whereis`` that also allows for
@@ -83,7 +86,24 @@
   [& args]
   (apply #'nodes/whereis (util/->str-args args)))
 
-;;; Aliases
+(def connect
+  "An alias for the constructor ``jiface.otp.nodes/connect`` but one that
+  caches connections based on source and destination node name and  allows for
+  symbols and keywords to be used as node names, a closer match for BEAM
+  language nodes, which use atoms for their names."
+  (memo/lru
+    (fn ([remote-node-name]
+          (connect (get-default-name) remote-node-name))
+        ([local-node-name remote-node-name]
+          (let [self (self (util/->str-arg local-node-name))
+                peer (peer (util/->str-arg remote-node-name))]
+             (nodes/connect self peer))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def get-node #'get-default-node)
 
 (import-vars
   [nodes
@@ -114,7 +134,7 @@
    ;; whereis -- see above
    ;; self-behaviour
    accept
-   connect
+   ;; connect -- see above
    get-pid
    publish-port
    unpublish-port])

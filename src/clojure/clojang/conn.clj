@@ -1,61 +1,59 @@
 (ns clojang.conn
-  (:require [potemkin :refer [import-vars]]
-            [jiface.otp.nodes :as nodes]
+  (:require [clojang.msg :as msg]
+            [clojang.types.core :as types]
+            [clojang.util :as util]
             [jiface.otp.connection :as connection]
-            [clojang.core :as clojang]
-            [clojang.msg :as msg]
-            [clojang.util :as util])
+            [jiface.otp.nodes :as nodes]
+            [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [deliver new send]))
 
 (defn exit
   "An alias for ``jiface.otp.connection/exit`` that automatically
   converts the ``reason`` argument to an appropriate Erlang type."
   [dest-pid reason]
-  (apply #'connection/exit dest-pid (clojang/->erlang reason)))
+  (apply #'connection/exit dest-pid (types/clj->erl reason)))
 
 (defn receive
   "An alias for ``jiface.otp.connection/receive`` that returns the
   received data as Clojure data types."
   ([connx]
-    (clojang/->clojure (connection/receive connx)))
+    (types/erl->clj (connection/receive connx)))
   ([connx timeout]
-    (clojang/->clojure (connection/receive connx timeout))))
+    (types/erl->clj (connection/receive connx timeout))))
 
 (defn receive-msg
   "An alias for ``jiface.otp.connection/receive-msg`` that returns the
   received data as Clojure data types."
   ([connx]
-    (msg/->map (connection/receive-msg connx)))
+    (types/erl->clj (connection/receive-msg connx)))
   ([connx timeout]
-    (msg/->map (connection/receive-msg connx timeout))))
+    (types/erl->clj (connection/receive-msg connx timeout))))
 
 (defn receive-rpc
   "An alias for ``jiface.otp.connection/receive-rpc`` that returns the
   received data as Clojure data types."
   [connx]
-  (clojang/->clojure (connection/receive-rpc connx)))
+  (types/erl->clj (connection/receive-rpc connx)))
 
 (defn send
   "An alias for ``jiface.otp.connection/send`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (connection/send connx (util/->str-arg dest) (clojang/->erlang msg)))
+  (connection/send connx (util/->str-arg dest) (types/clj->erl msg))
+  :ok)
 
 (defn send-rpc
   "An alias for ``jiface.otp.connection/send-rpc`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   ([connx mod fun]
-    (connection/send-rpc
-      connx
-      (util/->str-arg mod)
-      (util/->str-arg fun)
-      (clojang/->erlang '())))
+    (send-rpc connx mod fun []))
   ([connx mod fun args]
     (connection/send-rpc
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (clojang/->erlang args))))
+      (types/clj->erl (into (list) args)))
+    :ok))
 
 (defn- -parse-lookup-names [results]
   (into [] results))
@@ -73,12 +71,19 @@
         (connection/lookup-names transport)
         (-parse-lookup-names))))
 
-;;; Aliases
+(defn close
+  [conn]
+  (connection/close conn)
+  :ok)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import-vars
   [connection
    ;; abstract-connection-behaviour
-   close
+   ;; close -- see above
    deliver
    get-flags
    get-trace-level
@@ -106,14 +111,3 @@
    publish-port
    unpublish-port
    use-port])
-
-(def recv "" receive)
-(def recv-msg "" receive-msg)
-(def recv-buf "" receive-buf)
-(def recv-rpc "" receive-rpc)
-(def ! "" send)
-(def !rpc "" send-rpc)
-(def !buf "" send-buf)
-(def snd "" send)
-(def snd-rpc "" send-rpc)
-(def snd-buf "" send-buf)

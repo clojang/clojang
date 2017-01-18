@@ -11,8 +11,8 @@ JAR := $(PROJ)-$(VERSION).jar
 UBERJAR := $(PROJ)-$(VERSION)-standalone.jar
 LOCAL_MAVEN := ~/.m2/repository
 
-include resources/make/code.mk
-include resources/make/clj.mk
-include resources/make/lfe.mk
-include resources/make/test.mk
-include resources/make/docs.mk
+include dev-resources/make/code.mk
+include dev-resources/make/clj.mk
+include dev-resources/make/lfe.mk
+include dev-resources/make/test.mk
+include dev-resources/make/docs.mk
