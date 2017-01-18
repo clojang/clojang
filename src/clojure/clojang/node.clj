@@ -1,5 +1,6 @@
 (ns clojang.node
   (:require [clojang.util :as util]
+            [clojure.core.memoize :as memo]
             [jiface.otp.nodes :as nodes]
             [jiface.util :as ji-util]
             [potemkin :refer [import-vars]])
@@ -85,6 +86,19 @@
   [& args]
   (apply #'nodes/whereis (util/->str-args args)))
 
+(def connect
+  "An alias for the constructor ``jiface.otp.nodes/connect`` but one that
+  caches connections based on source and destination node name and  allows for
+  symbols and keywords to be used as node names, a closer match for BEAM
+  language nodes, which use atoms for their names."
+  (memo/lru
+    (fn ([remote-node-name]
+          (connect (get-default-name) remote-node-name))
+        ([local-node-name remote-node-name]
+          (let [self (self (util/->str-arg local-node-name))
+                peer (peer (util/->str-arg remote-node-name))]
+             (nodes/connect self peer))))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -120,7 +134,7 @@
    ;; whereis -- see above
    ;; self-behaviour
    accept
-   connect
+   ;; connect -- see above
    get-pid
    publish-port
    unpublish-port])

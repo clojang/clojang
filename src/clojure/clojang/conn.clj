@@ -46,13 +46,13 @@
   "An alias for ``jiface.otp.connection/send-rpc`` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   ([connx mod fun]
-    (send-rpc connx mod fun '()))
+    (send-rpc connx mod fun []))
   ([connx mod fun args]
     (connection/send-rpc
       connx
       (util/->str-arg mod)
       (util/->str-arg fun)
-      (types/clj->erl args))
+      (types/clj->erl (into (list) args)))
     :ok))
 
 (defn- -parse-lookup-names [results]
@@ -71,6 +71,11 @@
         (connection/lookup-names transport)
         (-parse-lookup-names))))
 
+(defn close
+  [conn]
+  (connection/close conn)
+  :ok)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -78,7 +83,7 @@
 (import-vars
   [connection
    ;; abstract-connection-behaviour
-   close
+   ;; close -- see above
    deliver
    get-flags
    get-trace-level

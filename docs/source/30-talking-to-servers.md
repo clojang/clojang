@@ -173,6 +173,9 @@ clojang.dev=> (conn/lookup-names)
 Now we're going to look at creating an LFE server that you could put into a
 supervision tree and run in production: LFE with OTP.
 
+
+#### LFE-side Server
+
 In the `examples` directory of the Clojang source code there is a module
 containing a variation on the classic "ping-pong" server. It's written in LFE,
 but it could have been done in any BEAM (Erlang VM) language. Here's the code:
@@ -271,29 +274,55 @@ Now we can start it:
 #(ok <0.45.0>)
 ```
 
-With our LFE server running, let's jump back over to the Clojure REPL, create
-an RPC client connection, and make some RPC calls to our LFE server by passing
-the module (`:ping-pong`) and the function name (`:ping`):
 
-```clojure
-clojang.dev=> (def rpc-client (rpc/connect "clojang-lfe"))
-#'clojang.dev/rpc-client
-clojang.dev=> (rpc/! rpc-client :ping-pong :ping)
+#### Clojure-side RPC
+
+With our LFE server running, let's jump back over to the Clojure REPL and make
+some RPC calls to our LFE server by passing the module `:ping-pong` and the
+function name `:ping`:
+
+```clj
+clojang.dev=> (rpc/! :clojang-lfe :ping-pong :ping)
 :ok
-clojang.dev=> (rpc/! rpc-client :ping-pong :ping)
+clojang.dev=> (rpc/! :clojang-lfe :ping-pong :ping)
 :ok
-clojang.dev=> (rpc/! rpc-client :ping-pong :ping)
+clojang.dev=> (rpc/! :clojang-lfe :ping-pong :ping)
 :ok
-clojang.dev=> (rpc/receive rpc-client)
+clojang.dev=> (rpc/receive :clojang-lfe)
 :pong
-clojang.dev=> (rpc/receive rpc-client)
+clojang.dev=> (rpc/receive :clojang-lfe)
 :pong
-clojang.dev=> (rpc/receive rpc-client)
+clojang.dev=> (rpc/receive :clojang-lfe)
 :pong
-clojang.dev=> (rpc/! rpc-client :ping-pong :get-ping-count)
+clojang.dev=> (rpc/! :clojang-lfe :ping-pong :get-ping-count)
 :ok
-clojang.dev=> (rpc/receive rpc-client)
+clojang.dev=> (rpc/receive :clojang-lfe)
 3
+```
+
+You may also use the fully qualified node name, if you wish -- but you must
+choose one or the other, not both. If you wish to switch, you will need to
+close the implicit connection created first:
+
+```clj
+clojang.dev=> (rpc/close :clojang-lfe)
+:ok
+```
+
+Now you can use a different node name (which will reconnect to the remote
+node):
+
+```clj
+clojang.dev=> (rpc/! "clojang-lfe@host" :ping-pong :ping)
+:ok
+clojang.dev=> (rpc/receive "clojang-lfe@host")
+:pong
+clojang.dev=> (rpc/receive "clojang-lfe@host" :ping-pong :get-ping-count)
+:ok
+clojang.dev=> (rpc/receive "clojang-lfe@host")
+4
+clojang.dev=> (rpc/close "clojang-lfe@host")
+:ok
 ```
 
 While the emphasis here is remote communications, it goes without saying that
@@ -308,7 +337,57 @@ pong
 (clojang-lfe@host)> (ping-pong:ping)
 pong
 (clojang-lfe@host)> (ping-pong:get-ping-count)
-6
+7
+```
+
+However, a remote LFE node would use the Erlang `rpc` module similarly to how
+we did from Clojure:
+
+```cl
+(clojang-lfe@host)> (rpc:cast 'clojang-lfe@host 'ping-pong 'ping '())
+true
+(clojang-lfe@host)> (rpc:call 'clojang-lfe@host 'ping-pong 'get-ping-count '())
+8
+```
+
+Note that in the `rpc` Erlang module, `cast` is used for when no result is
+expected and `call` is used when there is.
+
+The `clojang.rpc` namespace provides `cast` and `call` as convenience
+functions which perform a `send` and then `receive` in the same function,
+emulating a blocking call:
+
+```clj
+clojang.dev=> (rpc/cast :clojang-lfe :ping-pong :ping)
+:ok
+clojang.dev=> (rpc/call :clojang-lfe :ping-pong :get-ping-count)
+9
+```
+
+You may, of course, use `call` with the remote `ping` function, since it does
+return a value:
+
+```clj
+clojang.dev=> (rpc/call :clojang-lfe :ping-pong :ping)
+:pong
+```
+
+Our example use of RPC has focused strictly on the module we compiled (and its
+contained functions). Regardless, the same usage applies to all Erlang modules
+and functions on the remote node, however:
+
+```clj
+clojang.dev=> (rpc/call :clojang-lfe :erlang :date)
+[2017 1 17]
+clojang.dev=> (rpc/call :clojang-lfe :erlang :abs [-1])
+1
+```
+
+Let's cleanup:
+
+```clj
+clojang.dev=> (rpc/close :clojang-lfe)
+:ok
 ```
 
 

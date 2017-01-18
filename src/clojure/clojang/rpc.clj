@@ -14,52 +14,38 @@
             [jiface.otp.connection :as connection]
             [jiface.otp.nodes :as nodes]
             [potemkin :refer [import-vars]])
-  (:refer-clojure :exclude [deliver send]))
+  (:refer-clojure :exclude [cast deliver send]))
 
-(declare send receive)
+(defn open
+  ([peer-node-name]
+    (node/connect peer-node-name))
+  ([self-node-name peer-node-name]
+    (node/connect self-node-name peer-node-name)))
 
-(defn open [self peer]
-  (node/connect self peer))
-
-(defn connect
-  ([remote-node-name]
-    (connect (node/get-default-name) remote-node-name))
-  ([local-node-name remote-node-name]
-    (let [self (node/self local-node-name)
-          peer (node/peer remote-node-name)]
-      {:self self
-       :peer peer
-       :conn (open self peer)})))
-
-(defn close [rpc-client]
-  (conn/close (:conn rpc-client)))
-
-(defn wasteful-send
-  [remote-node-name args]
-  (let [rpc-client (connect remote-node-name)
-        result (apply send (into [rpc-client] args))]
-    (close rpc-client)
-    result))
-
-;;; XXX currently broken ...
-(defn wasteful-receive
-  [remote-node-name args]
-  (let [rpc-client (connect remote-node-name)
-        result (apply conn/receive-rpc (into [(:conn rpc-client)] args))]
-    (close rpc-client)
-    result))
+(defn close
+  ([peer-node-name]
+    (conn/close (node/connect peer-node-name)))
+  ([self-node-name peer-node-name]
+    (conn/close (node/connect self-node-name peer-node-name))))
 
 (defn send
-  [rpc-client & args]
-  (if (string? rpc-client)
-    (wasteful-send rpc-client args)
-    (apply conn/send-rpc (into [(:conn rpc-client)] args))))
+  [peer-node-name & args]
+  (apply conn/send-rpc (into [(open peer-node-name)] args)))
 
 (defn receive
-  [rpc-client & args]
-  (if (string? rpc-client)
-    (wasteful-receive rpc-client args)
-    (apply conn/receive-rpc (into [(:conn rpc-client)] args))))
+  [peer-node-name & args]
+  (apply conn/receive-rpc (into [(open peer-node-name)] args)))
+
+(defn cast
+  [peer-node-name & args]
+  (apply send (into [peer-node-name] args))
+  (receive peer-node-name)
+  :ok)
+
+(defn call
+  [peer-node-name & args]
+  (apply send (into [peer-node-name] args))
+  (receive peer-node-name))
 
 ; (defn rpc? [msg-data]
 ;   (let [gen (first msg-data)]
