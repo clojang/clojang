@@ -1,4 +1,4 @@
-(defproject clojang "0.3.0-SNAPSHOT"
+(defproject clojang "0.3.0"
   :description "Erlang/OTP Communications in Clojure (wraps jiface + JInterface)"
   :url "https://github.com/clojang/clojang"
   :scm {
@@ -10,8 +10,8 @@
   :dependencies [
     [org.clojure/clojure "1.8.0"]
     [org.clojure/core.memoize "0.5.9"]
-    [clojang/agent "0.3.0-SNAPSHOT"]
-    [clojang/jiface "0.3.0-SNAPSHOT"]
+    [clojang/agent "0.3.0"]
+    [clojang/jiface "0.3.0"]
     [clojusc/twig "0.3.0"]]
   :source-paths ["src/clojure"]
   :codox {
@@ -57,5 +57,5 @@
         ;"-Dheadless"
         "-splash:resources/images/logo-5-250x.png"
         "-Dnode.sname=clojang"]
-      :java-agents [[clojang/agent "0.3.0-SNAPSHOT"]]
+      :java-agents [[clojang/agent "0.3.0"]]
       :repl-options {:init-ns clojang.dev}}})
