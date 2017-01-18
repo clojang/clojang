@@ -268,15 +268,13 @@ to close, so resources may be consumed.
 An Erlang node acting as a client to another Erlang node typically sends a
 request and waits for a reply. Such a request is included in a function call
 at a remote node and is called a remote procedure call. Remote procedure calls
-are supported through the [clojang.conn]() namespace. The following example
-shows how the ``connection`` protocol is used for remote procedure calls:
+are supported through the
+[clojang.rpc](http://clojang.github.io/clojang/current/clojang.rpc.html)
+namespace. The following example shows how the `rpc` protocol is used for
+remote procedure calls:
 
 ```clj
-(def self (node/self :client))
-(def other (node/peer "clojang-lfe@mndltl01"))
-(def connx (node/connect self other))
-
-(conn/!rpc connx :erlang :date)
-(conn/receive-rpc connx)
+(rpc/! :clojang-lfe :erlang :date)
+(rpc/receive :clojang-lfe)
 [2016 1 30]
 ```
