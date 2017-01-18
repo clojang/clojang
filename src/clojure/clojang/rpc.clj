@@ -17,32 +17,50 @@
   (:refer-clojure :exclude [cast deliver send]))
 
 (defn open
+  "Open an RPC connection to a remote node. Optionally, a local node name may
+  be provided; otherwise, default node name is assumed for the local node.
+
+  Though this is required for RPC connections, the connection object is a
+  general one. Once opened, the connection may be used for anything."
   ([peer-node-name]
     (node/connect peer-node-name))
   ([self-node-name peer-node-name]
     (node/connect self-node-name peer-node-name)))
 
 (defn close
+  "Close the connection to a remote node. Optionally, a local node name may
+  be provided; otherwise, default node name is assumed for the local node."
   ([peer-node-name]
     (conn/close (node/connect peer-node-name)))
   ([self-node-name peer-node-name]
     (conn/close (node/connect self-node-name peer-node-name))))
 
 (defn send
+  "Send an RPC message to the remote node."
   [peer-node-name & args]
   (apply conn/send-rpc (into [(open peer-node-name)] args)))
 
 (defn receive
+  "Receive an RPC message from a remote node."
   [peer-node-name & args]
   (apply conn/receive-rpc (into [(open peer-node-name)] args)))
 
 (defn cast
+  "Send a blocking RPC message to a remote node. The function unblocks when
+  the response message is received. Named after the function of the same name
+  in the LFE/Erlang `rpc` module, this function *is not* intended to be used
+  with remote functions that return a result. It will not return a value other
+  than `:ok`, even if the remote function does return a value."
   [peer-node-name & args]
   (apply send (into [peer-node-name] args))
   (receive peer-node-name)
   :ok)
 
 (defn call
+  "Send a blocking RPC message to a remote node. The function unblocks when
+  the response message is received. Named after the function of the same name
+  in the LFE/Erlang `rpc` module, this function *is* intended to be used with
+  remote functions that return a result."
   [peer-node-name & args]
   (apply send (into [peer-node-name] args))
   (receive peer-node-name))

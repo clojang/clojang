@@ -2,13 +2,17 @@
   (:require [clojang.types.core :as types]
             [clojang.mbox :as mbox]))
 
-;;; Aliases
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def ->erl #'types/clj->erl)
+(def
+  "Convert Clojure types to Erlang/JInterface types."
+  ->erl #'types/clj->erl)
 
-(def ->clj #'types/erl->clj)
-
-;;; Functions
+(def
+  "Convert Erlang/JInterface types to Clojure types."
+  ->clj #'types/erl->clj)
 
 (def ! #'mbox/send)
 (def receive #'mbox/receive)

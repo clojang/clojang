@@ -56,10 +56,7 @@
   the function also:
   * allows for mailbox and node name arguments to be symbols, keywords, or
     strings;
-  * allows for node and mbox objects to be passed (useful for dire's
-    `with-finally!` function);
-  * allows for 'client' data to be passed (a map of
-    `{:self node :inbox mbox}` -- simplifies message-passing code)"
+  * converts between Erlang and Clojure objects"
   (fn [& args] (mapv class args)))
 
 (defmethod send [java.lang.Object]
@@ -149,6 +146,7 @@
   (types/erl->clj (messaging/get-pid inbox)))
 
 (defn link
+  "Link to a remote mailbox or Erlang process."
   ([pid]
     (link (get-default) pid))
   ([inbox pid]
@@ -156,6 +154,7 @@
     :ok))
 
 (defn unlink
+  "Remove a link to a remote mailbox or Erlang process."
   ([pid]
     (unlink (get-default) pid))
   ([inbox pid]
@@ -163,7 +162,7 @@
     :ok))
 
 (defn close
-  ""
+  "Close the default or named mailbox."
   ([]
     (close (get-default)))
   ([node]
