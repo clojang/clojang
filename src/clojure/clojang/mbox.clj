@@ -62,31 +62,59 @@
     `{:self node :inbox mbox}` -- simplifies message-passing code)"
   (fn [& args] (mapv class args)))
 
-(defmethod send [clojure.lang.PersistentVector]
+(defmethod send [java.lang.Object]
                 [msg]
-  (send (get-default)
-        const/default-mbox-name
-        (node/get-default-name)
-        msg))
+  (send
+    (get-default)
+    const/default-mbox-name
+    (node/get-default-name)
+    msg))
+
+(defmethod send [clojang.types.record.Pid
+                 java.lang.Object]
+                [pid-record msg]
+  (send
+    (types/clj->erl pid-record)
+    msg))
+
+(defmethod send [OtpErlangPid
+                 java.lang.Object]
+                [pid msg]
+  (send
+    (get-default)
+    pid
+    msg))
+
+(defmethod send [OtpMbox
+                 OtpErlangPid
+                 java.lang.Object]
+                [remote-mbox pid msg]
+  (messaging/send
+    remote-mbox
+    pid
+    (types/clj->erl msg))
+  :ok)
 
 (defmethod send [clojure.lang.Keyword
                  java.lang.String
-                 clojure.lang.PersistentVector]
+                 java.lang.Object]
                 [remote-mbox-name remote-node-name msg]
-  (send (get-default)
-        remote-mbox-name
-        remote-node-name
-        msg))
+  (send
+    (get-default)
+    remote-mbox-name
+    remote-node-name
+    msg))
 
 (defmethod send [OtpMbox
                  java.lang.Object
                  java.lang.Object
-                 clojure.lang.PersistentVector]
+                 java.lang.Object]
                 [remote-mbox remote-mbox-name remote-node-name msg]
-  (messaging/send remote-mbox
-                  (util/->str-arg remote-mbox-name)
-                  (util/->str-arg remote-node-name)
-                  (types/clj->erl msg))
+  (messaging/send
+    remote-mbox
+    (util/->str-arg remote-mbox-name)
+    (util/->str-arg remote-node-name)
+    (types/clj->erl msg))
   :ok)
 
 (defn get-names
