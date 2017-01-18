@@ -39,11 +39,12 @@ The Clojang library, however, provides an interface that is not only syntactical
 
 ## Building [&#x219F;](#contents)
 
-``rebar3`` is used for the top-level builds of the project. It runs ``lein`` under the covers in order to build the Clojure code and create the Clojang``.jar`` file. As such, to build everything -- LFE, Erlang, and Clojure -- you need only do the following:
+`rebar3` is used for the top-level builds of the project. It runs `lein` under the covers in order to build the Clojure code and create the Clojang`.jar` file. As such, to build everything -- LFE, Erlang, and Clojure -- you need only do the following:
 
-* ``rebar3 compile``
+* `rebar3 compile`
 
-If you wish to build your own JInterface ``.jar`` file and not use the one we've uploaded to Clojars, you'll need to follow the instrucations given in the [jinterface-builder Clojang project](https://github.com/clojang/jinterface-builder).
+If you wish to build your own JInterface `.jar` file and not use the one we've uploaded to Clojars, you'll need to follow the instrucations given in the
+[jinterface-builder Clojang project](https://github.com/clojang/jinterface-builder).
 
 
 ## Shells & REPLs [&#x219F;](#contents)
@@ -86,11 +87,12 @@ Quick links for the other docs:
 
 ## Usage [&#x219F;](#contents)
 
-Using Clojang in a project is just like any other Clojure library. Just add the following to the ``:dependencies`` in your ``project.clj`` file:
+Using Clojang in a project is just like any other Clojure library. Just add
+the following to the `:dependencies` in your `project.clj` file:
 
 [![Clojars Project][clojars-badge]][clojars]
 
-For the Erlang/LFE side of things, you just need to add the Github URL to your ``rebar.config`` file, as with any other rebar-based Erlang VM project.
+For the Erlang/LFE side of things, you just need to add the Github URL to your `rebar.config` file, as with any other rebar-based Erlang VM project.
 
 As for actual code usage, the documentation section provides links to developer guides and API references, but below are also provided two quick examples, one each in the low- and mid-level APIs.
 
@@ -175,7 +177,7 @@ To run everything:
 $ lein test :all
 ```
 
-This is what is used by the ``rebar3`` configuration to run the Clojang tests.
+This is what is used by the `rebar3` configuration to run the Clojang tests.
 
 
 ## License [&#x219F;](#contents)
