@@ -3,8 +3,16 @@
 This tutorial covers the two-sided topic of communications between LFE and
 Clojure:
 
-* Clojure communicating as a client with LFE servers, and
+* Clojure communicating as a client with LFE servers
+  * Simple LFE Server
+  * LFE Client Example Usage
+  * Clojure Client Example Usage
+  * Using OTP
+    * LFE-side Server
+    * Clojure-side RPC
 * LFE communicating as a client with Clojure servers
+  * Simple Clojure Server
+  * LFE Client-side Usage
 
 
 ## Clojure Client with LFE Server
@@ -14,7 +22,7 @@ with Clojure as a client and LFE taking the role of running some servers.
 We'll look at two examples:
 
 1. A very simple LFE server, and
-1. An LFE ``gen_server`` built with OTP
+1. An LFE `gen_server` built with OTP
 
 
 ### A Simple LFE Server
@@ -70,6 +78,9 @@ All we need now to turn this into a simplistic server is to spawn it:
 <0.71.0>
 ```
 
+
+### LFE Client Example Usage
+
 With the LFE REPL as our implicit client, let's send the server some messages:
 
 ```cl
@@ -109,6 +120,9 @@ process with a name:
 (clojang-lfe@host)> (register 'ping-pong ping-pong-pid)
 true
 ```
+
+
+### Clojure Client Example Usage
 
 In a separate terminal window (in the Clojang top-level directory, just like
 the `make repl` command), start up the Clojure REPL:
@@ -432,6 +446,9 @@ Let's paste this server into the Clojure REPL and then run it:
 (ping-pong)
 ```
 
+
+### LFE Client-side Usage
+
 Now let's head over to an LFE REPL and talk to the Clojure server:
 
 ```cl
@@ -470,7 +487,7 @@ Back in the Clojure REPL you should now see:
 ### Clojang OTP
 
 
-#### Clojure-side `get-server`
+#### Clojure-side `gen-server`
 
 TBD
 
