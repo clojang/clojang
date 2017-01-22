@@ -178,7 +178,7 @@ To make sure our node no longer has an open port, we can query EPMD:
 
 ```clj
 clojang.dev=> (epmd/lookup-names)
-["name clojang-lfe at port 52346"]
+[["clojang" 38581] ["clojang-lfe" 42399]]
 ```
 
 
