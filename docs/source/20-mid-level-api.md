@@ -10,6 +10,18 @@ provides information for developers interested in using the Clojang API which
 is designed to save time and effort without the need of manually translating
 between Clojure and JInterface's Erlang data types.
 
+In the following examples, we assume that you have `require`ed the necessary
+namespaces and `import`ed the Java classes needed in a Clojang REPL:
+
+```clj
+=> (require '[clojang.conn :as conn]
+            '[clojang.core :as clojang :refer [! receive self]]
+            '[clojang.mbox :as mbox]
+            '[clojang.node :as node])
+=> (import '[com.ericsson.otp.erlang OtpErlangDecodeException
+                                     OtpErlangExit])
+```
+
 
 ## Nodes
 
@@ -23,20 +35,24 @@ one with its own message box and the ability to send and receive messages.
 JInterface by itself does no such thing when the JVM is started. However,
 Clojang makes use of a Java agent (written in Clojure) to provide this same
 facility. As such, a Clojure REPL running Clojang has its own default node and
-associated message box, just like an Erlang or LFE node.
-
-Assuming you have an Erlang ``epmd`` daemon running, when you start a Clojang
-REPL:
-
-In this example, the host name is appended automatically to the identifier,
-and the port number is chosen by the underlying system:
+associated message box, just like an Erlang or LFE node:
 
 ```clj
-=> (require '[clojang.conn :as conn]
-            '[clojang.core :as clojang :refer [! receive self]]
-            '[clojang.mbox :as mbox]
-            '[clojang.node :as node])
+=> (node/get-default)
+#object[com.ericsson.otp.erlang.OtpNode ...]
+```
+
+It is recommended that you use the default node created for you by the Clojang
+agent, in order to reduce overhead and the memory footprint of Clojang
+applications. However, the API provides the ability to create your own nodes,
+should you wish to.
+
+To do so, you may either use a short name or a name including the host:
+
+```clj
 => (def gurka (node/new :gurka))
+#'user/gurka
+=> (def gurka (node/new "gurka@localhost"))
 #'user/gurka
 ```
 
@@ -50,12 +66,19 @@ messages; the mailbox is identified with the pid of the process.
 
 Clojang provides a similar mechanism with the namespace
 [clojang.mbox](clojang/current/clojang.mbox.html),
-
 a mailbox that can be used to send and receive messages asynchronously. Each
-OtpMbox is identified with a unique pid and , optionally, a registered name
+`OtpMbox` is identified with a unique pid and , optionally, a registered name
 unique within the
-
 [OtpMbox](erlang/java/com/ericsson/otp/erlang/OtpMbox.html).
+
+When the Clojang agent creates a default node for use by Clojang in a Java VM,
+it also creates a default message inbox for that node. This is accessible via
+the following function call:
+
+```clj
+=>(mbox/get-default)
+#object[com.ericsson.otp.erlang.OtpMbox ...]
+```
 
 Applications are free to create mailboxes as necessary. This is done as
 follows, optionally giving it a registered name:
@@ -103,7 +126,7 @@ Mate, this node wouldn't go 'voom' if ...
 nil
 ```
 
-If the call to ``(nodes/ping ...)`` succeeds, a connection to the remote node
+If the call to `(node/ping ...)` succeeds, a connection to the remote node
 has been established. Note that it is not necessary to ping remote nodes
 before communicating with them, but by using ping you can determine if the
 remote exists before attempting to communicate with it.
@@ -111,7 +134,7 @@ remote exists before attempting to communicate with it.
 Connections are only permitted by nodes using the same security cookie. The
 cookie is a short string provided either as an argument when creating
 [node](clojang/current/clojang.jinterface.otp.nodes.html#var-NodeObject)
-objects, or found in the user's home directory in the file ``.erlang.cookie``.
+objects, or found in the user's home directory in the file `.erlang.cookie`.
 When a connection attempt is made, the string is used as part of the
 authentication process. If you are having trouble getting communication to
 work, use the trace facility (described later in this document) to show the
@@ -132,16 +155,14 @@ process can reply:
 => (def msg [(mbox/get-pid inbox) :hello-world])
 #'user/msg
 => (! inbox :echo :gurka msg)
-nil
+:ok
 => (receive inbox)
-[#object[com.ericsson.otp.erlang.OtpErlangPid
-         0x1fe20514
-         "#Pid<gurka@host.1.0>"]
+[#clojang.types.record.Pid{:creation 2, :node "gurka@localhost", :id 1, :serial 0}
  :hello-world]
 ```
 
-You can also send messages from Erlang VMs to your ``node``'s mailbox named
-``"echo"``. Before you do that, though, start listening in your Clojure REPL:
+You can also send messages from Erlang VMs to your `node`'s mailbox named
+`"echo"`. Before you do that, though, start listening in your Clojure REPL:
 
 ```clj
 => (receive inbox)
@@ -163,7 +184,7 @@ Once you're in the REPL, you're ready to send a message:
 #(hej!)
 ```
 
-Looking at the Clojure REPL, you'll see that your ``receive`` call has
+Looking at the Clojure REPL, you'll see that your `receive` call has
 finished and you now have some data:
 
 ```clj
@@ -215,17 +236,24 @@ The link can be removed by either of the processes in a similar manner:
 (mbox/unlink (mbox/get-pid inbox))
 ```
 
+In the cases when only a "remote" message box is provided (as above), the
+local node in the `link` and `unlink` function calls is assumed to be the
+default node.
+
 If the remote process terminates while the link is still in place, an
-exception will be raised on a subsequent call to `receive`:
+exception will be raised on a subsequent call to `receive`. For example, in
+this case, the "remote" node's inbox pid to which we have linked is the
+`OtpMbox` instance stored in the `inbox` variable. The local node is our
+default node. Before unlinking `inbox`, if we instead call
+`(mbox/close inbox)` and then try to receive on the local node's default
+message box, we'll get an exception. Here's how to catch that exception:
 
 ```clj
 (try
-  (receive inbox)
+  (receive)
   (catch OtpErlangExit ex
     (println (format "Remote pid %s has terminated"
-                     (clojang/->clj (.pid ex)))))
-  (catch OtpErlangDecodeException ex
-    (println "Received message could not be decoded:" ex)))
+                     (clojang/->clj (.pid ex))))))
 ```
 
 
