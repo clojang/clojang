@@ -24,6 +24,8 @@
     :metadata {:doc/format :markdown}}
   :profiles {
     ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    :uberjar {:aot :all}
+    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :testing {
        :plugins
          [[lein-ancient "0.6.10"]
