@@ -1,11 +1,5 @@
 (ns clojang.types.record)
 
-(defrecord Pid
-  [creation
-   node
-   id
-   serial])
-
 (defrecord Msg
   [msg
    msg-type
@@ -13,3 +7,16 @@
    recipient-name
    recipient-pid
    sender-pid])
+
+(defrecord Pid
+  [node
+   id
+   serial
+   creation])
+
+(defrecord Port
+  [node
+   id
+   creation])
+
+

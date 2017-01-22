@@ -91,3 +91,12 @@
   ""
   [node id serial creation]
   (types/clj->erl [node id serial creation]))
+
+(defn port
+  ""
+  ([buf]
+    (typcs/clj->erl [buf]))
+  ([node id creation]
+    (types/clj->erl [node id creation]))
+  ([tag node id creation]
+    (types/clj->erl [tag node id creation])))
