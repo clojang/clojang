@@ -104,6 +104,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def get-node #'get-default-node)
+(def get-default #'get-default-node)
 
 (import-vars
   [nodes
