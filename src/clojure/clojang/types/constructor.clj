@@ -95,7 +95,7 @@
 (defn port
   ""
   ([buf]
-    (typcs/clj->erl [buf]))
+    (types/clj->erl [buf]))
   ([node id creation]
     (types/clj->erl [node id creation]))
   ([tag node id creation]
@@ -104,7 +104,7 @@
 (defn ref
   ""
   ([buf]
-    (typcs/clj->erl [buf]))
+    (types/clj->erl [buf]))
   ([node ids creation]
     (types/clj->erl [node ids creation]))
   ([tag node ids creation]

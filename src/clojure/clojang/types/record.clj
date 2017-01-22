@@ -19,9 +19,8 @@
    id
    creation])
 
-(defrecord Port
+(defrecord Ref
   [node
    id
    ids
    creation])
-
