@@ -19,4 +19,9 @@
    id
    creation])
 
+(defrecord Port
+  [node
+   id
+   ids
+   creation])
 

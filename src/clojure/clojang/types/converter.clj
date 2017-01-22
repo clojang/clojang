@@ -9,6 +9,7 @@
             [jiface.erlang.map :as map-type]
             [jiface.erlang.pid :as pid]
             [jiface.erlang.port :as port]
+            [jiface.erlang.ref :as ref]
             [jiface.erlang.string :as string]
             [jiface.erlang.tuple :as tuple]
             [jiface.erlang.types :as types]
@@ -144,6 +145,12 @@
               (:id clj-obj)
               (:creation clj-obj)))
 
+(defmethod clj->erl clojang.types.record.Ref
+  [^clojang.types.record.Ref clj-obj]
+  (types/ref (:node clj-obj)
+              (:ids clj-obj)
+              (:creation clj-obj)))
+
 (defmethod clj->erl :default
   [clj-obj]
   clj-obj)
@@ -246,6 +253,13 @@
     {:node (erl->clj (port/get-node erl-obj))
      :id (erl->clj (port/get-id erl-obj))
      :creation (erl->clj (port/get-creation-num erl-obj))}))
+
+(defmethod erl->clj com.ericsson.otp.erlang.OtpErlangRef
+  [^com.ericsson.otp.erlang.OtpErlangRef erl-obj]
+  (clojang.types.record/map->Ref
+    {:node (erl->clj (ref/get-node erl-obj))
+     :ids (erl->clj (ref/get-ids erl-obj))
+     :creation (erl->clj (ref/get-creation-num erl-obj))}))
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpMsg
   [^com.ericsson.otp.erlang.OtpMsg erl-obj]

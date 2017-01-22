@@ -100,3 +100,12 @@
     (types/clj->erl [node id creation]))
   ([tag node id creation]
     (types/clj->erl [tag node id creation])))
+
+(defn ref
+  ""
+  ([buf]
+    (typcs/clj->erl [buf]))
+  ([node ids creation]
+    (types/clj->erl [node ids creation]))
+  ([tag node ids creation]
+    (types/clj->erl [tag node ids creation])))
