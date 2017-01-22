@@ -132,10 +132,11 @@ For the Erlang/LFE side of things, you just need to add the Github URL to your
 `rebar.config` file, as with any other rebar-based Erlang VM project.
 
 As for actual code usage, the documentation section provides links to
-developer guides and API references, but below are also provided two quick
-examples, one each in the low- and mid-level APIs.
+developer guides and API references, but below are also provided some quick
+examples.
 
-
+Here, we'll send a message to our own (default) node's message box, and then
+receive it:
 
 ```clj
 (require '[clojang.core :refer [! receive self]])
@@ -145,14 +146,15 @@ examples, one each in the low- and mid-level APIs.
   (println msg))
 ```
 
-From LFE:
+To show remote usage, from an LFE (Lisp Flavoured Erlang) REPL:
 
 ```cl
 (clojang-lfe@mndltl01)> (! #(default clojang@host) `#(,(self) hej!))
 #(<0.35.0> hej!)
 ```
 
-Then back in Clojure, the same that we used before:
+Then back in Clojure, the same that we used before, but we'll capture the
+process id that we sent from LFE and then send another message back to it:
 
 ```clj
 (let [[pid msg] (receive)]
@@ -160,7 +162,8 @@ Then back in Clojure, the same that we used before:
   (! pid "hello, world!"))
 ```
 
-Then, back in LFE:
+Then, returning to the LFE REPL, we check that we received the message from
+Clojang:
 
 ```cl
 (clojang-lfe@mndltl01)> (c:flush)
