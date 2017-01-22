@@ -1,5 +1,5 @@
 (ns clojang.types.converter
-  (:require [clojang.types.record]
+  (:require [clojang.types]
             [clojure.string :as clj-string]
             [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
@@ -15,7 +15,7 @@
             [jiface.erlang.types :as types]
             [jiface.otp.nodes]
             [jiface.otp.messaging :as messaging])
-  (:import [clojang.types.record]
+  (:import [clojang.types]
            [com.ericsson.otp.erlang])
   (:refer-clojure :exclude [atom boolean byte float int]))
 
@@ -132,21 +132,21 @@
   [^java.lang.String clj-obj]
   (types/string clj-obj))
 
-(defmethod clj->erl clojang.types.record.Pid
-  [^clojang.types.record.Pid clj-obj]
+(defmethod clj->erl clojang.types.Pid
+  [^clojang.types.Pid clj-obj]
   (types/pid (:node clj-obj)
              (:id clj-obj)
              (:serial clj-obj)
              (:creation clj-obj)))
 
-(defmethod clj->erl clojang.types.record.Port
-  [^clojang.types.record.Port clj-obj]
+(defmethod clj->erl clojang.types.Port
+  [^clojang.types.Port clj-obj]
   (types/port (:node clj-obj)
               (:id clj-obj)
               (:creation clj-obj)))
 
-(defmethod clj->erl clojang.types.record.Ref
-  [^clojang.types.record.Ref clj-obj]
+(defmethod clj->erl clojang.types.Ref
+  [^clojang.types.Ref clj-obj]
   (types/ref (:node clj-obj)
               (:ids clj-obj)
               (:creation clj-obj)))
@@ -241,7 +241,7 @@
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangPid
   [^com.ericsson.otp.erlang.OtpErlangPid erl-obj]
-  (clojang.types.record/map->Pid
+  (clojang.types/map->Pid
     {:node (erl->clj (pid/get-node erl-obj))
      :id (erl->clj (pid/get-id erl-obj))
      :serial (erl->clj (pid/get-serial-num erl-obj))
@@ -249,14 +249,14 @@
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangPort
   [^com.ericsson.otp.erlang.OtpErlangPort erl-obj]
-  (clojang.types.record/map->Port
+  (clojang.types/map->Port
     {:node (erl->clj (port/get-node erl-obj))
      :id (erl->clj (port/get-id erl-obj))
      :creation (erl->clj (port/get-creation-num erl-obj))}))
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangRef
   [^com.ericsson.otp.erlang.OtpErlangRef erl-obj]
-  (clojang.types.record/map->Ref
+  (clojang.types/map->Ref
     {:node (erl->clj (ref/get-node erl-obj))
      :ids (erl->clj (ref/get-ids erl-obj))
      :creation (erl->clj (ref/get-creation-num erl-obj))}))
@@ -264,7 +264,7 @@
 (defmethod erl->clj com.ericsson.otp.erlang.OtpMsg
   [^com.ericsson.otp.erlang.OtpMsg erl-obj]
 
-  (clojang.types.record/map->Msg
+  (clojang.types/map->Msg
     {:msg (erl->clj (messaging/get-msg erl-obj))
      :recipient (erl->clj (messaging/get-recipient erl-obj))
      :recipient-name (erl->clj (messaging/get-recipient-name erl-obj))

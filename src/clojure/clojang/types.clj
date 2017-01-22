@@ -1,4 +1,4 @@
-(ns clojang.types.record)
+(ns clojang.types)
 
 (defrecord Msg
   [msg

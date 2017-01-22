@@ -3,7 +3,7 @@
             [clojang.types.predicate]
             [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [atom boolean byte char double
-                            float int list long map short]))
+                            float int list long map ref short]))
 
 (defn atom
   ""

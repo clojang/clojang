@@ -157,7 +157,7 @@ process can reply:
 => (! inbox :echo :gurka msg)
 :ok
 => (receive inbox)
-[#clojang.types.record.Pid{:creation 2, :node "gurka@localhost", :id 1, :serial 0}
+[#clojang.types.Pid{:creation 2, :node "gurka@localhost", :id 1, :serial 0}
  :hello-world]
 ```
 
