@@ -55,22 +55,6 @@
       (types/clj->erl (into (list) args)))
     :ok))
 
-(defn- -parse-lookup-names [results]
-  (into [] results))
-
-(defn lookup-names
-  ([]
-    (-> (connection/lookup-names)
-        (-parse-lookup-names)))
-  ([inet-addr-str]
-    (-> (java.net.InetAddress/getByName inet-addr-str)
-        (connection/lookup-names)
-        (-parse-lookup-names)))
-  ([inet-addr-str transport]
-    (-> (java.net.InetAddress/getByName inet-addr-str)
-        (connection/lookup-names transport)
-        (-parse-lookup-names))))
-
 (defn close
   [conn]
   (connection/close conn)
@@ -104,10 +88,4 @@
    ;; send -- see above
    send-buf
    ;; send-rpc -- see above
-   unlink
-   ;; epmd
-   ;; lookup-names -- see above
-   lookup-port
-   publish-port
-   unpublish-port
-   use-port])
+   unlink])

@@ -5,6 +5,7 @@
   (:require [clojang.agent.startup :as startup]
             [clojang.conn :as conn]
             [clojang.core :as clojang :refer [! receive self]]
+            [clojang.epmd :as epmd]
             [clojang.mbox :as mbox]
             [clojang.msg :as msg]
             [clojang.node :as node]
