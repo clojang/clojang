@@ -2,8 +2,7 @@
   (:require [clojang.types.core :as types]
             [clojang.node :as node]
             [clojang.util :as util]
-            [jiface.otp.messaging :as messaging]
-            [potemkin :refer [import-vars]]))
+            [jiface.otp.messaging :as messaging]))
 
 (defn get-msg
   "An alias for ``jiface.otp.messaging/get-msg`` that returns a
