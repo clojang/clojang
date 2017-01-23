@@ -241,19 +241,19 @@ local node in the `link` and `unlink` function calls is assumed to be the
 default node.
 
 If the remote process terminates while the link is still in place, an
-exception will be raised on a subsequent call to `receive`. For example, in
+error will be returned on a subsequent call to `receive`. For example, in
 this case, the "remote" node's inbox pid to which we have linked is the
 `OtpMbox` instance stored in the `inbox` variable. The local node is our
 default node. Before unlinking `inbox`, if we instead call
 `(mbox/close inbox)` and then try to receive on the local node's default
-message box, we'll get an exception. Here's how to catch that exception:
+message box, we'll get an error. Here's one way to handle that error:
 
 ```clj
-(try
-  (receive)
-  (catch OtpErlangExit ex
-    (println (format "Remote pid %s has terminated"
-                     (clojang/->clj (.pid ex))))))
+(match (receive)
+  [:error [_ msg e_ _]]
+    (println (format "Remote pid %s has terminated."
+                     (exceptions/get-pid ex)))
+  data data)
 ```
 
 
@@ -305,4 +305,45 @@ remote procedure calls:
 (rpc/! :clojang-lfe :erlang :date)
 (rpc/receive :clojang-lfe)
 [2016 1 30]
+```
+
+
+## Results
+
+### Functions with Return Values
+
+In `clojang`, functions that return values (many of which obtain them from
+calls to `jiface`) often need to convert from the underlying `JInterface`
+custom Java types to Clojure types and or data structures. This is done
+whenever possible, providing as native a feel of the `clojang` API as
+possible.
+
+
+### Functions with Side-effects
+
+In Erlang, functions that do not return results sometimes return `true`,
+other times `ok` or `{ok}` (the latter being an Erlang tuple type). In Clojang,
+these are all unified under a single return value of `:ok`.
+
+
+## Errors and Exception-handling
+
+Clojang whole-heartedly adopts the Erlang ethos of dealing with errors as data.
+As such the only time you will see an exception in Clojang is if:
+
+* you are using code which is still under development
+* you have discovered a bug
+
+All functions that result in an underlying Java, `JInterface`, or Clojure
+exception will instead return a vector of the following form:
+
+```clj
+[:error [exception-type exception-message exception]]
+```
+
+You may use this to great advantage (clarity and conciseness) in your code with
+pattern matching, similarly as to how these are handled in Erlang:
+
+```clj
+TBD
 ```
