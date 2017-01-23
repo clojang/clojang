@@ -1,5 +1,6 @@
 (ns clojang.epmd
-  (:require [jiface.epmd :as epmd]
+  (:require [clojang.caller :refer [call call!]]
+            [jiface.epmd :as epmd]
             [dire.core :refer [with-handler!]]
             [potemkin :refer [import-vars]]))
 
@@ -24,16 +25,17 @@
 
 (defn lookup-names
   ([]
-    (-> (epmd/lookup-names)
-        (-parse-names)))
+    (->> (call epmd/lookup-names)
+         (-parse-names)))
   ([inet-addr-str]
-    (-> (java.net.InetAddress/getByName inet-addr-str)
-        (epmd/lookup-names)
-        (-parse-names)))
+    (->> (java.net.InetAddress/getByName inet-addr-str)
+         (call epmd/lookup-names)
+         (-parse-names)))
   ([inet-addr-str transport]
-    (-> (java.net.InetAddress/getByName inet-addr-str)
-        (epmd/lookup-names transport)
-        (-parse-names))))
+    (->> (java.net.InetAddress/getByName inet-addr-str)
+         (into [transport])
+         (call epmd/lookup-names)
+         (-parse-names))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
