@@ -12,9 +12,16 @@
             [clojang.node :as node]
             [clojang.util :as util]
             [jiface.otp.connection :as connection]
-            [jiface.otp.nodes :as nodes]
-            [potemkin :refer [import-vars]])
-  (:refer-clojure :exclude [cast deliver send]))
+            [jiface.otp.nodes :as nodes])
+  (:refer-clojure :exclude [cast send]))
+
+(defn close
+  "Close the connection to a remote node. Optionally, a local node name may
+  be provided; otherwise, default node name is assumed for the local node."
+  ([peer-node-name]
+    (conn/close (node/connect peer-node-name)))
+  ([self-node-name peer-node-name]
+    (conn/close (node/connect self-node-name peer-node-name))))
 
 (defn open
   "Open an RPC connection to a remote node. Optionally, a local node name may
@@ -27,23 +34,17 @@
   ([self-node-name peer-node-name]
     (node/connect self-node-name peer-node-name)))
 
-(defn close
-  "Close the connection to a remote node. Optionally, a local node name may
-  be provided; otherwise, default node name is assumed for the local node."
-  ([peer-node-name]
-    (conn/close (node/connect peer-node-name)))
-  ([self-node-name peer-node-name]
-    (conn/close (node/connect self-node-name peer-node-name))))
+(defn receive
+  "Receive an RPC message from a remote node."
+  [peer-node-name]
+  (conn/receive-rpc (open peer-node-name)))
 
 (defn send
   "Send an RPC message to the remote node."
   [peer-node-name & args]
-  (apply conn/send-rpc (into [(open peer-node-name)] args)))
-
-(defn receive
-  "Receive an RPC message from a remote node."
-  [peer-node-name & args]
-  (apply conn/receive-rpc (into [(open peer-node-name)] args)))
+  (->> args
+       (into [(open peer-node-name)])
+       (apply conn/send-rpc)))
 
 (defn cast
   "Send a blocking RPC message to a remote node. The function unblocks when
@@ -52,7 +53,7 @@
   with remote functions that return a result. It will not return a value other
   than `:ok`, even if the remote function does return a value."
   [peer-node-name & args]
-  (apply send (into [peer-node-name] args))
+  (apply #'send (into [peer-node-name] args))
   (receive peer-node-name)
   :ok)
 
@@ -62,7 +63,7 @@
   in the LFE/Erlang `rpc` module, this function *is* intended to be used with
   remote functions that return a result."
   [peer-node-name & args]
-  (apply send (into [peer-node-name] args))
+  (apply #'send (into [peer-node-name] args))
   (receive peer-node-name))
 
 ; (defn rpc? [msg-data]
@@ -165,16 +166,3 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (def ! #'send)
-
-(import-vars
-  [connection
-
-   exit
-   deliver
-   link
-   get-msg-count
-   get-peer
-   receive-buf
-   get-self
-   send-buf
-   unlink])
