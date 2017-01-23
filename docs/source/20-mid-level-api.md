@@ -250,7 +250,7 @@ message box, we'll get an error. Here's one way to handle that error:
 
 ```clj
 (match (receive)
-  [:error [_ msg e_ _]]
+  [:error [_ msg _]]
     (println (format "Remote pid %s has terminated."
                      (exceptions/get-pid ex)))
   data data)
