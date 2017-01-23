@@ -3,9 +3,11 @@
   prototyping, &c. The intended use is for this to be the initial namespace
   when running ``lein repl`` from the Clojang project directory."
   (:require [clojang.agent.startup :as startup]
+            [clojang.caller :refer [call call!]]
             [clojang.conn :as conn]
             [clojang.core :as clojang :refer [! receive self]]
             [clojang.epmd :as epmd]
+            [clojang.exceptions :as exceptions]
             [clojang.mbox :as mbox]
             [clojang.msg :as msg]
             [clojang.node :as node]
@@ -36,4 +38,3 @@
               (:members (reflect obj))))))
 
 (def reload #'repl/refresh)
-
