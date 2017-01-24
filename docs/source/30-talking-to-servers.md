@@ -424,15 +424,16 @@ little server we wrote in LFE above:
   []
   (let [init-state 0]
     (loop [png-count init-state]
-      (match [(receive)]
-        [[:ping caller]]
+      (match (receive)
+        [:ping caller]
           (do (! caller :pong)
             (recur (inc png-count)))
-        [[:get-ping-count caller]]
+        [:get-ping-count caller]
           (do (! caller png-count)
             (recur png-count))
-        [[:stop caller]]
-          :stopped))))
+        [:stop caller]
+          (do (! caller :stopping)
+              :stopped)))))
 ```
 
 Not only are both LFE and Clojure Lisps (though LFE is a Lisp-2 ... and then
@@ -475,6 +476,8 @@ Once we're done, we can ask the server to stop from LFE:
 ```cl
 (clojang-lfe@host)> (! #(default clojang@host) `#(stop ,(self)))
 #(stop <0.34.0>)
+(clojang-lfe@host)> (c:flush)
+Shell got stopping
 ```
 
 Back in the Clojure REPL you should now see:
