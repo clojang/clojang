@@ -1,16 +1,59 @@
 (ns clojang.epmd
   (:require [clojang.caller :refer [call call!]]
-            [jiface.epmd :as epmd]
+            [clojure.java.shell :as shell]
+            [jiface.epmd :as ji-epmd]
             [dire.core :refer [with-handler!]]
             [potemkin :refer [import-vars]]))
 
-;; XXX support the following keys:
-;; [-d|-debug] [DbgExtra...] [-port No] [-daemon] [-relaxed_command_check]
-(defn start-epmd
-  "Start the Erlang Port Mapper Daemon external (OS) process needed by
-  JInterface for creating nodes and communicating with other nodes."
-  []
-  :TBD)
+(defn -epmd-parse-args
+  [[k v]]
+  (let [str-val (str v)]
+    (case k
+      :debug ["-debug"]
+      :package-timeout ["-packet_timeout" str-val]
+      :delay-accept ["-delay_accept" str-val]
+      :delay-write ["-delay_write" str-val]
+      :address ["-address" (clojure.string/join "," v)]
+      :port ["-port" str-val]
+      :daemon ["-daemon"]
+      :relaxed-command-check ["-relaxed_command_check"]
+      :names ["-names"]
+      :kill ["-kill"]
+      :stop ["-stop" str-val])))
+
+(defn epmd
+  "Either start or interact with the Erlang Port Mapper Daemon external (OS)
+  process needed by JInterface for creating nodes and communicating with other
+  nodes.
+
+  Usage based on documentation here:
+   * http://erlang.org/doc/man/epmd.html#debug_flags
+
+  Notes:
+   * Single-valued command line arguments expect a `true` value in this
+     function
+   * Command line arguments with underscores are keywords with dashes in this
+     function
+
+  Example usage:
+
+  ```
+  clojang.dev=> (epmd :names true)
+  epmd: up and running on port 4369 with data:
+  name clojang at port 33681
+  name clojang-lfe at port 40968
+  name rabbit at port 25672
+  :ok
+  ```"
+  [& {:as args}]
+  (->> args
+       (map -epmd-parse-args)
+       (flatten)
+       (cons "epmd")
+       (apply shell/sh)
+       :out
+       (print))
+  :ok)
 
 (defn- -parse-name
   [result]
@@ -25,16 +68,16 @@
 
 (defn lookup-names
   ([]
-    (->> (call epmd/lookup-names)
+    (->> (call ji-epmd/lookup-names)
          (-parse-names)))
   ([inet-addr-str]
     (->> (java.net.InetAddress/getByName inet-addr-str)
-         (call epmd/lookup-names)
+         (call ji-epmd/lookup-names)
          (-parse-names)))
   ([inet-addr-str transport]
     (->> (java.net.InetAddress/getByName inet-addr-str)
          (into [transport])
-         (call epmd/lookup-names)
+         (call ji-epmd/lookup-names)
          (-parse-names))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -42,7 +85,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (import-vars
-  [epmd
+  [ji-epmd
    ;; epmd
    ;; lookup-names -- see above
    lookup-port
