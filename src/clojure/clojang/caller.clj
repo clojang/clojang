@@ -3,7 +3,7 @@
             [clojure.core.match :refer [match]]))
 
 (defn call
-  "This function is intended to be used under the hoold by all Clojang
+  "This function is intended to be used under the hood by all Clojang
   functions that need to call `jiface` functions, catching all
   exceptions (should they arise), returning either the result of the
   `jiface` call or error data in the event of an underlying exception."
@@ -16,7 +16,7 @@
         [:error [(type ex) (exceptions/get-message ex) ex]]))))
 
 (defn call!
-  "This function is intended to be used under the hoold by all Clojang
+  "This function is intended to be used under the hood by all Clojang
   functions that need to call `jiface` functions but that don't return
   results. The intent is to normalize such calls (which in Erlang sometimes
   return `true` or `ok`) with a consistent side-effects result: `:ok`.
