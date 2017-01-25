@@ -4,13 +4,15 @@
   (:import [clojure.lang Reflector]
            [com.ericsson.otp.erlang]))
 
-(defn ->str-arg [arg]
+(defn ->str-arg
+  [arg]
   (condp #(%1 %2) arg
     keyword? (name arg)
     symbol? (str arg)
     arg))
 
-(defn ->str-args [args]
+(defn ->str-args
+  [args]
   (reduce
     (fn [acc x]
       (into acc [x]))
