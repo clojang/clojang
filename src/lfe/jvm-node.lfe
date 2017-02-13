@@ -7,5 +7,5 @@
   ((_)
     'undefined))
 
-(defun get-modules ()
+(defun start (opts)
   'ok)
