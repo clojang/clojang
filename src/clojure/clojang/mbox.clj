@@ -14,7 +14,7 @@
             OtpMbox
             OtpMsg
             OtpNode])
-  (:refer-clojure :exclude [new send]))
+  (:refer-clojure :exclude [add new send]))
 
 (defn register-name
   "An alias for `jiface.otp.messaging/register-name` that also
@@ -31,6 +31,13 @@
     (let [mbox (messaging/mbox node-instance)]
       (register-name mbox (util/->str-arg mbox-name))
       mbox)))
+
+(defn add
+  "Add an mbox to an existing node."
+  ([mbox-name]
+    (add mbox-name (node/get-default-node)))
+  ([mbox-name node-instance]
+    (clojang.mbox/new node-instance mbox-name)))
 
 (defn get-default
   "Get the mbox for the default node.
@@ -167,8 +174,8 @@
   "Close the default or named mailbox."
   ([]
     (close (get-default)))
-  ([node]
-    (messaging/close node)))
+  ([mbox]
+    (messaging/close mbox)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
