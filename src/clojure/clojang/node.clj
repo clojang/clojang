@@ -3,7 +3,8 @@
             [clojure.core.memoize :as memo]
             [jiface.otp.nodes :as nodes]
             [jiface.util :as ji-util]
-            [potemkin :refer [import-vars]])
+            [potemkin :refer [import-vars]]
+            [trifl.net :as net])
   (:refer-clojure :exclude [new]))
 
 (defn new
@@ -43,7 +44,7 @@
   be used."
   []
   (if-let [short-name (get-short-name)]
-    (format "%s@%s" short-name (ji-util/get-hostname))
+    (format "%s@%s" short-name (net/get-local-hostname))
     (get-long-name)))
 
 (defn get-name

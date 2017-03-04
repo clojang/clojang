@@ -12,6 +12,7 @@
     [org.clojure/core.memoize "0.5.9"]
     [clojang/agent "0.4.0-SNAPSHOT"]
     [clojang/jiface "0.4.0-SNAPSHOT"]
+    [clojusc/trifl "0.1.0-SNAPSHOT"]
     [clojusc/twig "0.3.0"]]
   :source-paths ["src/clojure"]
   :codox {
