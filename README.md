@@ -34,6 +34,10 @@ so, provides developers with the same level of convenience they have come to
 expect when using Clojure libraries in general, without the need to perform
 many manual operations in order to handle Erlang data.
 
+For a comparison of JInterface, the low-level `jiface` API, and the high-level
+`clojang` API, see
+[the APIs summary](http://clojang.github.io/jiface/current/05-apis.html) page.
+
 
 ## Dependencies [&#x219F;](#contents)
 
