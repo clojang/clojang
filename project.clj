@@ -13,13 +13,14 @@
     [clojang/agent "0.4.0-SNAPSHOT"]
     [clojang/jiface "0.4.0-SNAPSHOT"]
     [clojusc/trifl "0.1.0-SNAPSHOT"]
-    [clojusc/twig "0.3.0"]]
+    [clojusc/twig "0.3.0"]
+    [defun "0.3.0-RC1"]]
   :source-paths ["src/clojure"]
   :codox {
     :project {:name "clojang"}
     :themes [:rdash]
-    :output-path "docs/master/current"
-    :doc-paths ["docs/source"]
+    :output-path "docs/current"
+    :doc-paths ["resources/docs"]
     :namespaces [#"^clojang\.(?!test)"
                  #"^clojang\.(?!agent)"]
     :metadata {:doc/format :markdown}}

@@ -10,6 +10,7 @@ CLOJURE_VER := $(subst ], , $(word 3, $(CLOJURE_DEP)))
 JAR := $(PROJ)-$(VERSION).jar
 UBERJAR := $(PROJ)-$(VERSION)-standalone.jar
 LOCAL_MAVEN := ~/.m2/repository
+REPO = $(shell git config --get remote.origin.url)
 
 include dev-resources/make/code.mk
 include dev-resources/make/clj.mk
