@@ -13,8 +13,7 @@
     [clojang/agent "0.4.0-SNAPSHOT"]
     [clojang/jiface "0.4.0-SNAPSHOT"]
     [clojusc/trifl "0.1.0-SNAPSHOT"]
-    [clojusc/twig "0.3.0"]
-    [defun "0.3.0-RC1"]]
+    [clojusc/twig "0.3.1"]]
   :source-paths ["src/clojure"]
   :codox {
     :project {:name "clojang"}
