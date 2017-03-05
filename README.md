@@ -22,15 +22,11 @@
 
 ## Introduction [&#x219F;](#contents)
 
-This project provides a solution to the
-[aesthetic problem of JInterface](https://github.com/oubiwann/clojang/wiki/Example:-JInterface-in-Clojure).
-While JInterface is an invaluable tool for projects that need to
-have JVM and Erlang VM languages communicating with each other, it is rather
-verbose and cumbersom to do so in Clojure.
-
+This project provides a final solution to the Clojure
+[JInterface Problem](https://github.com/clojang/jiface/wiki/The-JInterface-Problem).
 The [jiface low-level API](https://github.com/clojang/jiface) solves this to a
-certain extent, but it requires that programmers perform all their own type
-conversions, manual creation of notes, etc.
+certain extent, but `jiface` requires that programmers perform all their own type
+conversions, manual creation of nodes and mboxes, etc.
 
 The Clojang library, however, provides an interface that is not only
 syntactically idiomatic Clojure (not unlike the jiface library), but even more
@@ -51,11 +47,11 @@ The default (and tested) version combinations are as follows:
 | Clojang | jiface | JInterface | Erlang Release | Erlang Version (erts) |
 |---------|--------|------------|----------------|-----------------------|
 | 0.4.0   | 0.4.0  | 1.7.1      | 19.2           | 8.2                   |
-| 0.3.0   | 0.3.0  | "          | "              | "                     |
-| 0.2.0   | 0.2.0  | "          | "              | "                     |
-| "       | "      | "          | 19.1           | 8.1                   |
+| 0.3.0   | 0.3.0  | 1.7.1      | 19.2           | 8.2                   |
+| 0.2.0   | 0.2.0  | 1.7.1      | 19.2           | 8.2                   |
+| 0.2.0   | 0.2.0  | 1.7.1      | 19.1           | 8.1                   |
 | 0.1.0   | 0.1.0  | 1.6.1      | 18.3           | 7.3                   |
-| "       | "      | "          | 18.2           | 7.2                   |
+| 0.1.0   | 0.1.0  | 1.6.1      | 18.2           | 7.2                   |
 
 While other version combination may work (and existing versions may be updated
 to work with different onces), those are the only ones which are supported.
