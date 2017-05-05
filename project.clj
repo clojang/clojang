@@ -24,15 +24,13 @@
                  #"^clojang\.(?!agent)"]
     :metadata {:doc/format :markdown}}
   :profiles {
-    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :uberjar {:aot :all}
-    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :testing {
        :plugins
          [[lein-ancient "0.6.10"]
           [jonase/eastwood "0.2.3" :exclusions [org.clojure/clojure]]
           [lein-bikeshed "0.4.1"]
-          [lein-kibit "0.1.2" :exclusions [org.clojure/clojure]]
+          [lein-kibit "0.1.4" :exclusions [org.clojure/clojure]]
           [venantius/yagni "0.1.4"]]
       :aot :all
       :dependencies [
@@ -43,14 +41,12 @@
         :unit :unit
         :system :system
         :integration :integration}}
-    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :docs {
       :aot :all
-      :dependencies [[codox-theme-rdash "0.1.1"]]
+      :dependencies [[codox-theme-rdash "0.1.2"]]
       :plugins [
-        [lein-codox "0.10.2"]
+        [lein-codox "0.10.3"]
         [lein-simpleton "1.3.0"]]}
-    ;; >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     :dev {
       :dependencies [
         [org.clojure/tools.namespace "0.2.11"]]
