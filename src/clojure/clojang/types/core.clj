@@ -3,15 +3,16 @@
             [clojang.types.converter]
             [clojang.types.predicate]
             [potemkin :refer [import-vars]])
-  (:refer-clojure :exclude [atom boolean byte char char? double float float?
-                            int list list? long map map? short string?]))
+  (:refer-clojure :exclude [atom boolean boolean? byte char char?
+                            double double? float float? int int?
+                            list list? long map map? ref short string?]))
 
 (import-vars
   [clojang.types.constructor
     atom
     boolean
-    ;binary
-    ;bitstr
+    ;;binary
+    ;;bitstr
     byte
     char
     double
@@ -21,13 +22,13 @@
     list
     long
     map
-    ;object
-    ;pid
-    ;port
-    ;ref
+    ;;object
+    pid
+    port
+    ref
     short
     string
-    ;sublist
+    ;;sublist
     tuple
     undefined
     uint
@@ -61,6 +62,6 @@
     string?
     sublist?
     tuple?
-    undefined?
+    ;;undefined?
     uint?
     ushort?])

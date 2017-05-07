@@ -1,5 +1,4 @@
 (ns clojang.types.predicate
-  (:require [clojang.types.converter :as types])
   (:import [com.ericsson.otp.erlang
              OtpErlangAtom
              OtpErlangBoolean
@@ -24,7 +23,7 @@
              OtpErlangTuple
              OtpErlangUInt
              OtpErlangUShort])
-  (:refer-clojure :exclude [char? float? list? map? string?]))
+  (:refer-clojure :exclude [boolean? char? double? float? int? list? map? string?]))
 
 (defn atom?
   ""
@@ -131,11 +130,11 @@
   [arg]
   (instance? OtpErlangTuple arg))
 
-(defn undefined?
-  ""
-  [arg]
-  (and (instance? OtpErlangAtom arg)
-       (= (types/erl->clj arg) nil)))
+; (defn undefined?
+;   ""
+;   [arg]
+;   (and (instance? OtpErlangAtom arg)
+;        (= (types/erl->clj arg) nil)))
 
 (defn uint?
   ""

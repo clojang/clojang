@@ -7,7 +7,7 @@
             [jiface.otp.nodes :as nodes]
             [jiface.otp.streams :as streams]
             [potemkin :refer [import-vars]])
-  (:import [clojang.types])
+  (:import [clojang.types.records Pid])
   (:refer-clojure :exclude [deliver new send]))
 
 (defn close
@@ -21,11 +21,11 @@
 (defn exit
   "An alias for `jiface.otp.connection/exit` that automatically
   converts the `reason` argument to an appropriate Erlang type."
-  [^clojang.types.Pid dest-pid ^String reason]
+  [^Pid dest-pid ^String reason]
   (apply #'connection/exit dest-pid (types/clj->erl reason)))
 
 (defn link
-  [conn ^clojang.types.Pid pid]
+  [conn ^Pid pid]
   (->> (types/clj->erl pid)
        (conj [conn])
        (call! connection/link)))
@@ -111,7 +111,7 @@
   (call! connection/set-flags [conn flags]))
 
 (defn unlink
-  [conn ^clojang.types.Pid pid]
+  [conn ^Pid pid]
   (->> (types/clj->erl pid)
        (conj [conn])
        (call! connection/unlink)))

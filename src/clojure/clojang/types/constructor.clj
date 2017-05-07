@@ -1,6 +1,7 @@
 (ns clojang.types.constructor
   (:require [clojang.types.converter :as types]
             [clojang.types.predicate]
+            [clojang.types.records :as records]
             [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [atom boolean byte char double
                             float int list long map ref short]))
@@ -91,22 +92,22 @@
   ""
   [node id serial creation]
   (types/clj->erl
-    (clojang.types/->Pid node id serial creation)))
+    (records/->Pid node id serial creation)))
 
 (defn port
   ""
   ([node id creation]
     (types/clj->erl
-      (clojang.types/->Port node id creation)))
+      (records/->Port node id creation)))
   ([tag node id creation]
     (types/clj->erl
-      (clojang.types/->Port node id creation))))
+      (records/->Port node id creation))))
 
 (defn ref
   ""
   ([node ids creation]
     (types/clj->erl
-      (clojang.types/->Ref node ids creation)))
+      (records/->Ref node ids creation)))
   ([tag node ids creation]
     (types/clj->erl
-      (clojang.types/->Ref node ids creation))))
+      (records/->Ref node ids creation))))

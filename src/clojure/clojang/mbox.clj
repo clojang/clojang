@@ -1,14 +1,13 @@
 (ns clojang.mbox
   (:require [clojang.agent.const :as const]
             [clojang.node :as node]
-            [clojang.types]
             [clojang.types.core :as types]
             [clojang.util :as util]
             [clojure.core.memoize :as memo]
             [potemkin :refer [import-vars]]
             [jiface.otp.messaging :as messaging]
             [jiface.otp.nodes :as nodes])
-  (:import [clojang.types]
+  (:import [clojang.types.records Pid]
            [com.ericsson.otp.erlang
             OtpErlangPid
             OtpMbox
@@ -76,15 +75,13 @@
     (node/get-default-name)
     msg))
 
-(defmethod send [clojang.types.Pid
-                 java.lang.Object]
+(defmethod send [Pid java.lang.Object]
                 [pid-record msg]
   (send
     (types/clj->erl pid-record)
     msg))
 
-(defmethod send [OtpErlangPid
-                 java.lang.Object]
+(defmethod send [OtpErlangPid java.lang.Object]
                 [pid msg]
   (send
     (get-default)
