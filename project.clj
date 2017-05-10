@@ -17,7 +17,7 @@
   :source-paths ["src/clojure"]
   :codox {
     :project {:name "clojang"}
-    :themes [:rdash]
+    :themes [:clojang]
     :output-path "docs/current"
     :doc-paths ["resources/docs"]
     :namespaces [#"^clojang\.(?!test)"
@@ -43,7 +43,7 @@
         :integration :integration}}
     :docs {
       :aot :all
-      :dependencies [[codox-theme-rdash "0.1.2"]]
+      :dependencies [[clojang/codox-theme "0.2.0-SNAPSHOT"]]
       :plugins [
         [lein-codox "0.10.3"]
         [lein-simpleton "1.3.0"]]}
