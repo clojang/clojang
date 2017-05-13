@@ -10,21 +10,18 @@
   :dependencies [
     [org.clojure/clojure "1.8.0"]
     [org.clojure/core.memoize "0.5.9"]
-    [clojang/agent "0.4.0-SNAPSHOT"]
-    [clojang/jiface "0.4.0-SNAPSHOT"]
-    [clojusc/trifl "0.1.0-SNAPSHOT"]
-    [clojusc/twig "0.3.1"]]
+    [clojang/agent "0.4.0-SNAPSHOT"]]
   :source-paths ["src/clojure"]
   :codox {
     :project {:name "clojang"}
     :themes [:clojang]
     :output-path "docs/current"
     :doc-paths ["resources/docs"]
-    :namespaces [#"^clojang\.(?!test)"
-                 #"^clojang\.(?!agent)"]
+    :namespaces [#"^clojang\.(?!test)"]
     :metadata {:doc/format :markdown}}
   :profiles {
-    :uberjar {:aot :all}
+    :uberjar {
+      :aot :all}
     :testing {
        :plugins
          [[lein-ancient "0.6.10"]
