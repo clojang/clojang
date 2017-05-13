@@ -23,13 +23,13 @@
     :uberjar {
       :aot :all}
     :testing {
-       :plugins
-         [[lein-ancient "0.6.10"]
-          [jonase/eastwood "0.2.3" :exclusions [org.clojure/clojure]]
-          [lein-bikeshed "0.4.1"]
-          [lein-kibit "0.1.4" :exclusions [org.clojure/clojure]]
-          [venantius/yagni "0.1.4"]]
       :aot :all
+      :plugins [
+        [lein-ancient "0.6.10"]
+        [jonase/eastwood "0.2.3" :exclusions [org.clojure/clojure]]
+        [lein-bikeshed "0.4.1"]
+        [lein-kibit "0.1.4" :exclusions [org.clojure/clojure]]
+        [venantius/yagni "0.1.4"]]
       :dependencies [
         [org.clojure/math.numeric-tower "0.0.4"]]
       :jvm-opts ["-Dheadless"]
