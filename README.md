@@ -238,6 +238,8 @@ service's ["About" page][libera-about].
 ## License [&#x219F;](#contents)
 
 ```
+Copyright © 2018 The Clojang Project
+
 Copyright © 2016-2017 Duncan McGreggor
 
 Distributed under the Apache License Version 2.0.
