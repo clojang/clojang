@@ -8,6 +8,7 @@
             [jiface.otp.messaging :as messaging]
             [jiface.otp.nodes :as nodes])
   (:import [clojang.types.records Pid]
+           [clojure.lang Keyword]
            [com.ericsson.otp.erlang
             OtpErlangPid
             OtpMbox
@@ -168,11 +169,24 @@
     :ok))
 
 (defn close
-  "Close the default or named mailbox."
+  "Close the default or named mailbox. Optionally, an arbitrary
+  keyword reason may be passed; it the close is expected, the usual
+  value passed for reason is `:normal`."
   ([]
     (close (get-default)))
   ([mbox]
     (messaging/close mbox)))
+
+(defn exit
+  "Exit the given mailbox for the given reason. If no mailbox is given, the
+  default mbox is used.
+
+  The `reason` is an arbitrary keyword; if the exit is expected, the usual
+  value passed for reason is `:normal`."
+  ([^Keyword reason]
+    (exit (get-default) reason))
+  ([mbox ^Keyword reason]
+    (messaging/exit mbox (name reason))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -183,7 +197,6 @@
 
    ;; close -- see above
    equal?
-   exit
    ;;link -- see above
    get-name
    receive-buf
