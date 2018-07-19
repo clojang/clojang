@@ -7,19 +7,18 @@
   :license {
     :name "Apache License, Version 2.0"
     :url  "http://www.apache.org/licenses/LICENSE-2.0"}
+  :exclusions [
+    [org.clojure/clojure]
+    [org.clojure/tools.namespace]
+    [org.clojure/tools.reader]]
   :dependencies [
     [clojang/agent "0.4.0"]
+    [clojang/jiface "0.4.0"]
+    [clojusc/trifl "0.3.0"]
     [org.clojure/clojure "1.9.0"]
     [org.clojure/core.memoize "0.7.1"]
     [org.clojure/tools.namespace "0.2.11"]
     [org.clojure/tools.reader "1.3.0"]]
-  :exclusions [
-    [org.clojure/clojure]
-    [org.clojure/tools.namespace]
-    [org.clojure/tools.reader]
-    [com.taoensso/encore]]
-  :java-agents [
-    [clojang/agent "0.4.0-SNAPSHOT"]]
   :source-paths ["src/clojure"]
   :aot :all
   :codox {
@@ -65,6 +64,8 @@
       :source-paths ["dev-resources/src"]
       :repl-options {:init-ns clojang.dev}
       :bootclasspath true
+      :java-agents [
+        [clojang/agent "0.4.0"]]
       :jvm-opts [
         ; "-verbose:class"
         ;"-Dheadless"
