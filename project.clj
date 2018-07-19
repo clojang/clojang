@@ -12,8 +12,8 @@
     [org.clojure/tools.namespace]
     [org.clojure/tools.reader]]
   :dependencies [
-    [clojang/agent "0.4.0"]
-    [clojang/jiface "0.4.0"]
+    [clojang/agent "0.5.0"]
+    [clojang/jiface "0.5.0"]
     [clojusc/trifl "0.3.0"]
     [org.clojure/clojure "1.9.0"]
     [org.clojure/core.memoize "0.7.1"]
@@ -65,7 +65,7 @@
       :repl-options {:init-ns clojang.dev}
       :bootclasspath true
       :java-agents [
-        [clojang/agent "0.4.0"]]
+        [clojang/agent "0.5.0"]]
       :jvm-opts [
         ; "-verbose:class"
         ;"-Dheadless"
