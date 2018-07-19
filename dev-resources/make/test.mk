@@ -1,26 +1,26 @@
 check:
-	@lein with-profile +test test :unit
+	@lein ltest :unit
 
 check-system:
-	@lein with-profile +test test :system
+	@lein ltest :system
 
 check-integration:
-	@lein with-profile +test test :integration
+	@lein ltest :integration
 
 check-all: check-deps
-	@lein with-profile +test test :all
+	@lein ltest :all
 
 kibit:
-	@lein with-profile +test kibit
+	@lein with-profile +lint kibit
 
 bikeshed:
-	@lein with-profile +test bikeshed
+	@lein with-profile +lint bikeshed
 
 base-eastwood:
-	@lein with-profile +test eastwood "$(EW_OPTS)"
+	@lein with-profile +lint eastwood "$(EW_OPTS)"
 
 yagni:
-	@lein with-profile +test yagni
+	@lein with-profile +lint yagni
 
 eastwood:
 	@EW_OPTS="{:namespaces [:source-paths]}" make base-eastwood
@@ -34,4 +34,4 @@ lint-ns:
 	@EW_OPTS="{:linters [:unused-namespaces :wrong-ns-form] :namespaces [:source-paths]}" make base-eastwood
 
 check-deps:
-	@lein with-profile +test do ancient check :all
+	@lein check-vers
