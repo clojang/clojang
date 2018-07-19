@@ -1,7 +1,6 @@
 (ns clojang.types.converter
   (:require [clojang.types.records :as records]
             [clojure.string :as clj-string]
-            [clojure.tools.logging :as log]
             [dire.core :refer [with-handler!]]
             [jiface.erlang.atom :as atom]
             [jiface.erlang.float :as float]

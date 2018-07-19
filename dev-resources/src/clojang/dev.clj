@@ -18,7 +18,6 @@
             [clojure.core.match :refer [match]]
             [clojure.pprint :refer [print-table]]
             [clojure.reflect :refer [reflect]]
-            [clojure.tools.logging :as log]
             [clojure.tools.namespace.repl :as repl]
             [dire.core :refer [with-handler! with-finally!]]
             [jiface.core :as jiface]
