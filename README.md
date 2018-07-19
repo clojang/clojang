@@ -54,10 +54,8 @@ The default (and tested) version combinations are as follows:
 |---------|--------|------------|----------------|-----------------------|
 | 0.4.0   | 0.4.0  | 1.7.1      | 19.2, 19.3     | 8.2, 8.3              |
 | 0.3.0   | 0.3.0  | 1.7.1      | 19.2           | 8.2                   |
-| 0.2.0   | 0.2.0  | 1.7.1      | 19.2           | 8.2                   |
-| 0.2.0   | 0.2.0  | 1.7.1      | 19.1           | 8.1                   |
-| 0.1.0   | 0.1.0  | 1.6.1      | 18.3           | 7.3                   |
-| 0.1.0   | 0.1.0  | 1.6.1      | 18.2           | 7.2                   |
+| 0.2.0   | 0.2.0  | 1.7.1      | 19.1, 19.2     | 8.1, 8.2              |
+| 0.1.0   | 0.1.0  | 1.6.1      | 18.2, 18.3     | 7.2, 7.3              |
 
 While other version combination may work (and existing versions may be updated
 to work with different onces), those are the only ones which are supported.
