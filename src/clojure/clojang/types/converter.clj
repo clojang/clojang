@@ -34,7 +34,7 @@
   (into-array (types/object) (map clj->erl xs)))
 
 (defn erl-tuple->clj-vector [xs]
-  (map #(erl->clj %) (into [] xs)))
+  (map erl->clj (vec xs)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Clojure to Erlang conversions   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,8 +193,7 @@
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangAtom
   [^com.ericsson.otp.erlang.OtpErlangAtom erl-obj]
   (let [trans (atom/->str erl-obj)]
-    (if (= trans "undefined")
-      nil
+    (when-not (= trans "undefined")
       (keyword (clj-string/replace trans "'" "")))))
 
 ;;; Booleans
@@ -237,7 +236,7 @@
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangList
   [^com.ericsson.otp.erlang.OtpErlangList erl-obj]
-  (map #(erl->clj %) (into (list) erl-obj)))
+  (map erl->clj (into (list) erl-obj)))
 
 ;;; Longs
 
@@ -316,7 +315,7 @@
 
 (defmethod erl->clj com.ericsson.otp.erlang.OtpErlangTuple
   [^com.ericsson.otp.erlang.OtpErlangTuple erl-obj]
-  (into [] (erl-tuple->clj-vector (tuple/get-elements erl-obj))))
+  (vec (erl-tuple->clj-vector (tuple/get-elements erl-obj))))
 
 ;;; UInts
 

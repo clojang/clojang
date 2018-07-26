@@ -68,7 +68,7 @@
   ([]
     (get-names (get-default-node)))
   ([node]
-    (into [] (nodes/get-names node))))
+    (vec (nodes/get-names node))))
 
 (defn ping
   "An alias ``jiface.otp.nodes/ping`` that also allows for a

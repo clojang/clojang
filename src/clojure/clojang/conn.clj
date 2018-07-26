@@ -84,7 +84,8 @@
   "An alias for `jiface.otp.connection/send` that also allows for
   mailbox and node name arguments to be symbols, keywords, or strings."
   [connx dest msg]
-  (->> [connx (util/->str-arg dest) (types/clj->erl msg)]
+  (->> (types/clj->erl msg)
+       (vector connx (util/->str-arg dest))
        (call! connection/send)))
 
 (defn send-buf

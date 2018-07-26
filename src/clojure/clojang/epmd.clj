@@ -69,8 +69,7 @@
 
 (defn lookup-names
   ([]
-    (->> (call ji-epmd/lookup-names)
-         (-parse-names)))
+    (-parse-names (call ji-epmd/lookup-names)))
   ([inet-addr-str]
     (->> (java.net.InetAddress/getByName inet-addr-str)
          (call ji-epmd/lookup-names)

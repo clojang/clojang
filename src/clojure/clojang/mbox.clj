@@ -126,7 +126,7 @@
   "An alias for `jiface.otp.messaging/get-names` that returns a
   vector of names on the same node as the given inbox"
   [inbox]
-  (into [] (messaging/get-names inbox)))
+  (vec (messaging/get-names inbox)))
 
 (defn receive
   "An alias for `jiface.otp.messaging/receive` that returns the
