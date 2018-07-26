@@ -51,7 +51,7 @@
       :source-paths ^:replace ["src"]
       :test-paths ^:replace []
       :plugins [
-        [jonase/eastwood "0.2.8"]
+        [jonase/eastwood "0.2.9"]
         [lein-ancient "0.6.15"]
         [lein-kibit "0.1.6"]
         [venantius/yagni "0.1.4"]]}
@@ -116,4 +116,10 @@
     "ltest" ["with-profile" "+test" "ltest"]
     "ltest-clean" ["do"
       ["clean"]
-      ["ltest"]]})
+      ["ltest"]]
+    "build" ["do"
+      ["clean"]
+      ["check-vers"]
+      ["lint"]
+      ["ltest" ":all"]
+      ["uberjar"]]})
