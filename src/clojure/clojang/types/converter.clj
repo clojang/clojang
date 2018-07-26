@@ -1,23 +1,25 @@
 (ns clojang.types.converter
-  (:require [clojang.types.records :as records]
-            [clojure.string :as clj-string]
-            [dire.core :refer [with-handler!]]
-            [jiface.erlang.atom :as atom]
-            [jiface.erlang.float :as float]
-            [jiface.erlang.int :as int]
-            [jiface.erlang.map :as map-type]
-            [jiface.erlang.pid :as pid]
-            [jiface.erlang.port :as port]
-            [jiface.erlang.ref :as ref]
-            [jiface.erlang.string :as string]
-            [jiface.erlang.tuple :as tuple]
-            [jiface.erlang.types :as types]
-            [jiface.otp.nodes]
-            [jiface.otp.messaging :as messaging])
-  (:import [clojang.types.records Pid
-                                  Port
-                                  Ref]
-           [com.ericsson.otp.erlang])
+  (:require
+    [clojang.types.records :as records]
+    [clojure.string :as clj-string]
+    [dire.core :refer [with-handler!]]
+    [jiface.erlang.atom :as atom]
+    [jiface.erlang.float :as float]
+    [jiface.erlang.int :as int]
+    [jiface.erlang.map :as map-type]
+    [jiface.erlang.pid :as pid]
+    [jiface.erlang.port :as port]
+    [jiface.erlang.ref :as ref]
+    [jiface.erlang.string :as string]
+    [jiface.erlang.tuple :as tuple]
+    [jiface.erlang.types :as types]
+    [jiface.otp.messaging :as messaging]
+    [jiface.otp.nodes])
+  (:import
+    (clojang.types.records Pid
+                           Port
+                           Ref)
+    (com.ericsson.otp.erlang))
   (:refer-clojure :exclude [atom boolean byte float int]))
 
 (declare clj->erl

@@ -6,13 +6,14 @@
   very specfic client we expect to be receiving requests from and replying to:
   an RPC client, and one that expects this namespace to provide functions
   compatible with the RPC capabilities of an Erlang/OTP `gen_server`."
-  (:require [clojang.conn :as conn]
-            [clojang.types.core :as types]
-            [clojang.msg :as msg]
-            [clojang.node :as node]
-            [clojang.util :as util]
-            [jiface.otp.connection :as connection]
-            [jiface.otp.nodes :as nodes])
+  (:require
+    [clojang.conn :as conn]
+    [clojang.msg :as msg]
+    [clojang.node :as node]
+    [clojang.types.core :as types]
+    [clojang.util :as util]
+    [jiface.otp.connection :as connection]
+    [jiface.otp.nodes :as nodes])
   (:refer-clojure :exclude [cast send]))
 
 (defn close

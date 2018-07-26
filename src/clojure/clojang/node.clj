@@ -1,10 +1,11 @@
 (ns clojang.node
-  (:require [clojang.util :as util]
-            [clojure.core.memoize :as memo]
-            [jiface.otp.nodes :as nodes]
-            [jiface.util :as ji-util]
-            [potemkin :refer [import-vars]]
-            [trifl.net :as net])
+  (:require
+    [clojang.util :as util]
+    [clojure.core.memoize :as memo]
+    [jiface.otp.nodes :as nodes]
+    [jiface.util :as ji-util]
+    [potemkin :refer [import-vars]]
+    [trifl.net :as net])
   (:refer-clojure :exclude [new]))
 
 (defn new

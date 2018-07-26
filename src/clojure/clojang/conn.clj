@@ -1,13 +1,15 @@
 (ns clojang.conn
-  (:require [clojang.caller :refer [call call!]]
-            [clojang.msg :as msg]
-            [clojang.types.core :as types]
-            [clojang.util :as util]
-            [jiface.otp.connection :as connection]
-            [jiface.otp.nodes :as nodes]
-            [jiface.otp.streams :as streams]
-            [potemkin :refer [import-vars]])
-  (:import [clojang.types.records Pid])
+  (:require
+    [clojang.caller :refer [call call!]]
+    [clojang.msg :as msg]
+    [clojang.types.core :as types]
+    [clojang.util :as util]
+    [jiface.otp.connection :as connection]
+    [jiface.otp.nodes :as nodes]
+    [jiface.otp.streams :as streams]
+    [potemkin :refer [import-vars]])
+  (:import
+    (clojang.types.records Pid))
   (:refer-clojure :exclude [deliver new send]))
 
 (defn close

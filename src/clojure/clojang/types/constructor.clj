@@ -1,8 +1,9 @@
 (ns clojang.types.constructor
-  (:require [clojang.types.converter :as types]
-            [clojang.types.predicate]
-            [clojang.types.records :as records]
-            [potemkin :refer [import-vars]])
+  (:require
+    [clojang.types.converter :as types]
+    [clojang.types.predicate]
+    [clojang.types.records :as records]
+    [potemkin :refer [import-vars]])
   (:refer-clojure :exclude [atom boolean byte char double
                             float int list long map ref short]))
 

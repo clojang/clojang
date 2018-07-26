@@ -1,6 +1,7 @@
 (ns clojang.core
-  (:require [clojang.types.core :as types]
-            [clojang.mbox :as mbox]))
+  (:require
+    [clojang.mbox :as mbox]
+    [clojang.types.core :as types]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;   Aliases   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

@@ -1,29 +1,30 @@
 (ns clojang.types.predicate
-  (:import [com.ericsson.otp.erlang
-             OtpErlangAtom
-             OtpErlangBoolean
-             OtpErlangBinary
-             OtpErlangBitstr
-             OtpErlangByte
-             OtpErlangChar
-             OtpErlangDouble
-             OtpErlangFloat
-             OtpErlangFun
-             OtpErlangInt
-             OtpErlangList
-             OtpErlangList$SubList
-             OtpErlangLong
-             OtpErlangMap
-             OtpErlangObject
-             OtpErlangPid
-             OtpErlangPort
-             OtpErlangRef
-             OtpErlangShort
-             OtpErlangString
-             OtpErlangTuple
-             OtpErlangUInt
-             OtpErlangUShort])
-  (:refer-clojure :exclude [boolean? char? double? float? int? list? map? string?]))
+  (:import
+    (com.ericsson.otp.erlang OtpErlangAtom
+                             OtpErlangBoolean
+                             OtpErlangBinary
+                             OtpErlangBitstr
+                             OtpErlangByte
+                             OtpErlangChar
+                             OtpErlangDouble
+                             OtpErlangFloat
+                             OtpErlangFun
+                             OtpErlangInt
+                             OtpErlangList
+                             OtpErlangList$SubList
+                             OtpErlangLong
+                             OtpErlangMap
+                             OtpErlangObject
+                             OtpErlangPid
+                             OtpErlangPort
+                             OtpErlangRef
+                             OtpErlangShort
+                             OtpErlangString
+                             OtpErlangTuple
+                             OtpErlangUInt
+                             OtpErlangUShort))
+  (:refer-clojure :exclude [boolean? char? double? float? int?
+                            list? map? string?]))
 
 (defn atom?
   ""

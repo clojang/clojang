@@ -1,8 +1,9 @@
 (ns clojang.msg
-  (:require [clojang.types.core :as types]
-            [clojang.node :as node]
-            [clojang.util :as util]
-            [jiface.otp.messaging :as messaging]))
+  (:require
+    [clojang.node :as node]
+    [clojang.types.core :as types]
+    [clojang.util :as util]
+    [jiface.otp.messaging :as messaging]))
 
 (defn get-msg
   "An alias for ``jiface.otp.messaging/get-msg`` that returns a

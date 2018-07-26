@@ -1,9 +1,10 @@
 (ns clojang.epmd
-  (:require [clojang.caller :refer [call call!]]
-            [clojure.java.shell :as shell]
-            [jiface.epmd :as ji-epmd]
-            [dire.core :refer [with-handler!]]
-            [potemkin :refer [import-vars]]))
+  (:require
+    [clojang.caller :refer [call call!]]
+    [clojure.java.shell :as shell]
+    [dire.core :refer [with-handler!]]
+    [jiface.epmd :as ji-epmd]
+    [potemkin :refer [import-vars]]))
 
 (defn -epmd-parse-args
   [[k v]]

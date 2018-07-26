@@ -1,19 +1,20 @@
 (ns clojang.mbox
-  (:require [clojang.agent.const :as const]
-            [clojang.node :as node]
-            [clojang.types.core :as types]
-            [clojang.util :as util]
-            [clojure.core.memoize :as memo]
-            [potemkin :refer [import-vars]]
-            [jiface.otp.messaging :as messaging]
-            [jiface.otp.nodes :as nodes])
-  (:import [clojang.types.records Pid]
-           [clojure.lang Keyword]
-           [com.ericsson.otp.erlang
-            OtpErlangPid
-            OtpMbox
-            OtpMsg
-            OtpNode])
+  (:require
+    [clojang.agent.const :as const]
+    [clojang.node :as node]
+    [clojang.types.core :as types]
+    [clojang.util :as util]
+    [clojure.core.memoize :as memo]
+    [jiface.otp.messaging :as messaging]
+    [jiface.otp.nodes :as nodes]
+    [potemkin :refer [import-vars]])
+  (:import
+    (clojang.types.records Pid)
+    (clojure.lang Keyword)
+    (com.ericsson.otp.erlang OtpErlangPid
+                             OtpMbox
+                             OtpMsg
+                             OtpNode))
   (:refer-clojure :exclude [add new send]))
 
 (defn register-name

@@ -1,6 +1,7 @@
 (ns clojang.caller
-  (:require [clojang.exceptions :as exceptions]
-            [clojure.core.match :refer [match]]))
+  (:require
+    [clojang.exceptions :as exceptions]
+    [clojure.core.match :refer [match]]))
 
 (defn call
   "This function is intended to be used under the hood by all Clojang

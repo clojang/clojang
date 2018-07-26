@@ -1,7 +1,8 @@
 (ns clojang.exceptions
-  (:require [clojang.types.converter :as converter]
-            [jiface.exceptions :as exceptions]
-            [potemkin :refer [import-vars]]))
+  (:require
+    [clojang.types.converter :as converter]
+    [jiface.exceptions :as exceptions]
+    [potemkin :refer [import-vars]]))
 
 (defn get-pid
   "Get the pid of the process that sent this exit."
